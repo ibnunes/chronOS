@@ -1,4 +1,4 @@
-# LaningOS
+# chronOS
 
 A scheduling simulator.
 
@@ -15,9 +15,14 @@ A scheduling simulator.
   * English (en-us)
 
 
-## What is _LaningOS_?
+## What is _chronOS_?
 
-_To-do_
+**chronOS** is an operating systems scheduling simulator. It is built around two main components:
+
+* A process simulator;
+* A memory manager.
+
+It is able to use different algorithms to schedule processes, which are as well simulated. The processes consist of changing an unique integer variable.
 
 
 ## How to compile
