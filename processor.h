@@ -1,10 +1,5 @@
 #include"simulator.h"
 
-typedef struct{
-    char instruction;
-    int value;
-    char[50] filename;
-} instruction;
 
 typedef struct{
     int id;         // identificador do processo
@@ -16,3 +11,17 @@ typedef struct{
     instruction instructionList;
     // add whatever else is needed
 } process;
+
+void changeValue (process * p, int n);
+
+void addValue(process * p, int n);
+
+void subtractValue(process * p, int n);
+
+void blockProcess(process * p);
+
+void terminateProcess(process * p);
+
+process createNewProcess(process * p, int n);
+
+void cleanProgram(char * filename);

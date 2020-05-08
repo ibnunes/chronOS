@@ -4,17 +4,17 @@
 
 void changeValue (process * p, int n)
 {
-    p->id = n;
+    p->state = n;
 }
 
 void addValue(process * p, int n)
 {
-    p->id += n;
+    p->state += n;
 }
 
 void subtractValue(process * p, int n)
 {
-    p->id -= n;
+    p->state -= n;
 }
 
 void blockProcess(process * p)
@@ -43,5 +43,5 @@ process createNewProcess(process * p, int n)
 
 void cleanProgram(char * filename)
 {
-    return;
+    return; // ???
 }
