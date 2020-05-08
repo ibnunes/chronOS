@@ -1,3 +1,6 @@
+#ifndef SIMULATOR_H
+#define SIMULATOR_H
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -5,13 +8,14 @@
 #include <unistd.h>
 #include <ctype.h>
 
-#define MAX_NAME 15
+#include "memmgr.h"
+#include "pcbmgr.h"
+#include "processor.h"
 
-// Lista de extensões válidas ???
-// const char *FNAME_EXTENSION = ".prg";
+/* Strings úteis ao programa */
+const char *PROG_EXTENSION = ".prg";
+const char *FILE_PLAN      = "plan.txt";
+const char *FILE_CONTROL   = "control.txt";
 
-typedef struct {
-    char ins;
-    int  n;
-    char name[MAX_NAME]
-} instruction;
+
+#endif

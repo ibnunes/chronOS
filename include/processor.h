@@ -1,15 +1,35 @@
-#include "simulator.h"
+#ifndef PROCESSOR_H
+#define PROCESSOR_H
 
-void changeValue (process * p, int n);
+#include "memmgr.h"
 
-void addValue(process * p, int n);
+typedef struct {
+    int  id;         // identificador do processo
+    int  context;    // estado do processo
+    int  counter;    // contador do programa
+    int  pid;        // identificador do processo progenitor
+    int  priority;   // prioridade do processo
+    int  time_limit; // prazo temporal do processo
+    char state;      // estado bloquado, terminado, ready, etc.
+    // add whatever else is needed
+} process;
 
-void subtractValue(process * p, int n);
+/* 5 states:
+ * 'N' -> New
+ * 'r' -> Ready
+ * 'R' -> Running
+ * 'B' -> Blocked
+ * 'T' -> Terminated
+ */
 
-void blockProcess(process * p);
+void processorFunction(instruction*, process*);
 
-void terminateProcess(process * p);
+void changeValue(process*, int);
+void addValue(process*, int);
+void subtractValue(process*, int);
+void blockProcess(process*);
+void terminateProcess(process*);
+process *createNewProcess(process*, int);
+void cleanProgram(char*);
 
-process *createNewProcess(process * p, int n);
-
-void cleanProgram(char * filename);
+#endif
