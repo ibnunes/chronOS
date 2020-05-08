@@ -4,27 +4,27 @@
 
 void changeValue (process * p, int n)
 {
-    p->state = n;
+    p->context = n;
 }
 
 void addValue(process * p, int n)
 {
-    p->state += n;
+    p->context += n;
 }
 
 void subtractValue(process * p, int n)
 {
-    p->state -= n;
+    p->context -= n;
 }
 
 void blockProcess(process * p)
 {
-    return; // ???
+    p->state = 'B';
 }
 
 void terminateProcess(process * p)
 {
-    return; // ???
+    p->state = 'T';
 }
 
 process createNewProcess(process * p, int n)
@@ -33,9 +33,10 @@ process createNewProcess(process * p, int n)
     new_p->id = p->id+1; //find better scheme to number child processes
     new_p->state = p->state;
     new_p->counter = p->counter;
-    new_p->pid =p->id;
+    new_p->pid = p->id;
     new_p->priority = p->priority;
     new_p->time_limit = p->time_limit;
+    new_p->state = 'N'
     //add whatever else is added in the data sctructure
 
     return new_p;

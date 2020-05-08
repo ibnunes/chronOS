@@ -6,18 +6,18 @@
 void processorFunction(instruction * instruction, process * p) //find better variable name
 {
     if(instruction->ins == 'M')
-        void changeValue(p, instruction->n);
+        changeValue(p, instruction->n);
     else if(instruction->ins == 'A')
-        void addValue(p, instruction->n);
+        addValue(p, instruction->n);
     else if(instruction->ins == 'S')
-        void subtractValue(p, instruction->n);
+        subtractValue(p, instruction->n);
     else if(instruction->ins == 'B')
-        void blockProcess(p);
+        blockProcess(p);
     else if(instruction->ins == 'T')
-        void terminateProcess(p);
+        terminateProcess(p);
     else if(instruction->ins == 'C')
-        process createNewProcess(p, instruction->n);
+        process new_p = createNewProcess(p, instruction->n); // what to do with new_p?
     else if(instruction->ins == 'L')
-        void cleanProgram(instruction->nome);
+        cleanProgram(instruction->nome);
     return;
 }
