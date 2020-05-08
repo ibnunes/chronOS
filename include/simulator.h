@@ -8,30 +8,14 @@
 #include <unistd.h>
 #include <ctype.h>
 
-#define MAX_NAME 15
+#include "memmgr.h"
+#include "pcbmgr.h"
+#include "processor.h"
 
-typedef struct {
-    char ins;
-    int  n;
-    char name[MAX_NAME];
-} instruction;
+/* Strings úteis ao programa */
+const char *PROG_EXTENSION = ".prg";
+const char *FILE_PLAN      = "plan.txt";
+const char *FILE_CONTROL   = "control.txt";
 
-typedef struct{
-    int  id;         // identificador do processo
-    int  context;    //estado do processo
-    int  counter;    // contador do programa
-    int  pid;        //identificador do processo progenitor
-    int  priority;   //prioridade do processo
-    int  time_limit; //prazo temporal do processo
-    char state;      //estado bloquado, terminado, ready, etc.
-    // add whatever else is needed
-} process;
-
-// 5 states:
-// 'N' -> New
-// 'r' -> Ready
-// 'R' -> Running
-// 'B' -> Blocked
-// 'T' -> Terminated
 
 #endif
