@@ -1,4 +1,4 @@
-#include "include/processor.h"
+#include "processor.h"
 
 // file to do the 7 types of intructions
 
@@ -36,7 +36,7 @@ process createNewProcess(process * p, int n)
     new_p->pid = p->id;
     new_p->priority = p->priority;
     new_p->time_limit = p->time_limit;
-    new_p->state = 'N'
+    new_p->state = 'N';
     //add whatever else is added in the data sctructure
 
     return new_p;
