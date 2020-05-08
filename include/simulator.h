@@ -5,8 +5,13 @@
 #include <unistd.h>
 #include <ctype.h>
 
-typedef struct{
+#define MAX_NAME 15
+
+// Lista de extensões válidas ???
+// const char *FNAME_EXTENSION = ".prg";
+
+typedef struct {
     char ins;
-    int n;
-    char nome[15]
-}instruction;
+    int  n;
+    char name[MAX_NAME]
+} instruction;
