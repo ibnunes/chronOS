@@ -1,3 +1,6 @@
+#ifndef SIMULATOR_H
+#define SIMULATOR_H
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -7,11 +10,28 @@
 
 #define MAX_NAME 15
 
-// Lista de extensões válidas ???
-// const char *FNAME_EXTENSION = ".prg";
-
 typedef struct {
     char ins;
     int  n;
-    char name[MAX_NAME]
+    char name[MAX_NAME];
 } instruction;
+
+typedef struct{
+    int  id;         // identificador do processo
+    int  context;    //estado do processo
+    int  counter;    // contador do programa
+    int  pid;        //identificador do processo progenitor
+    int  priority;   //prioridade do processo
+    int  time_limit; //prazo temporal do processo
+    char state;      //estado bloquado, terminado, ready, etc.
+    // add whatever else is needed
+} process;
+
+// 5 states:
+// 'N' -> New
+// 'r' -> Ready
+// 'R' -> Running
+// 'B' -> Blocked
+// 'T' -> Terminated
+
+#endif

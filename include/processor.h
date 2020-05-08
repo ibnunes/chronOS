@@ -1,10 +1,9 @@
+#ifndef PROCESSOR_H
+#define PROCESSOR_H
+
 #include "simulator.h"
 
-<<<<<<< HEAD:processor.h
-void changeValue (process * p, int n);
-=======
-
-typedef struct{
+typedef struct {
     int id;         // identificador do processo
     int state;      // estado do processo
     int counter;    // contador do programa
@@ -16,7 +15,6 @@ typedef struct{
 } process;
 
 void changeValue(process * p, int n);
->>>>>>> bbfe6398c26265dfe219d6726f391520d7567c48:include/processor.h
 
 void addValue(process * p, int n);
 
@@ -29,3 +27,6 @@ void terminateProcess(process * p);
 process *createNewProcess(process * p, int n);
 
 void cleanProgram(char * filename);
+
+
+#endif
