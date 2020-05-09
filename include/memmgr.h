@@ -1,10 +1,15 @@
 #ifndef MEMMGR_H
 #define MEMMGR_H
 
+#include <stdio.h>
 #include <stdlib.h>
-// #include <string.h>
+#include <string.h>
 
-#define MAX_NAME 15
+#define MAX_NAME 15             // Nº máximo de caracteres de um programa
+#define MAX_INSTRUCTION 30      // Nº máximo de caracteres de uma instrução num ficheiro
+#define INSTRUCTION_VOID '\0'   // Instrução void: indica célula de memória livre
+#define MEMERR_ALLOC_NOAVAIL -1 // Erro: não há memória imediatamente disponível
+
 
 typedef struct {
     char ins;               // Instrução
@@ -19,8 +24,14 @@ typedef struct {
     size_t free;            // Capacidade livre de memória
 } MEMORY;
 
+void cleaninstruction(instruction*);
 
-instruction *memalloc(size_t nmemb);
-void memfree(instruction *mem);
+MEMORY *memcreate(size_t);
+void memdestroy(MEMORY*);
+
+int memalloc(MEMORY*, instruction*, size_t);
+void memfree(MEMORY*, size_t, size_t);
+
+instruction* program_read_from_file(char*, size_t*);
 
 #endif
