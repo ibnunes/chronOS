@@ -31,7 +31,7 @@
 typedef struct{
     char name;
     int  start;
-    // add whatever else is needed
+    process * p;
 } PCB;
 
 

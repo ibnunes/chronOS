@@ -16,10 +16,14 @@ void subtractValue(process * p, int n) {
 
 void blockProcess(process * p) {
     p->state = 'B';
+    // find out what to do with a blocked process
+    //maybe send it to the end of memory
 }
 
 void terminateProcess(process * p) {
     p->state = 'T';
+    
+    //kill process by deleting it of memory and PCB
 }
 
 void createNewProcess(process * p, int n) {

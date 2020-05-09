@@ -30,17 +30,19 @@
  *  int * counter: points towards the current instruction that process is at.
  *  int pid: identifies the parent process.
  *  int priority: defines the priority of execution of the process.
- *  int time_limit: 
- *  char state: defines which state of execution the process is at.
+ *  int time_limit: ???how to define this???
+ *  char state: represents which state of execution the process is at.
+ *  int PCBposition: represents index in which process is stored in PCB.
  */
 typedef struct {
-    int  id;         // identificador do processo
-    int  context;    // estado do processo
-    int * counter;    // contador do programa
-    int  pid;        // identificador do processo progenitor
-    int  priority;   // prioridade do processo
-    int  time_limit; // prazo temporal do processo
-    char state;      // estado bloquado, terminado, ready, etc.
+    int  id;         
+    int  context;    
+    int *counter;    
+    int  pid;        
+    int  priority;   
+    int  time_limit; 
+    char state;      
+    int  PCBposition;
     // add whatever else is needed
 } process;
 

@@ -27,6 +27,12 @@ PCB *pcballoc(size_t nmemb) {
     return pcb;
 }
 
-void pcbfree(PCB *pcb) {
+void pcbfree(PCB *pcb) {    
     free(pcb);
+}
+
+void pcbCellFree(PCB *pcb, process *p)
+{
+    //free memory in PCB[p->PCBposition] and pull all following cells one position back
+    return;
 }
