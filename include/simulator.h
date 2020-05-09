@@ -11,6 +11,7 @@
 #include "memmgr.h"
 #include "pcbmgr.h"
 #include "processor.h"
+#include "plan.h"
 
 /* Strings úteis ao programa */
 const char *PROG_EXTENSION = ".prg";
