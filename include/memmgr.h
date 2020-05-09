@@ -73,9 +73,9 @@ void cleaninstruction(instruction *instruct);
  * Creates a memory structure with nmemb cells. It is stored at heap memory.
  * Use memdestroy() to free all the resources.
  * 
- * nmemb: number of memory cells to allocate.
+ *  nmemb: number of memory cells to allocate.
  * 
- * returns: a pointer to a MEMORY structure with nmemb cells.
+ *  returns: a pointer to a MEMORY structure with nmemb cells.
  */
 MEMORY *memcreate(size_t nmemb);
 
@@ -83,9 +83,9 @@ MEMORY *memcreate(size_t nmemb);
  * ---------------------
  * Frees all allocated recources to the memory structure, including the cells.
  * 
- * memory: pointer to the memory structure to be freed.
+ *  memory: pointer to the memory structure to be freed.
  * 
- * returns: nothing.
+ *  returns: nothing.
  */
 void memdestroy(MEMORY *memory);
 
@@ -95,12 +95,12 @@ void memdestroy(MEMORY *memory);
  * and stores a given list of instructions.
  * It may generate fragmentation.
  * 
- * mem: the memory structure where to store the instructions to.
- * ins: the list of instructions to be stored.
- * size: the length of the list of instructions.
+ *  mem: the memory structure where to store the instructions to.
+ *  ins: the list of instructions to be stored.
+ *  size: the length of the list of instructions.
  * 
- * returns: index of cell containing the first instruction, or -1 if no
- * memory is available.
+ *  returns: index of cell containing the first instruction, or -1 if no
+ *  memory is available.
  */
 int memalloc(MEMORY* mem, instruction* ins, size_t size);
 
@@ -110,11 +110,11 @@ int memalloc(MEMORY* mem, instruction* ins, size_t size);
  * starting at index 'init'.
  * ATTENTION: no resources are actually freed from the heap memory!
  * 
- * mem: the memory structure.
- * init: the index of the initial cell.
- * nmemb: the number of cells to be cleaned.
+ *  mem: the memory structure.
+ *  init: the index of the initial cell.
+ *  nmemb: the number of cells to be cleaned.
  * 
- * returns: nothing.
+ *  returns: nothing.
  */
 void memfree(MEMORY *mem, size_t init, size_t nmemb);
 
@@ -123,10 +123,10 @@ void memfree(MEMORY *mem, size_t init, size_t nmemb);
  * Loads instructions from a file into heap memory.
  * They may be allocated later with memalloc() to a memory structure.
  * 
- * fname: the file name where to read from, including extension.
- * n: pointer to an integer which will store how many instructions were read.
+ *  fname: the file name where to read from, including extension.
+ *  n: pointer to an integer which will store how many instructions were read.
  * 
- * returns: pointer to an array of 'n' instructions.
+ *  returns: pointer to an array of 'n' instructions.
  */
 instruction* program_read_from_file(char *fname, size_t *n);
 
