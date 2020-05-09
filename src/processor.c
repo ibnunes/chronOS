@@ -3,21 +3,41 @@
 // main file for the processor
 
 
-void processorFunction(instruction *instruction, process *p) //find better variable name
-{
-    if (instruction->ins == 'M')
-        changeValue(p, instruction->n);
-    else if (instruction->ins == 'A')
-        addValue(p, instruction->n);
-    else if (instruction->ins == 'S')
-        subtractValue(p, instruction->n);
-    else if (instruction->ins == 'B')
-        blockProcess(p);
-    else if (instruction->ins == 'T')
-        terminateProcess(p);
-    else if (instruction->ins == 'C')
-        process *p = createNewProcess(p, instruction->n);  // TODO: a adicionar ao gestor de processos
-    else if (instruction->ins == 'L')
-        cleanProgram(instruction->name);  // ???
-    return;
+void processorFunction(instruction *i, process *p) {
+    switch (i->ins) {
+        case 'M':
+            changeValue(p, i->n);
+            break;
+        
+        case 'A':
+            addValue(p, i->n);
+            break;
+
+        case 'S':
+            subtractValue(p, i->n);
+            break;
+
+        case 'B':
+            blockProcess(p);
+            break;
+
+        case 'T':
+            terminateProcess(p);
+            break;
+
+        case 'C':
+            // TODO: a adicionar ao gestor de processos
+            // process *p = createNewProcess(p, i->n);
+            break;
+
+        case 'L':
+            // ???
+            cleanProgram(i->name);
+            break;
+
+        default:
+            fprintf(stderr, "ERROR: Unknown instruction \"%c\". ABORTING!\n", i->ins);
+            exit(-1);
+            break;
+    }
 }
