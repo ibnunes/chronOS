@@ -1,3 +1,21 @@
+//------------------------------------------------------------------------------
+//
+// chronOS - A scheduling simulator
+//
+//    Copyright (C) 2020 Igor Cordeiro Bordalo Nunes (www.igornunes.com)
+//    Copyright (C) 2020 Jorge Miguel Louro Pissarra
+//    Copyright (C) 2020 Diogo Castanheira Simões
+//    Copyright (C) 2020 Universidade da Beira Interior (www.ubi.pt)
+//
+// RUNTIME LIBRARIES PACKAGE
+//    memmgr.h
+//
+// DESCRIPTION:
+// -----------
+// Memory management.
+//------------------------------------------------------------------------------
+
+
 #include "memmgr.h"
 #include "debug.h"
 
@@ -19,12 +37,12 @@ void memdestroy(MEMORY *memory) {
     free(memory);
 }
 
-/* Implementing first-fit */
 int memalloc(MEMORY* mem, instruction* ins, size_t size) {
     size_t free = 0;
     size_t init = 0;
     int available = 0;
 
+    /* Implementing first-fit */
     // Encontra o primeiro espaço livre disponível
     for (size_t i = 0; i < mem->capacity; i++) {
         if (mem->cells[i].ins == INSTRUCTION_VOID) {
