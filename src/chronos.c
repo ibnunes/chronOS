@@ -6,10 +6,10 @@
 #define MAX_PCB 100
 
 /* Variáveis globais */
-MEMORY memory;      // Memória
+MEMORY *memory;      // Memória
 PCB *pcb;           // Process Control Block
 cpu_t cputime;      // Tempo atual do processador
-plan_q *plan;        // Plano: lista de processos e tempos de entrada
+plan_q *plan;       // Plano: lista de processos e tempos de entrada
 
 
 int main(int argc, char const *argv[]) {
@@ -17,7 +17,7 @@ int main(int argc, char const *argv[]) {
      *  [OK] -> Alocar memória
      *  [  ] -> Inicializar gestor de processos
      *  [  ] -> Inicializar gestor de memória
-     *  [  ] -> Ler plan.txt
+     *  [OK] -> Ler plan.txt
      *  [  ] -> Ler control.txt ou stdin
      *  [  ] -> Passar controlo ao gestor de processos
      */
@@ -26,7 +26,7 @@ int main(int argc, char const *argv[]) {
 
     // 1. Alocar células de memória 
     debug("Allocating %d cells of memory\n", MAX_MEM);
-    memory.cells = memalloc(MAX_MEM);
+    memory = memalloc(MAX_MEM);
 
     // 2. Inicializar tabela PCB
     debug("Allocating %d lines of PCB table\n", MAX_PCB);
@@ -39,13 +39,17 @@ int main(int argc, char const *argv[]) {
 
 
 
+    /* Ciclo principal do programa */
+    
+
+
     // -3. Libertar queue de plano
     debug("Freeing plan queue\n");
     plan_free(plan);
 
     // -2. Libertar memória
     debug("Freeing memory\n");
-    memfree(memory.cells);
+    memfree(memory);
 
     // -1. Libertar tabela PCB
     debug("Freeing PCB table\n");

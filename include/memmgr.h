@@ -20,7 +20,7 @@ typedef struct {
 } MEMORY;
 
 
-instruction *memalloc(size_t nmemb);
-void memfree(instruction *mem);
+MEMORY *memalloc(size_t nmemb);
+void memfree(MEMORY *mem);
 
 #endif

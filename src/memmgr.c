@@ -1,17 +1,18 @@
 #include "memmgr.h"
 
 
-instruction *memalloc(size_t nmemb) {
-    instruction *mem = malloc(nmemb * sizeof(instruction));
+MEMORY *memalloc(size_t nmemb) {
+    MEMORY *memory = malloc(sizeof(MEMORY));
+    memory->cells = malloc(nmemb * sizeof(instruction));
     for (size_t i = 0; i < nmemb; i++) {
-        mem[i].ins  = '\0';
-        mem[i].n    = 0;
-        // strcpy(mem[i].name, NULL);
+        memory->cells[i].ins = '\0';
+        memory->cells[i].n   = 0;
     }
-    return mem;
+    return memory;
 }
 
 
-void memfree(instruction *mem) {
-    free(mem);
+void memfree(MEMORY *memory) {
+    free(memory->cells);
+    free(memory);
 }
