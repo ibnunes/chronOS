@@ -4,6 +4,7 @@
 
 
 void processorFunction(instruction *i, process *p) {
+    p->counter += 1;
     switch (i->ins) {
         case 'M':
             changeValue(p, i->n);

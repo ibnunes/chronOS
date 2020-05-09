@@ -25,7 +25,7 @@ void terminateProcess(process * p) {
 void createNewProcess(process * p, int n) {
     process *new_p    = malloc(sizeof(process));
     new_p->id         = p->id+1; //find better scheme to number child processes
-    new_p->state      = p->state;
+    new_p->context    = 0;
     new_p->counter    = p->counter;
     new_p->pid        = p->id;
     new_p->priority   = p->priority;
@@ -33,9 +33,9 @@ void createNewProcess(process * p, int n) {
     new_p->state      = 'N';
     //add whatever else is added in the data sctructure
 
-    return new_p;
+    return;
 }
 
-void cleanProgram(char * filename) {
+void cleanProgram(process * p, char * filename) {
     return; // ???
 }
