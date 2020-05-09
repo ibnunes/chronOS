@@ -29,7 +29,7 @@ void addValue(process*, int);
 void subtractValue(process*, int);
 void blockProcess(process*);
 void terminateProcess(process*);
-process *createNewProcess(process*, int);
+void createNewProcess(process*, int);
 void cleanProgram(char*);
 
 #endif

@@ -22,7 +22,7 @@ void terminateProcess(process * p) {
     p->state = 'T';
 }
 
-process *createNewProcess(process * p, int n) {
+void createNewProcess(process * p, int n) {
     process *new_p    = malloc(sizeof(process));
     new_p->id         = p->id+1; //find better scheme to number child processes
     new_p->state      = p->state;

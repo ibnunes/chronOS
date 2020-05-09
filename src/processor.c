@@ -27,7 +27,7 @@ void processorFunction(instruction *i, process *p) {
 
         case 'C':
             // TODO: a adicionar ao gestor de processos
-            // process *p = createNewProcess(p, i->n);
+            createNewProcess(p, i->n);
             break;
 
         case 'L':
