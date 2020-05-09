@@ -26,7 +26,7 @@ int main(int argc, char const *argv[]) {
 
     // 1. Alocar células de memória 
     debug("Allocating %d cells of memory\n", MAX_MEM);
-    memory = memalloc(MAX_MEM);
+    memory = memcreate(MAX_MEM);
 
     // 2. Inicializar tabela PCB
     debug("Allocating %d lines of PCB table\n", MAX_PCB);
@@ -49,7 +49,7 @@ int main(int argc, char const *argv[]) {
 
     // -2. Libertar memória
     debug("Freeing memory\n");
-    memfree(memory);
+    memdestroy(memory);
 
     // -1. Libertar tabela PCB
     debug("Freeing PCB table\n");

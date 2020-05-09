@@ -36,6 +36,8 @@ void processorFunction(instruction *i, process *p) {
             break;
 
         default:
+            fprintf(stderr, "ERROR: Unknown instruction \"%c\". ABORTING!\n", i->ins);
+            exit(-1);
             break;
     }
 }
