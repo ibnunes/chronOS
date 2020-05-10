@@ -22,7 +22,7 @@ void blockProcess(process * p) {
 
 void terminateProcess(process * p) {
     p->state = 'T';
-    
+    memProgFree(*memory, p->counter, pcbCellFree(*pcb, p->id));
     //kill process by deleting it of memory and PCB
 }
 

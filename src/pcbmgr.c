@@ -31,8 +31,25 @@ void pcbfree(PCB *pcb) {
     free(pcb);
 }
 
-void pcbCellFree(PCB *pcb, process *p)
+int getPCBIndex(PCB *pcb, int PID)
+{
+    int counter = 0;
+
+    while(pcb[counter]->p->id != PID)
+    {
+        counter++;
+    }
+    return counter;
+}
+
+int pcbCellFree(PCB *pcb, int PID)
 {
     //free memory in PCB[p->PCBposition] and pull all following cells one position back
-    return;
+    int counter = getPCBIndex(pcb, PID);
+    // nao deve haver razao de verificar se o processo esta ou nao na tabela se o seu id chegou a este ponto.
+    for(int i = counter+1 ; i <= MAX_PCB ; i++)
+    {
+        pcb[i-1]=pcb[i];
+    }
+    return pcb[counter]->start;
 }
