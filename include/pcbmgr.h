@@ -31,7 +31,7 @@
 typedef struct{
     char name;
     int  start;
-    // add whatever else is needed
+    process * p;
 } PCB;
 
 
@@ -54,5 +54,26 @@ PCB *pcballoc(size_t nmemb);
  *  returns: nothing.
  */
 void pcbfree(PCB *pcb);
+
+/* Function: getPCBIndex
+ * ---------------------
+ * Returns the index value of where a process is stored in the PCB table based on it's PID.
+ * 
+ *  pcb: the PCB table.
+ *  
+ *  returns: index to the position of the process in the PCB table
+ */
+int getPCBIndex(PCB *pcb, int PID)
+
+/* Functin: pcbCellFree
+ * --------------------
+ * Frees a single array cell in the PCB table.
+ * 
+ * pdb: the PCB table.
+ * pid: process id to the PCB cell to be removed from the PCB table.
+ * 
+ * returns: int value for the index of the start of the following process in memory.
+ */
+void pcbCellFree(PCB *pcb, int PID);
 
 #endif

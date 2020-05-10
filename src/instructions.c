@@ -16,16 +16,20 @@ void subtractValue(process * p, int n) {
 
 void blockProcess(process * p) {
     p->state = 'B';
+    // find out what to do with a blocked process
+    //maybe send it to the end of memory
 }
 
 void terminateProcess(process * p) {
     p->state = 'T';
+    memProgFree(*memory, p->counter, pcbCellFree(*pcb, p->id));
+    //kill process by deleting it of memory and PCB
 }
 
-process *createNewProcess(process * p, int n) {
+void createNewProcess(process * p, int n) {
     process *new_p    = malloc(sizeof(process));
     new_p->id         = p->id+1; //find better scheme to number child processes
-    new_p->state      = p->state;
+    new_p->context    = 0;
     new_p->counter    = p->counter;
     new_p->pid        = p->id;
     new_p->priority   = p->priority;
@@ -33,9 +37,9 @@ process *createNewProcess(process * p, int n) {
     new_p->state      = 'N';
     //add whatever else is added in the data sctructure
 
-    return new_p;
+    return;
 }
 
-void cleanProgram(char * filename) {
+void cleanProgram(process * p, char * filename) {
     return; // ???
 }

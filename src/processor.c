@@ -22,6 +22,8 @@
 
 
 void processorFunction(instruction *i, process *p) {
+
+    p->state = 'R';
     switch (i->ins) {
         case 'M':
             changeValue(p, i->n);
@@ -45,7 +47,7 @@ void processorFunction(instruction *i, process *p) {
 
         case 'C':
             // TODO: a adicionar ao gestor de processos
-            // process *p = createNewProcess(p, i->n);
+            createNewProcess(p, i->n);
             break;
 
         case 'L':
@@ -58,4 +60,6 @@ void processorFunction(instruction *i, process *p) {
             exit(-1);
             break;
     }
+    p->counter += 1;
+    p->state = 'r';
 }

@@ -73,6 +73,15 @@ void memfree(MEMORY *mem, size_t init, size_t nmemb) {
         cleaninstruction(&mem->cells[i]);
 }
 
+void memProgFree(MEMORY *mem, int start, int end)
+{
+    for(int i = start ; i < end ; i++)
+    {
+        //cycle memory to remove instructions between start and end
+    }
+}
+
+
 /* TODO: testing */
 instruction* program_read_from_file(char *fname, size_t *n) {
     FILE *f = fopen(fname, "r");
