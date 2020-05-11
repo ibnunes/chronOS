@@ -20,19 +20,7 @@
 #define PCBMGR_H
 
 #include <stdlib.h>
-
-/* Struct:  PCB
- * ------------
- * Represents Process Control Block.
- * TODO!
- * 
- * 
- */
-typedef struct{
-    char name;
-    int  start;
-    process * p;
-} PCB;
+#include "types.h"
 
 
 /* Function:  pcballoc
@@ -63,7 +51,7 @@ void pcbfree(PCB *pcb);
  *  
  *  returns: index to the position of the process in the PCB table
  */
-int getPCBIndex(PCB *pcb, int PID)
+int getPCBIndex(PCB *pcb, int PID);
 
 /* Functin: pcbCellFree
  * --------------------
@@ -74,6 +62,6 @@ int getPCBIndex(PCB *pcb, int PID)
  * 
  * returns: int value for the index of the start of the following process in memory.
  */
-void pcbCellFree(PCB *pcb, int PID);
+int pcbCellFree(PCB *pcb, int PID);
 
 #endif

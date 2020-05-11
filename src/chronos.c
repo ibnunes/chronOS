@@ -58,14 +58,11 @@
 #include "tui.h"
 #include "simulator.h"
 
-#define MAX_MEM 1000    // Nº de células de memória
-#define MAX_PCB 100     // Nº de entradas da tabela PCB
-
 /* Variáveis globais */
-MEMORY *memory;         // Memória
-PCB    *pcb;            // Tabela PCB (Process Control Block)
-cpu_t  cputime;         // Tempo atual do processador
-plan_q *plan;           // Plano: lista de processos e tempos de entrada
+// MEMORY *memory;         // Memória
+// PCB    *pcb;            // Tabela PCB (Process Control Block)
+// cpu_t  cputime;         // Tempo atual do processador
+// plan_q *plan;           // Plano: lista de processos e tempos de entrada
 
 
 int main(int argc, char const *argv[]) {

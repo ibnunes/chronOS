@@ -19,11 +19,12 @@
 #ifndef PLAN_H
 #define PLAN_H
 
-#include <stdlib.h>
+// #include <stdlib.h>
+#include "types.h"
 
-#define cpu_t unsigned long long    // Tempo da CPU em milissegundos
+// #define cpu_t unsigned long long    // Tempo da CPU em milissegundos
 
-#define DEFAULT_PLAN_Q_SIZE 8       // Tamanho por defeito de uma queue
+/*#define DEFAULT_PLAN_Q_SIZE 8       // Tamanho por defeito de uma queue
 #define MAX_PROGRAM 50              // Tamanho máximo do nome de um programa
 
 typedef struct {
@@ -36,7 +37,7 @@ typedef struct {
     size_t head;
     size_t capacity;
     size_t last;
-} plan_q;
+} plan_q;*/
 
 /* Allocates heap memory to a new queue with data about the plan. */
 plan_q *plan_new(size_t);

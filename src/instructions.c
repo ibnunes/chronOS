@@ -1,4 +1,5 @@
 #include "processor.h"
+#include "pcbmgr.h"
 
 // file to do the 7 types of intructions
 
@@ -17,13 +18,13 @@ void subtractValue(process * p, int n) {
 void blockProcess(process * p) {
     p->state = 'B';
     // find out what to do with a blocked process
-    //maybe send it to the end of memory
+    // maybe send it to the end of memory
 }
 
 void terminateProcess(process * p) {
     p->state = 'T';
-    memProgFree(*memory, p->counter, pcbCellFree(*pcb, p->id));
-    //kill process by deleting it of memory and PCB
+    memProgFree(memory, *p->counter, pcbCellFree(pcb, p->id));
+    // kill process by deleting it of memory and PCB
 }
 
 void createNewProcess(process * p, int n) {
