@@ -46,13 +46,11 @@ void processorFunction(instruction *i, process *p) {
             break;
 
         case 'C':
-            // TODO: a adicionar ao gestor de processos
             createNewProcess(p, i->n);
             break;
 
         case 'L':
-            // ???
-            cleanProgram(p, i->name);
+            cleanProgram(i->name);
             break;
 
         default:

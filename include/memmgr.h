@@ -86,18 +86,6 @@ int memalloc(MEMORY* mem, instruction* ins, size_t size);
  */
 void memfree(MEMORY *mem, size_t init, size_t nmemb);
 
-/* Function: memProgFree
- * ---------------------
- * Cleans and moves all memory cells from start to end to end of memory.
- * 
- *  mem: the memory structure.
- *  start: value of the index at which to start.
- *  end: value of the index at which to end.
- * 
- *  Returns: void.
- */
-void memProgFree(MEMORY *mem, int start, int end);
-
 /* Function:  program_read_from_file
  * ---------------------------------
  * Loads instructions from a file into heap memory.

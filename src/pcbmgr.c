@@ -40,8 +40,9 @@ int getPCBIndex(PCB *pcb, int PID) {
     return counter;
 }
 
-int pcbCellFree(PCB *pcb, int PID) {
-    //free memory in PCB[p->PCBposition] and pull all following cells one position back
+int getEndCounter(PCB *pcb, int PID)
+{
+    //rewrite whole function to get the following process's start value.
     int counter = getPCBIndex(pcb, PID);
     // nao deve haver razao de verificar se o processo esta ou nao na tabela se o seu id chegou a este ponto.
     for(int i = counter + 1 ; i <= MAX_PCB; i++) {
