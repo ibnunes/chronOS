@@ -22,8 +22,8 @@
 
 
 void processorFunction(instruction *i, process *p) {
-
     p->state = 'R';
+    
     switch (i->ins) {
         case 'M':
             changeValue(p, i->n);
@@ -50,7 +50,7 @@ void processorFunction(instruction *i, process *p) {
             break;
 
         case 'L':
-            cleanProgram(i->name);
+            cleanProgram(p, i->name);
             break;
 
         default:

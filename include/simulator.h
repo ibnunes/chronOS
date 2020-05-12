@@ -31,13 +31,15 @@
 #include "pcbmgr.h"
 #include "processor.h"
 #include "plan.h"
+// #include "data.h"
+// #include "types.h"
 
 /* Strings úteis ao programa */
-const char *PROG_EXTENSION = ".prg";
-const char *FILE_PLAN      = "plan.txt";
-const char *FILE_CONTROL   = "control.txt";
+const char *PROG_EXTENSION = ".prg";        // Extensão de um programa que corre no simulador
+const char *FILE_PLAN      = "plan.txt";    // Ficheiro com o plano de execução
+const char *FILE_CONTROL   = "control.txt"; // Ficheiro com os comandos de controlo
 
-#define DEFAULT_TIME_QUANTUM 500ULL   // 500 milissegundos
+#define DEFAULT_TIME_QUANTUM 500ULL         // 500 milissegundos
 
 
 #endif

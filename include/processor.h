@@ -19,40 +19,10 @@
 #ifndef PROCESSOR_H
 #define PROCESSOR_H
 
+#include "types.h"
+#include "data.h"
 #include "memmgr.h"
 
-/* Struct: process
- * ---------------
- * Represents a process.
- * 
- *  int id: identifies the process with a unique integer value.
- *  int context: represents the mutable value which will be altered by the processor.
- *  int * counter: points towards the current instruction that process is at.
- *  int pid: identifies the parent process.
- *  int priority: defines the priority of execution of the process.
- *  int time_limit: ???how to define this???
- *  char state: represents which state of execution the process is at.
- *  int PCBposition: represents index in which process is stored in PCB.
- */
-typedef struct {
-    int  id;         
-    int  context;    
-    int *counter;    
-    int  pid;        
-    int  priority;   
-    int  time_limit; 
-    char state;      
-    int  PCBposition;
-    // add whatever else is needed
-} process;
-
-/* 5 states:
- * 'N' -> New
- * 'r' -> Ready
- * 'R' -> Running
- * 'B' -> Blocked
- * 'T' -> Terminated
- */
 
 /* Function: processorFunction
  * ---------------------------
@@ -141,6 +111,6 @@ void createNewProcess(process* p, int n);
  * 
  *  returns: void
  */
-void cleanProgram(char* filename);
+void cleanProgram(process * p, char * filename);
 
 #endif
