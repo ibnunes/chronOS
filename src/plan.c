@@ -31,7 +31,7 @@ plan_q *plan_new(size_t nmemb) {
     return p;
 }
 
-void plan_push(plan_q *p, char *str, cpu_t t) {
+void plan_push(plan_q *p, char *str, clock_t t) {
     if (p->last >= p->capacity) {
         p->capacity *= 2;
         p->list = realloc(p->list, p->capacity * sizeof(p->list));
@@ -68,11 +68,11 @@ plan_q *plan_read_from_file(const char *fname) {
     FILE *f = fopen(fname, "r");
     expects(f != NULL);
     char prgm[MAX_PROGRAM];
-    cpu_t time;
+    clock_t time;
     int read;
     while (!feof(f)) {
-        if ((read = fscanf(f, "%s %llu", prgm, &time)) == 2) {
-            debug("Pushing (%s, %llu) to plan queue...\n", prgm, time);
+        if ((read = fscanf(f, "%s %ld", prgm, &time)) == 2) {
+            debug("Pushing (%s, %ld) to plan queue...\n", prgm, time);
             plan_push(plan, prgm, time);
         } else {
             fprintf(stderr, "ERROR: only %d out of 2 items were corretly read (%s).\n", read, fname);

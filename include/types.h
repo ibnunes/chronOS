@@ -20,6 +20,7 @@
 #define TYPES_H
 
 #include <stdlib.h>
+#include <time.h>
 
 /* ======================================== *
  * processor.h                              *
@@ -118,14 +119,14 @@ typedef struct {
  * plan.h                                   *
  * ======================================== */
 
-#define cpu_t unsigned long long    // Tempo da CPU em milissegundos
+// #define cpu_t unsigned long long    // Tempo da CPU em milissegundos
 
 #define DEFAULT_PLAN_Q_SIZE 8       // Tamanho por defeito de uma queue
 #define MAX_PROGRAM 50              // Tamanho máximo do nome de um programa
 
 typedef struct {
-    char program[MAX_PROGRAM];
-    cpu_t time;
+    char    program[MAX_PROGRAM];
+    clock_t time;
 } PLAN;
 
 typedef struct {

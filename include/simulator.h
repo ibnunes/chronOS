@@ -39,7 +39,7 @@ const char *PROG_EXTENSION = ".prg";        // Extensão de um programa que corr
 const char *FILE_PLAN      = "plan.txt";    // Ficheiro com o plano de execução
 const char *FILE_CONTROL   = "control.txt"; // Ficheiro com os comandos de controlo
 
-#define DEFAULT_TIME_QUANTUM 500ULL         // 500 milissegundos
+#define DEFAULT_TIME_QUANTUM 0.500F         // 500 milissegundos
 
 
 #endif
