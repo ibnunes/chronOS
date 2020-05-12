@@ -50,7 +50,7 @@ void processorFunction(instruction *i, process *p) {
             break;
 
         case 'L':
-            cleanProgram(i->name);
+            cleanProgram(p, i->name);
             break;
 
         default:
