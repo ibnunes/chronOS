@@ -47,7 +47,7 @@ void processorFunction(instruction *i, process *p) {
 
         case 'C':
             createNewProcess(p);
-            p->counter += n; // jump n instructions
+            p->counter += i->n; // jump n instructions
             return;
 
         case 'L':

@@ -27,7 +27,7 @@ void terminateProcess(process * p) {
 
 void createNewProcess(process * p) {
     process *new_p    = malloc(sizeof(process));
-    new_p->name       = p->name;
+    strcpy(new_p->name, p->name);
     new_p->start      = -1; //
     new_p->id         = p->id+1; //find better scheme to number child processes
     new_p->context    = 0;

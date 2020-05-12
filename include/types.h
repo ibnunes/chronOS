@@ -26,7 +26,8 @@
  * processor.h                              *
  * ======================================== */
 
-#define MAX_FILENAME_LENGTH 15
+#define MAX_NAME 15             // Nº máximo de caracteres de um programa
+
 /* Struct: process
  * ---------------
  * Represents a process.
@@ -43,7 +44,7 @@
  *  int insNum: number of instructions associated with this process.
  */
 typedef struct {
-    char [MAX_FILENAME_LENGTH] name;
+    char name[MAX_NAME];
     int  start;
     int  id;         
     int  context;    
@@ -76,10 +77,7 @@ typedef struct {
  *  int start: value representing the index of the start of the instructions associated with a process in the memory array.
  *  process *p: pointer to the process.
  */
-typedef struct{
-    
-    process *p;
-} PCB;
+typedef process PCB;        // workaround for the meantime
 
 
 /* ======================================== *
@@ -87,7 +85,6 @@ typedef struct{
  * ======================================== */
 
 #define MAX_MEM 1000            // Nº de células de memória
-#define MAX_NAME 15             // Nº máximo de caracteres de um programa
 #define MAX_INSTRUCTION 30      // Nº máximo de caracteres de uma instrução num ficheiro
 #define INSTRUCTION_VOID '\0'   // Instrução void: indica célula de memória livre
 #define MEMERR_ALLOC_NOAVAIL -1 // Erro: não há memória imediatamente disponível

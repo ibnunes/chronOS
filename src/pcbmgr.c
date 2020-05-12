@@ -22,7 +22,7 @@ PCB *pcballoc(size_t nmemb) {
     PCB *pcb = malloc(nmemb * sizeof(PCB));
     for (size_t i = 0; i < nmemb; i++) {
         pcb[i].start = 0;
-        pcb[i].name = "";
+        // pcb[i].name  = "";
         // add more as necessary...
     }
     return pcb;

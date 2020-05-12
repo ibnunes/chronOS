@@ -103,10 +103,12 @@ int main(int argc, char const *argv[]) {
             clock_end = clock();
             seconds = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
             if (seconds >= DEFAULT_TIME_QUANTUM){
-                cputime += DEFAULT_TIME_QUANTUM;
+                cputime += (clock_t) (1000. * DEFAULT_TIME_QUANTUM);
                 break;
             }
         }
+
+        debug("cputime = %ld ms\n", cputime);
 
         // chamar função de processamento, p.e. fcfs
 
