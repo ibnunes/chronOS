@@ -100,7 +100,7 @@ instruction* program_read_from_file(char *fname, size_t *n) {
 
         } else if ((read = sscanf(line, "%c ", &aux.ins)) == 1) {
 
-        push_instruction:
+push_instruction:
             debug("Pushing (%c, %d, %s) to instruction array...\n", aux.ins, aux.n, aux.name);
             (*n)++;
             instruct = realloc(instruct, (*n) * sizeof(*instruct));

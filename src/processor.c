@@ -22,7 +22,7 @@
 
 
 void processorFunction(instruction *i, process *p) {
-    p->state = 'R';
+    p->state = STATUS_RUNNING;
     
     switch (i->ins) {
         case 'M':
@@ -59,5 +59,5 @@ void processorFunction(instruction *i, process *p) {
             break;
     }
     p->counter += 1;
-    p->state = 'r';
+    p->state = STATUS_READY;
 }

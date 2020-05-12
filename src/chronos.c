@@ -93,7 +93,10 @@ int main(int argc, char const *argv[]) {
 
 
     /* Ciclo principal do programa */
-    
+    while (1) {
+        
+        // chamar função de processamento, p.e. fcfs
+    }
 
 
     // -3. Libertar queue de plano

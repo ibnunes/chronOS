@@ -35,7 +35,7 @@ void createNewProcess(process * p, int n) {
     new_p->pid        = p->id;
     new_p->priority   = p->priority;
     new_p->time_limit = p->time_limit;
-    new_p->state      = 'N';
+    new_p->state      = STATUS_NEW;
     //add whatever else is added in the data sctructure
     // addPCBCell(pcb, new_p);
     return;

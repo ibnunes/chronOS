@@ -50,13 +50,11 @@ typedef struct {
     // add whatever else is needed
 } process;
 
-/* 5 states:
- * 'N' -> New
- * 'r' -> Ready
- * 'R' -> Running
- * 'B' -> Blocked
- * 'T' -> Terminated
- */
+#define STATUS_NEW 0            // Estado do processo: new
+#define STATUS_READY 1          // Estado do processo: ready
+#define STATUS_RUNNING 2        // Estado do processo: running
+#define STATUS_BLOCKED 3        // Estado do processo: blocked
+#define STATUS_TERMINATED 4     // Estado do processo: terminated
 
 
 /* ======================================== *
