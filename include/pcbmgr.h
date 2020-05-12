@@ -63,17 +63,17 @@ void pcbfree(PCB *pcb);
  *  
  *  returns: index to the position of the process in the PCB table
  */
-int getPCBIndex(PCB *pcb, int PID)
+int getPCBIndex(PCB *pcb, int PID);
 
-/* Functin: pcbCellFree
- * --------------------
- * Frees a single array cell in the PCB table.
+/* Function getEndCounter
+ * ----------------------
+ * Returns int value of the index of the last instrucion for the process with the given PID.
  * 
- * pdb: the PCB table.
- * pid: process id to the PCB cell to be removed from the PCB table.
+ *  pcb: the PCB table.
+ *  PID: process ID.
  * 
- * returns: int value for the index of the start of the following process in memory.
+ *  returns: int value of the index of the last instrucion.
  */
-void pcbCellFree(PCB *pcb, int PID);
+int getEndCounter(PCB *pcb, int PID);
 
 #endif
