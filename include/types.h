@@ -26,28 +26,33 @@
  * processor.h                              *
  * ======================================== */
 
+#define MAX_FILENAME_LENGTH 15
 /* Struct: process
  * ---------------
  * Represents a process.
  * 
+ *  char [] name: name of the file containing the program.
+ *  int start: 
  *  int id: identifies the process with a unique integer value.
  *  int context: represents the mutable value which will be altered by the processor.
- *  int * counter: points towards the current instruction that process is at.
+ *  int counter: points towards the current instruction that process is at.
  *  int pid: identifies the parent process.
  *  int priority: defines the priority of execution of the process.
  *  int time_limit: ???how to define this???
  *  char state: represents which state of execution the process is at.
- *  int PCBposition: represents index in which process is stored in PCB.
+ *  int insNum: number of instructions associated with this process.
  */
 typedef struct {
+    char [MAX_FILENAME_LENGTH] name;
+    int  start;
     int  id;         
     int  context;    
-    int *counter;    
+    int  counter;    
     int  pid;        
     int  priority;   
     int  time_limit; 
-    char state;      
-    int  PCBposition;
+    char state;
+    int  insNum;
     // add whatever else is needed
 } process;
 
@@ -63,17 +68,16 @@ typedef struct {
  * ======================================== */
 
 #define MAX_PCB 100             // Nº de entradas da tabela PCB
-
 /* Struct:  PCB
  * ------------
  * Represents Process Control Block.
- * TODO!
  * 
- * 
+ *  char name: name of the file containing the instructions associated with a process.
+ *  int start: value representing the index of the start of the instructions associated with a process in the memory array.
+ *  process *p: pointer to the process.
  */
 typedef struct{
-    char name;
-    int  start;
+    
     process *p;
 } PCB;
 

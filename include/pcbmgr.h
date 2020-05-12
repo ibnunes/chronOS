@@ -53,15 +53,5 @@ void pcbfree(PCB *pcb);
  */
 int getPCBIndex(PCB *pcb, int PID);
 
-/* Function getEndCounter
- * ----------------------
- * Returns int value of the index of the last instrucion for the process with the given PID.
- * 
- *  pcb: the PCB table.
- *  PID: process ID.
- * 
- *  returns: int value of the index of the last instrucion.
- */
-int getEndCounter(PCB *pcb, int PID);
 
 #endif

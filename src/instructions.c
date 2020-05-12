@@ -23,12 +23,12 @@ void blockProcess(process * p) {
 
 void terminateProcess(process * p) {
     p->state = 'T';
-    // memProgFree(memory, p->counter, getEndCounter(pcb, p->id));
-    //kill process by deleting it of memory and PCB
 }
 
-void createNewProcess(process * p, int n) {
+void createNewProcess(process * p) {
     process *new_p    = malloc(sizeof(process));
+    new_p->name       = p->name;
+    new_p->start      = -1; //
     new_p->id         = p->id+1; //find better scheme to number child processes
     new_p->context    = 0;
     new_p->counter    = p->counter;
@@ -36,11 +36,14 @@ void createNewProcess(process * p, int n) {
     new_p->priority   = p->priority;
     new_p->time_limit = p->time_limit;
     new_p->state      = STATUS_NEW;
-    //add whatever else is added in the data sctructure
-    // addPCBCell(pcb, new_p);
-    return;
+    new_p->insNum     = p->insNum - p-> counter;
+
+    //add new_p to the pcb
 }
 
 void cleanProgram(process * p, char * filename) {
+    // Remove remaning instructions from memory
+    // ChangeFileName(pcb, p, filename)
+    // Load new file to memory
     return; 
 }

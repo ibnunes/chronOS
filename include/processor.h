@@ -94,11 +94,10 @@ void terminateProcess(process* p);
  * end of the memory array.
  * 
  *  p: pointer to the process that will be modified.
- *  n: number of lines to skip in the memory.
  * 
  *  returns: void.
  */
-void createNewProcess(process* p, int n);
+void createNewProcess(process* p);
 
 
 /* Function: cleanProgram
