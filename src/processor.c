@@ -22,8 +22,8 @@
 
 
 void processorFunction(instruction *i, process *p) {
-
     p->state = 'R';
+    
     switch (i->ins) {
         case 'M':
             changeValue(p, i->n);

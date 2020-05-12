@@ -22,39 +22,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define MAX_NAME 15             // Nº máximo de caracteres de um programa
-#define MAX_INSTRUCTION 30      // Nº máximo de caracteres de uma instrução num ficheiro
-#define INSTRUCTION_VOID '\0'   // Instrução void: indica célula de memória livre
-#define MEMERR_ALLOC_NOAVAIL -1 // Erro: não há memória imediatamente disponível
-
-/* Struct:  instruction
- * --------------------
- * Represents an instruction, which is a char followed by a number or a string.
- * 
- *  char ins: the instruction.
- *  int n: the variable increment.
- *  char *name: the name of the child process.
- */
-typedef struct {
-    char ins;               // Instrução
-    int  n;                 // Incremento ou decremento da variável
-    char name[MAX_NAME];    // Nome do processo filho
-} instruction;
-
-/* Struct:  MEMORY
- * ---------------
- * It is a memory structure that contains cells with instructions from programs.
- * 
- *  instruction *cells: the cells containing instructions
- *  size_t capacity: capacity of memory
- */
-typedef struct {
-    instruction *cells;     // Células de memória
-    size_t capacity;        // Capacidade total de memória
-    // size_t curr;            // Posição actual para alocar novas instruções (?? a rever com algoritmos de gestão de memória ??)
-    // size_t free;            // Capacidade livre de memória
-} MEMORY;
+#include "types.h"
 
 /*
  * Function:  cleaninstruction

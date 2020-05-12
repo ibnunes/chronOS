@@ -20,19 +20,7 @@
 #define PCBMGR_H
 
 #include <stdlib.h>
-
-/* Struct:  PCB
- * ------------
- * Represents Process Control Block.
- * TODO!
- * 
- * 
- */
-typedef struct{
-    char name;
-    int  start;
-    process * p;
-} PCB;
+#include "types.h"
 
 
 /* Function:  pcballoc
