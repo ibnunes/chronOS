@@ -43,11 +43,12 @@ void processorFunction(instruction *i, process *p) {
 
         case 'T':
             terminateProcess(p);
-            break;
+            return;
 
         case 'C':
-            createNewProcess(p, i->n);
-            break;
+            createNewProcess(p);
+            p->counter += n; // jump n instructions
+            return;
 
         case 'L':
             cleanProgram(p, i->name);
