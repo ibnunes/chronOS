@@ -43,20 +43,21 @@ void pcbreport(PCB *pcb) {
     printf("Current time: %ld\n\n", cputime);
 
     process *p;
-    printf("+-----+------+----------+------------+---------+-----------+----------+\n");
-    printf("| PID | PPID | Priority |   Status   | Context | Init time | CPU time |\n");
-    printf("+-----+------+----------+------------+---------+-----------+----------+\n");
+    printf("+------------------------------------+---------+--------------------+\n");
+    printf("|              PROCESS               |         |        TIME        |\n");
+    printf("| PID | PPID | Priority |   Status   | Context | Init | Used | End  |\n");
+    printf("+-----+------+----------+------------+---------+------+------+------+\n");
     for (size_t i = 0; i < pcb->size; i++) {
         p = &(pcb->proc[i]);
         if (p->pid != -1) {
             printf(
-                "| %3d | %4d | %8d | %10s | %7d | %9ld | %8ld |\n",
+                "| %3d | %4d | %8d | %10s | %7d | %4ld | %4ld | %4ld |\n",
                 p->pid, p->ppid, p->priority, state2str(p->state),
-                p->context, p->timeinit, p->timeused
+                p->context, p->timeinit, p->timeused, p->timeend
             );
         }
     }
-    printf("+-----+------+----------+------------+---------+-----------+----------+\n");
+    printf("+-----+------+----------+------------+---------+------+------+------+\n\n");
 
     printf("===== End of report =====\n\n");
 }

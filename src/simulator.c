@@ -36,6 +36,3 @@ int create_new_process(PCB *pcb, char *fname) {
     debug("%ld instructions from %s allocated to address %d with PID %d.\n", n, fname, address, pid);
     return 1;
 }
-
-
-

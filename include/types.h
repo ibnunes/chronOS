@@ -44,6 +44,7 @@
  *  int instsize: number of instructions associated with this process.
  *  clock_t timeinit: time at which it started.
  *  clock_t timeused: time used at CPU while processing.
+ *  clock_t timeend: time at which the process terminated.
  */
 typedef struct {
     char    name[MAX_NAME];
@@ -58,6 +59,7 @@ typedef struct {
     size_t  instsize;
     clock_t timeinit;
     clock_t timeused;
+    clock_t timeend;
     // add whatever else is needed
 } process;
 
