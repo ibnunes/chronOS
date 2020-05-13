@@ -23,11 +23,13 @@ void blockProcess(process * p) {
 
 void terminateProcess(process * p) {
     p->state = STATUS_TERMINATED;
+    // TODO: usar método de switch de estados
 }
 
 void createNewProcess(process * p) {
     process *new_p    = malloc(sizeof(process));
-    strcpy(new_p->name, p->name);
+    
+    /* strcpy(new_p->name, p->name);
     new_p->start      = -1; //
     new_p->pid        = p->pid+1; //find better scheme to number child processes
     new_p->context    = 0;
@@ -36,7 +38,9 @@ void createNewProcess(process * p) {
     new_p->priority   = p->priority;
     new_p->timelimit  = p->timelimit;
     new_p->state      = STATUS_NEW;
-    new_p->instsize   = p->instsize - p->counter;
+    new_p->instsize   = p->instsize - p->counter; */
+
+    // TODO: usar métodos memalloc, memfree e processalloc
 
     //add new_p to the pcb
 }

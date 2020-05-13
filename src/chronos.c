@@ -55,6 +55,7 @@
 
 
 #include "simulator.h"
+#include "tui.h"
 #include <time.h>
 
 /* Strings úteis ao programa */
@@ -128,6 +129,7 @@ int main(int argc, char const *argv[]) {
             __running = 0;
     }
 
+    pcbreport(pcb);
 
     // -3. Libertar queue de plano
     debug("Freeing plan queue\n");
