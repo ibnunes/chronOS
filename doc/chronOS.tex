@@ -5,7 +5,7 @@
 \usepackage[T1]{fontenc}
 %\usepackage{siunitx}
 \usepackage{graphicx}
-\usepackage{minted}
+%\usepackage{minted}
 %\usepackage{amsmath}
 %\usepackage{systeme}
 \usepackage{hyperref}
@@ -39,7 +39,7 @@
 		(TODO)
 	\end{abstract}
 	
-	%\tableofcontents
+	\tableofcontents
 	%\listoffigures
 	%\newpage
 	
@@ -59,6 +59,26 @@
 
 	\section{Resumo do estado atual do projeto}
 	
-	(TODO)
+	À data de escrita do presente relatório, o programa \chronOS~é capaz de fazer as seguintes tarefas:
+	
+	\begin{enumerate}
+		\item Alocar células de memória;
+		\item Alocar a tabela PCB;
+		\item Ler o ficheiro \texttt{plan.txt} e guardar em memória o plano de execução numa \textit{queue};
+		\item Temporizar o sistema de 500 em 500 milissegundos;
+		\item Extrair de um ficheiro \texttt{*.prg} as suas instruções;
+		\item Alocar em memória as instruções referentes a um programa recorrendo ao \textbf{algoritmo \textit{first-fit}};
+		\item Ler um programa para memória ao tempo exato indicado pelo plano de execução;
+		
+		% TODO Mais tarefas são necessárias
+		
+		\item Libertar os recursos associados à memória;
+		\item Libertar os recursos associados à tabela PCB;
+		\item Libertar os recursos associados à \textit{queue} do plano de execução.
+	\end{enumerate}
+	
+	Todas as tarefas foram testadas em modo \textit{debug} recorrendo a \textit{sanitizer flags} que nos permitem verificar que não existe nenhum \textit{memory leak} no final da execução do programa.
+	
+	
 	
 \end{document}
