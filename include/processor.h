@@ -113,10 +113,10 @@ void createNewProcess(process* p);
 void cleanProgram(process * p, char * filename);
 
 
-/* Function: switchState
- * ---------------------
- * Verifies if its possible to switch the change from the oldstate to
- * the newstate.
+/* Function:  switchState
+ * ----------------------
+ * Verifies if its possible to switch the change from the old state to
+ * the new state.
  *
  *  oldstate: integer with the old respective STATUS
  *
