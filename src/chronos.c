@@ -70,7 +70,7 @@ int main(int argc, char const *argv[]) {
     /* TODO:
      *  [OK] -> Alocar memória
      *  [  ] -> Inicializar gestor de processos
-     *  [  ] -> Inicializar gestor de memória
+     *  [OK] -> Inicializar gestor de memória
      *  [OK] -> Ler plan.txt
      *  [  ] -> Ler control.txt ou stdin
      *  [  ] -> Passar controlo ao gestor de processos
@@ -116,7 +116,7 @@ int main(int argc, char const *argv[]) {
         while (1) {
             clock_end = clock();
             seconds = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
-            if (seconds >= DEFAULT_TIME_QUANTUM){
+            if (seconds >= DEFAULT_TIME_QUANTUM) {
                 cputime++;
                 break;
             }
@@ -142,5 +142,3 @@ int main(int argc, char const *argv[]) {
 
     return 0;
 }
-
-

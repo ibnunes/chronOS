@@ -57,11 +57,12 @@ typedef struct {
     // add whatever else is needed
 } process;
 
-#define STATUS_NEW 0            // Estado do processo: new
-#define STATUS_READY 1          // Estado do processo: ready
-#define STATUS_RUNNING 2        // Estado do processo: running
-#define STATUS_BLOCKED 3        // Estado do processo: blocked
-#define STATUS_TERMINATED 4     // Estado do processo: terminated
+#define STATUS_NULL 0           // Processo não existe: null
+#define STATUS_NEW 1            // Estado do processo: new
+#define STATUS_READY 2          // Estado do processo: ready
+#define STATUS_RUNNING 3        // Estado do processo: running
+#define STATUS_BLOCKED 4        // Estado do processo: blocked
+#define STATUS_TERMINATED 5     // Estado do processo: terminated
 
 
 /* ======================================== *
@@ -78,6 +79,8 @@ typedef struct {
  *  process *p: pointer to the process.
  */
 typedef process PCB;        // workaround for the meantime
+
+#define MAX_TIMELIMIT 100   // (temporário) burst time de um processo
 
 
 /* ======================================== *
