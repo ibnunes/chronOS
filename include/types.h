@@ -42,18 +42,22 @@
  *  int timelimit: burst time of the process
  *  int state: represents which state of execution the process is at.
  *  int instsize: number of instructions associated with this process.
+ *  clock_t timeinit: time at which it started.
+ *  clock_t timeused: time used at CPU while processing.
  */
 typedef struct {
-    char   name[MAX_NAME];
-    size_t start;
-    int    pid;         
-    int    context;    
-    int    counter;    
-    int    ppid;        
-    int    priority;   
-    int    timelimit; 
-    int    state;
-    size_t instsize;
+    char    name[MAX_NAME];
+    size_t  start;
+    int     pid;         
+    int     context;    
+    int     counter;    
+    int     ppid;        
+    int     priority;   
+    clock_t timelimit; 
+    int     state;
+    size_t  instsize;
+    clock_t timeinit;
+    clock_t timeused;
     // add whatever else is needed
 } process;
 
