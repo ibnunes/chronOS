@@ -32,7 +32,7 @@
  * ---------------
  * Represents a process.
  * 
- *  char [] name: name of the file containing the program.
+ *  char *name: name of the file containing the program.
  *  int start: 
  *  int id: identifies the process with a unique integer value.
  *  int context: represents the mutable value which will be altered by the processor.
@@ -52,7 +52,7 @@ typedef struct {
     int  pid;        
     int  priority;   
     int  time_limit; 
-    char state;
+    int  state;
     int  insNum;
     // add whatever else is needed
 } process;
@@ -70,15 +70,20 @@ typedef struct {
  * ======================================== */
 
 #define MAX_PCB 100             // Nº de entradas da tabela PCB
+
 /* Struct:  PCB
  * ------------
  * Represents Process Control Block.
  * 
- *  char name: name of the file containing the instructions associated with a process.
- *  int start: value representing the index of the start of the instructions associated with a process in the memory array.
- *  process *p: pointer to the process.
+ *  proc: list of processes
+ *  size: size of the list
+ *  top: the top index from which we can add new processes
  */
-typedef process PCB;        // workaround for the meantime
+typedef struct {
+    process *proc;
+    size_t  size;
+    int     top;
+} PCB;        // workaround for the meantime
 
 #define MAX_TIMELIMIT 100   // (temporário) burst time de um processo
 

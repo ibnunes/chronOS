@@ -43,17 +43,16 @@ PCB *pcballoc(size_t nmemb);
  */
 void pcbfree(PCB *pcb);
 
-/* Function: getPCBIndex
- * ---------------------
+/* Function:  getPCBIndex
+ * ----------------------
  * Returns the index value of where a process is stored in the PCB table based on it's PID.
  * 
  *  PID: the PID to search for.
  *  pcb: the PCB table.
- *  size: number of members of the PCB table.
  *  
  *  returns: index to the position of the process in the PCB table, or -1 if non-existent
  */
-long pcb_index_of_pid(int PID, PCB *pcb, size_t size);
+long pcb_index_of_pid(int PID, PCB *pcb);
 
 
 #endif

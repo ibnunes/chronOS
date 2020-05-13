@@ -54,16 +54,13 @@
 //------------------------------------------------------------------------------
 
 
-#include "debug.h"
-#include "tui.h"
 #include "simulator.h"
 #include <time.h>
 
-/* Variáveis globais */
-// MEMORY  *memory;         // Memória
-// PCB     *pcb;            // Tabela PCB (Process Control Block)
-// clock_t cputime;         // Tempo atual do processador
-// plan_q  *plan;           // Plano: lista de processos e tempos de entrada
+/* Strings úteis ao programa */
+const char *PROG_EXTENSION = ".prg";        // Extensão de um programa que corre no simulador
+const char *FILE_PLAN      = "plan.txt";    // Ficheiro com o plano de execução
+const char *FILE_CONTROL   = "control.txt"; // Ficheiro com os comandos de controlo
 
 
 int main(int argc, char const *argv[]) {
@@ -100,12 +97,16 @@ int main(int argc, char const *argv[]) {
     while (__running) {
         if (plan_peek(plan).time <= cputime) {
             debug("cputime = %ld; plan_peek.time = %ld\n", cputime, plan_peek(plan).time);
+            create_new_process(pcb, plan_pop(plan).program);
+
+            /*
             size_t n;
             PLAN p = plan_pop(plan);
             instruction *i = program_read_from_file(p.program, &n);
             int address = memalloc(memory, i, n);
             free(i);
             debug("%ld instructions from %s allocated to address %d.\n", n, p.program, address);
+            */
         }
 
 

@@ -19,30 +19,35 @@
 #include "pcbmgr.h"
 
 PCB *pcballoc(size_t nmemb) {
-    PCB *pcb = malloc(nmemb * sizeof(PCB));
-    for (size_t i = 0; i < nmemb; i++) {
-        // pcb[i].name = "";
-        pcb[i].start = 0;
-        pcb[i].id = 0;
-        pcb[i].context = 0;
-        pcb[i].counter = 0;
-        pcb[i].pid = 0;
-        pcb[i].priority = 0;
-        pcb[i].time_limit = MAX_TIMELIMIT;
-        pcb[i].state = STATUS_NULL;
-        pcb[i].insNum = 0;
+    PCB *pcb  = malloc(sizeof(PCB));
+    pcb->proc = malloc(nmemb * sizeof(process));
+    pcb->size = nmemb;
+    pcb->top  = 0;
+
+    for (size_t i = 0; i < pcb->size; i++) {
+        // pcb->proc[i].name = "";
+        pcb->proc[i].start      = 0;
+        pcb->proc[i].id         = 0;
+        pcb->proc[i].context    = 0;
+        pcb->proc[i].counter    = 0;
+        pcb->proc[i].pid        = 0;
+        pcb->proc[i].priority   = 0;
+        pcb->proc[i].time_limit = MAX_TIMELIMIT;
+        pcb->proc[i].state      = STATUS_NULL;
+        pcb->proc[i].insNum     = 0;
         // add more as necessary...
     }
     return pcb;
 }
 
-void pcbfree(PCB *pcb) {    
+void pcbfree(PCB *pcb) {
+    free(pcb->proc);
     free(pcb);
 }
 
-long pcb_index_of_pid(int PID, PCB *pcb, size_t size) {
-    for (size_t i = 0; i < size; i++)
-        if (pcb[i].id == PID)
+long pcb_index_of_pid(int PID, PCB *pcb) {
+    for (size_t i = 0; i < pcb->size; i++)
+        if (pcb->proc[i].id == PID)
             return i;
     return (-1);
 }
