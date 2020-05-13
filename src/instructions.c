@@ -16,27 +16,27 @@ void subtractValue(process * p, int n) {
 }
 
 void blockProcess(process * p) {
-    p->state = 'B';
+    p->state = STATUS_BLOCKED;
     // find out what to do with a blocked process
     // maybe send it to the end of memory
 }
 
 void terminateProcess(process * p) {
-    p->state = 'T';
+    p->state = STATUS_TERMINATED;
 }
 
 void createNewProcess(process * p) {
     process *new_p    = malloc(sizeof(process));
     strcpy(new_p->name, p->name);
     new_p->start      = -1; //
-    new_p->id         = p->id+1; //find better scheme to number child processes
+    new_p->pid        = p->pid+1; //find better scheme to number child processes
     new_p->context    = 0;
     new_p->counter    = p->counter;
-    new_p->pid        = p->id;
+    new_p->ppid       = p->pid;
     new_p->priority   = p->priority;
-    new_p->time_limit = p->time_limit;
+    new_p->timelimit  = p->timelimit;
     new_p->state      = STATUS_NEW;
-    new_p->insNum     = p->insNum - p-> counter;
+    new_p->instsize   = p->instsize - p->counter;
 
     //add new_p to the pcb
 }

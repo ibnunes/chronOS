@@ -36,6 +36,7 @@
 // #include "types.h"
 
 #define DEFAULT_TIME_QUANTUM 0.500F         // 500 milissegundos
+#define PID_MANAGER 0                       // PID do processo gestor
 
 /* Function:  create_new_process
  * -----------------------------

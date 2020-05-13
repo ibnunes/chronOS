@@ -20,11 +20,18 @@
 
 int create_new_process(PCB *pcb, char *fname) {
     size_t n;
+    
+    // Ler instruções do ficheiro
     instruction *i = program_read_from_file(fname, &n);
+
+    // Alocar as instruções em memória e obter o endereço (índice) em memória
     int address = memalloc(memory, i, n);
     if (address == MEMERR_ALLOC_NOAVAIL)
-        return MEMERR_ALLOC_NOAVAIL;
-    free(i);
-    debug("%ld instructions from %s allocated to address %d.\n", n, fname, address);
+        return MEMERR_ALLOC_NOAVAIL;        // Erro: não há memória disponível
+    
+    int pid = processalloc(pcb, PID_MANAGER, fname, address, n); 
+
+    free(i);        // Libertar os recursos previamente alocados
+    debug("%ld instructions from %s allocated to address %d with PID %d.\n", n, fname, address, pid);
     return 1;
 }
