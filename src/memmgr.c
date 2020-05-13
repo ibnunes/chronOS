@@ -59,8 +59,11 @@ int memalloc(MEMORY* mem, instruction* ins, size_t size) {
 
     // Se existir, preenche as células com as instruções
     if (available)
-        for (size_t i = init, j = 0; j < size; i++, j++)
-            mem->cells[i] = ins[j];
+        for (size_t i = init, j = 0; j < size; i++, j++) {
+            mem->cells[i].ins = ins[j].ins;
+            mem->cells[i].n   = ins[j].ins;
+            strcpy(mem->cells[i].name, ins[j].name);
+        }
     else
         return MEMERR_ALLOC_NOAVAIL;  // Não existe, devolve erro
 
@@ -83,7 +86,7 @@ instruction* program_read_from_file(char *fname, size_t *n) {
     instruction *instruct = malloc(sizeof(*instruct));
     instruction aux;
     int read;
-    char *line;
+    char *line = malloc(MAX_INSTRUCTION * sizeof(char));
 
     while (!feof(f)) {
         aux.ins  = INSTRUCTION_VOID;
@@ -93,15 +96,17 @@ instruction* program_read_from_file(char *fname, size_t *n) {
         line = fgets(line, MAX_INSTRUCTION, f);
         expects(line != NULL);
         if ((read = sscanf(line, "%c %d", &aux.ins, &aux.n)) == 2) {
+            debug("Pushing (%c, %d, NULL) to instruction array...\n", aux.ins, aux.n);
             goto push_instruction;
 
         } else if ((read = sscanf(line, "%c %s", &aux.ins, aux.name)) == 2) {
+            debug("Pushing (%c, ---, %s) to instruction array...\n", aux.ins, aux.name);
             goto push_instruction;
 
         } else if ((read = sscanf(line, "%c ", &aux.ins)) == 1) {
+            debug("Pushing (%c, ---, NULL) to instruction array...\n", aux.ins);
 
 push_instruction:
-            debug("Pushing (%c, %d, %s) to instruction array...\n", aux.ins, aux.n, aux.name);
             (*n)++;
             instruct = realloc(instruct, (*n) * sizeof(*instruct));
             instruct[*n-1] = aux;
@@ -112,6 +117,7 @@ push_instruction:
         }
     }
 
+    free(line);
     fclose(f);
     return instruct;
 }

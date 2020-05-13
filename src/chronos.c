@@ -98,23 +98,33 @@ int main(int argc, char const *argv[]) {
 
     /* Ciclo principal do programa */
     while (__running) {
+        if (plan_peek(plan).time <= cputime) {
+            debug("cputime = %ld; plan_peek.time = %ld\n", cputime, plan_peek(plan).time);
+            size_t n;
+            PLAN p = plan_pop(plan);
+            instruction *i = program_read_from_file(p.program, &n);
+            int address = memalloc(memory, i, n);
+            free(i);
+            debug("%ld instructions from %s allocated to address %d.\n", n, p.program, address);
+        }
+
+
+        // chamar função de processamento, p.e. fcfs
+
+
         clock_start = clock();
         while (1) {
             clock_end = clock();
             seconds = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
             if (seconds >= DEFAULT_TIME_QUANTUM){
-                cputime += (clock_t) (1000. * DEFAULT_TIME_QUANTUM);
+                cputime++;
                 break;
             }
         }
 
-        debug("cputime = %ld ms\n", cputime);
-
-        // chamar função de processamento, p.e. fcfs
-
-        // verificar se o simulador deve terminar
-
-        __running = 0;
+        // TODO: verificar se o simulador deve terminar
+        if (plan_empty(plan))  // faltam condições
+            __running = 0;
     }
 
 
