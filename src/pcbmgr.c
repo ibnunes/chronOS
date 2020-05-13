@@ -17,26 +17,69 @@
 
 
 #include "pcbmgr.h"
+#include <string.h>
 
 PCB *pcballoc(size_t nmemb) {
-    PCB *pcb = malloc(nmemb * sizeof(PCB));
-    for (size_t i = 0; i < nmemb; i++) {
-        pcb[i].start = 0;
-        // pcb[i].name  = "";
-        // add more as necessary...
+    PCB *pcb  = malloc(sizeof(PCB));
+    pcb->proc = malloc(nmemb * sizeof(process));
+    pcb->size = nmemb;
+    pcb->top  = 0;
+
+    for (size_t i = 0; i < pcb->size; i++) {
+        pcb->proc[i].start     = 0;
+        pcb->proc[i].pid       = -1;
+        pcb->proc[i].context   = 0;
+        pcb->proc[i].counter   = 0;
+        pcb->proc[i].ppid      = -1;
+        pcb->proc[i].priority  = PRIORITY_NULL;
+        pcb->proc[i].timelimit = MAX_TIMELIMIT;
+        pcb->proc[i].state     = STATUS_NULL;
+        pcb->proc[i].instsize  = 0;
     }
     return pcb;
 }
 
-void pcbfree(PCB *pcb) {    
+int maxpid(PCB *pcb) {
+    int max = 0;
+    for (size_t i = 0; i < pcb->size; i++)
+        if (pcb->proc[i].pid > max)
+            max = pcb->proc[i].pid;
+    return max;
+}
+
+int processalloc(PCB *pcb, int ppid, char* name, size_t memlocal, size_t instsize) {
+    if (pcb->top >= pcb->size)
+        return MEMPCB_ALLOC_NOAVAIL;        // Não há espaço!
+
+    int i  = pcb->top;                      // shortcut to PCB top index
+    int ip = pcb_index_of_pid(ppid, pcb);   // shortcut to parent process index
+    process *p = &(pcb->proc[i]);           // shortcut to current new process
+    process *parent = (ip == -1) ? NULL : &(pcb->proc[ip]); // shortcut to parent process
+
+    strcpy(p->name, name);
+    p->start     = memlocal;
+    p->ppid      = ppid;
+    p->pid       = maxpid(pcb) + 1;
+    p->context   = (parent != NULL) ? parent->context : 0;
+    p->counter   = memlocal;
+    p->priority  = (parent != NULL) ? parent->priority : PRIORITY_MIN;
+    p->timelimit = (parent != NULL) ? parent->timelimit : MAX_TIMELIMIT;
+    p->state     = STATUS_NEW;
+    p->instsize  = instsize;
+
+    pcb->top++;
+
+    return i;   // retorna o índice onde foi colocado na tabela PCB
+}
+
+void pcbfree(PCB *pcb) {
+    free(pcb->proc);
     free(pcb);
 }
 
-/*int getPCBIndex(PCB *pcb, int PID) { //decidir depois se ainda e precisa esta funçao mas por agora fica comentada
-    int counter = 0;
-
-    while(pcb[counter].p->id != PID) {
-        counter++;
-    }
-    return counter;
-}*/
+long pcb_index_of_pid(int PID, PCB *pcb) {
+    for (size_t i = 0; i < pcb->size; i++)
+        if (pcb->proc[i].pid == PID)
+            return i;
+    return (-1);
+}

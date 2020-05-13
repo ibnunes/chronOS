@@ -32,52 +32,64 @@
  * ---------------
  * Represents a process.
  * 
- *  char [] name: name of the file containing the program.
- *  int start: 
- *  int id: identifies the process with a unique integer value.
+ *  char *name: name of the file containing the program.
+ *  int start: index of the first instruction
+ *  int pid: identifies the process with a unique integer value.
  *  int context: represents the mutable value which will be altered by the processor.
  *  int counter: points towards the current instruction that process is at.
- *  int pid: identifies the parent process.
+ *  int ppid: identifies the parent process.
  *  int priority: defines the priority of execution of the process.
- *  int time_limit: ???how to define this???
- *  char state: represents which state of execution the process is at.
- *  int insNum: number of instructions associated with this process.
+ *  int timelimit: burst time of the process
+ *  int state: represents which state of execution the process is at.
+ *  int instsize: number of instructions associated with this process.
  */
 typedef struct {
-    char name[MAX_NAME];
-    int  start;
-    int  id;         
-    int  context;    
-    int  counter;    
-    int  pid;        
-    int  priority;   
-    int  time_limit; 
-    char state;
-    int  insNum;
+    char   name[MAX_NAME];
+    size_t start;
+    int    pid;         
+    int    context;    
+    int    counter;    
+    int    ppid;        
+    int    priority;   
+    int    timelimit; 
+    int    state;
+    size_t instsize;
     // add whatever else is needed
 } process;
 
-#define STATUS_NEW 0            // Estado do processo: new
-#define STATUS_READY 1          // Estado do processo: ready
-#define STATUS_RUNNING 2        // Estado do processo: running
-#define STATUS_BLOCKED 3        // Estado do processo: blocked
-#define STATUS_TERMINATED 4     // Estado do processo: terminated
+#define STATUS_NULL 0           // Processo não existe: null
+#define STATUS_NEW 1            // Estado do processo: new
+#define STATUS_READY 2          // Estado do processo: ready
+#define STATUS_RUNNING 3        // Estado do processo: running
+#define STATUS_BLOCKED 4        // Estado do processo: blocked
+#define STATUS_TERMINATED 5     // Estado do processo: terminated
 
+#define PRIORITY_NULL 0;        // Prioridade: nula
+#define PRIORITY_MIN 1;         // Prioridade: mínima
+#define PRIORITY_MAX 5;         // Prioridade: máxima
 
 /* ======================================== *
  * pcbmgr.h                                 *
  * ======================================== */
 
 #define MAX_PCB 100             // Nº de entradas da tabela PCB
+#define MEMPCB_ALLOC_NOAVAIL -2 // Erro: não há espaço na tabela PCB
+
 /* Struct:  PCB
  * ------------
  * Represents Process Control Block.
  * 
- *  char name: name of the file containing the instructions associated with a process.
- *  int start: value representing the index of the start of the instructions associated with a process in the memory array.
- *  process *p: pointer to the process.
+ *  proc: list of processes
+ *  size: size of the list
+ *  top: the top index from which we can add new processes
  */
-typedef process PCB;        // workaround for the meantime
+typedef struct {
+    process *proc;
+    size_t  size;
+    size_t  top;
+} PCB;        // workaround for the meantime
+
+#define MAX_TIMELIMIT 100   // (temporário) burst time de um processo
 
 
 /* ======================================== *
