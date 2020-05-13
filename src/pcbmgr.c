@@ -22,6 +22,7 @@ PCB *pcballoc(size_t nmemb) {
     PCB *pcb = malloc(nmemb * sizeof(PCB));
     for (size_t i = 0; i < nmemb; i++) {
         pcb[i].start = 0;
+        // pcb[i].name  = "";
         // add more as necessary...
     }
     return pcb;
@@ -31,22 +32,11 @@ void pcbfree(PCB *pcb) {
     free(pcb);
 }
 
-int getPCBIndex(PCB *pcb, int PID) {
+/*int getPCBIndex(PCB *pcb, int PID) { //decidir depois se ainda e precisa esta funçao mas por agora fica comentada
     int counter = 0;
 
     while(pcb[counter].p->id != PID) {
         counter++;
     }
     return counter;
-}
-
-int getEndCounter(PCB *pcb, int PID)
-{
-    //rewrite whole function to get the following process's start value.
-    int counter = getPCBIndex(pcb, PID);
-    // nao deve haver razao de verificar se o processo esta ou nao na tabela se o seu id chegou a este ponto.
-    for(int i = counter + 1 ; i <= MAX_PCB; i++) {
-        pcb[i-1] = pcb[i];
-    }
-    return pcb[counter].start;
-}
+}*/

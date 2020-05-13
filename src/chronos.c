@@ -57,12 +57,13 @@
 #include "debug.h"
 #include "tui.h"
 #include "simulator.h"
+#include <time.h>
 
 /* Variáveis globais */
-// MEMORY *memory;         // Memória
-// PCB    *pcb;            // Tabela PCB (Process Control Block)
-// cpu_t  cputime;         // Tempo atual do processador
-// plan_q *plan;           // Plano: lista de processos e tempos de entrada
+// MEMORY  *memory;         // Memória
+// PCB     *pcb;            // Tabela PCB (Process Control Block)
+// clock_t cputime;         // Tempo atual do processador
+// plan_q  *plan;           // Plano: lista de processos e tempos de entrada
 
 
 int main(int argc, char const *argv[]) {
@@ -75,6 +76,7 @@ int main(int argc, char const *argv[]) {
      *  [  ] -> Passar controlo ao gestor de processos
      */
 
+    int __running = 1;
     cputime = 0;
 
     // 1. Alocar células de memória 
@@ -91,9 +93,29 @@ int main(int argc, char const *argv[]) {
     debug("Got %d elements in queue.\n", plan_length(plan));
 
 
+    clock_t clock_start, clock_end;
+    float seconds;
 
     /* Ciclo principal do programa */
-    
+    while (__running) {
+        clock_start = clock();
+        while (1) {
+            clock_end = clock();
+            seconds = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
+            if (seconds >= DEFAULT_TIME_QUANTUM){
+                cputime += (clock_t) (1000. * DEFAULT_TIME_QUANTUM);
+                break;
+            }
+        }
+
+        debug("cputime = %ld ms\n", cputime);
+
+        // chamar função de processamento, p.e. fcfs
+
+        // verificar se o simulador deve terminar
+
+        __running = 0;
+    }
 
 
     // -3. Libertar queue de plano

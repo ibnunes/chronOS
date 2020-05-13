@@ -43,7 +43,7 @@ typedef struct {
 plan_q *plan_new(size_t);
 
 /* Inserts a new plan element to the queue. */
-void plan_push(plan_q*, char*, cpu_t);
+void plan_push(plan_q*, char*, clock_t);
 
 /* Peeks the head of the queue without popping it. */
 PLAN plan_peek(plan_q*);

@@ -20,43 +20,48 @@
 #define TYPES_H
 
 #include <stdlib.h>
+#include <time.h>
 
 /* ======================================== *
  * processor.h                              *
  * ======================================== */
 
+#define MAX_NAME 15             // Nº máximo de caracteres de um programa
+
 /* Struct: process
  * ---------------
  * Represents a process.
  * 
+ *  char [] name: name of the file containing the program.
+ *  int start: 
  *  int id: identifies the process with a unique integer value.
  *  int context: represents the mutable value which will be altered by the processor.
- *  int * counter: points towards the current instruction that process is at.
+ *  int counter: points towards the current instruction that process is at.
  *  int pid: identifies the parent process.
  *  int priority: defines the priority of execution of the process.
  *  int time_limit: ???how to define this???
  *  char state: represents which state of execution the process is at.
- *  int PCBposition: represents index in which process is stored in PCB.
+ *  int insNum: number of instructions associated with this process.
  */
 typedef struct {
+    char name[MAX_NAME];
+    int  start;
     int  id;         
     int  context;    
-    int *counter;    
+    int  counter;    
     int  pid;        
     int  priority;   
     int  time_limit; 
-    char state;      
-    int  PCBposition;
+    char state;
+    int  insNum;
     // add whatever else is needed
 } process;
 
-/* 5 states:
- * 'N' -> New
- * 'r' -> Ready
- * 'R' -> Running
- * 'B' -> Blocked
- * 'T' -> Terminated
- */
+#define STATUS_NEW 0            // Estado do processo: new
+#define STATUS_READY 1          // Estado do processo: ready
+#define STATUS_RUNNING 2        // Estado do processo: running
+#define STATUS_BLOCKED 3        // Estado do processo: blocked
+#define STATUS_TERMINATED 4     // Estado do processo: terminated
 
 
 /* ======================================== *
@@ -64,19 +69,15 @@ typedef struct {
  * ======================================== */
 
 #define MAX_PCB 100             // Nº de entradas da tabela PCB
-
 /* Struct:  PCB
  * ------------
  * Represents Process Control Block.
- * TODO!
  * 
- * 
+ *  char name: name of the file containing the instructions associated with a process.
+ *  int start: value representing the index of the start of the instructions associated with a process in the memory array.
+ *  process *p: pointer to the process.
  */
-typedef struct{
-    char name;
-    int  start;
-    process *p;
-} PCB;
+typedef process PCB;        // workaround for the meantime
 
 
 /* ======================================== *
@@ -84,7 +85,6 @@ typedef struct{
  * ======================================== */
 
 #define MAX_MEM 1000            // Nº de células de memória
-#define MAX_NAME 15             // Nº máximo de caracteres de um programa
 #define MAX_INSTRUCTION 30      // Nº máximo de caracteres de uma instrução num ficheiro
 #define INSTRUCTION_VOID '\0'   // Instrução void: indica célula de memória livre
 #define MEMERR_ALLOC_NOAVAIL -1 // Erro: não há memória imediatamente disponível
@@ -120,14 +120,14 @@ typedef struct {
  * plan.h                                   *
  * ======================================== */
 
-#define cpu_t unsigned long long    // Tempo da CPU em milissegundos
+// #define cpu_t unsigned long long    // Tempo da CPU em milissegundos
 
 #define DEFAULT_PLAN_Q_SIZE 8       // Tamanho por defeito de uma queue
 #define MAX_PROGRAM 50              // Tamanho máximo do nome de um programa
 
 typedef struct {
-    char program[MAX_PROGRAM];
-    cpu_t time;
+    char    program[MAX_PROGRAM];
+    clock_t time;
 } PLAN;
 
 typedef struct {

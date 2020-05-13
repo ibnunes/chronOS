@@ -22,7 +22,7 @@
 
 
 void processorFunction(instruction *i, process *p) {
-    p->state = 'R';
+    p->state = STATUS_RUNNING;
     
     switch (i->ins) {
         case 'M':
@@ -43,11 +43,12 @@ void processorFunction(instruction *i, process *p) {
 
         case 'T':
             terminateProcess(p);
-            break;
+            return;
 
         case 'C':
-            createNewProcess(p, i->n);
-            break;
+            createNewProcess(p);
+            p->counter += i->n; // jump n instructions
+            return;
 
         case 'L':
             cleanProgram(p, i->name);
@@ -59,5 +60,5 @@ void processorFunction(instruction *i, process *p) {
             break;
     }
     p->counter += 1;
-    p->state = 'r';
+    p->state = STATUS_READY;
 }

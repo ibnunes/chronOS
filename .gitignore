@@ -31,10 +31,20 @@
 # Debug files
 *.dSYM/
 
-# Others
+# Folders and files from chronOS development
 bin/
 deps/
 obj/
 .vscode/
+
+# Documentation
 doc/ignore/
+doc/_minted-chronOS
+doc/*.aux
+doc/*.log
+doc/*.out
+doc/*.synctex.gz
+doc/*.pdf
+
+# Others
 *.png
