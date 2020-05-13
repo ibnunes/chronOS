@@ -38,6 +38,7 @@ PCB *pcballoc(size_t nmemb) {
         pcb->proc[i].instsize  = 0;
         pcb->proc[i].timeinit  = 0;
         pcb->proc[i].timeused  = 0;
+        pcb->proc[i].timeend   = 0;
     }
     return pcb;
 }
@@ -71,6 +72,7 @@ int processalloc(PCB *pcb, int ppid, char* name, size_t memlocal, size_t instsiz
     p->instsize  = instsize;
     p->timeinit  = cputime;         // TO CHECK: will it work properly?
     p->timeused  = 0;
+    p->timeend   = 0;
 
     pcb->top++;
 
