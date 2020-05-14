@@ -41,9 +41,10 @@
 	
 	\tableofcontents
 	%\listoffigures
-	%\newpage
+	\newpage
 	
 	\section{Repositório no GitLab}
+	\label{sec:gitlab}
 	
 	O projeto encontra-se alojado num servidor GitLab privado no seguinte \textit{link}: \url{https://gitlab.pcdev.pt/inunes/chronos/}
 	
@@ -58,6 +59,7 @@
 
 
 	\section{Resumo do estado atual do projeto}
+	\label{sec:summary}
 	
 	À data de escrita do presente relatório, o programa \chronOS~é capaz de fazer as seguintes tarefas:
 	
@@ -70,6 +72,8 @@
 		\item Alocar em memória as instruções referentes a um programa recorrendo ao \textbf{algoritmo \textit{first-fit}};
 		\item Ler um programa para memória ao tempo exato indicado pelo plano de execução;
 		
+		\item Executar as instruções em memória, incluindo o \textit{fork} (instrução \verb|C n|) e o \textit{clean} (instrução \verb|L filename|);
+		
 		% TODO Mais tarefas são necessárias
 		
 		\item Imprimir um relatório do estado atual dos processos;
@@ -78,8 +82,41 @@
 		\item Libertar os recursos associados à \textit{queue} do plano de execução.
 	\end{enumerate}
 	
-	Todas as tarefas foram testadas em modo \textit{debug} recorrendo a \textit{sanitizer flags} que nos permitem verificar que não existe nenhum \textit{memory leak} no final da execução do programa.
+	Todas as tarefas foram testadas em modo \textit{debug} recorrendo a \textit{sanitizer flags} (descrito na secção \ref{sec:struct_makefile}) que nos permitem verificar que não existe nenhum \textit{memory leak} no final da execução do programa.
 	
+	
+	\section{Estrutura do código e \texttt{Makefile}}
+	\label{sec:struct_makefile}
+	
+	A pasta de desenvolvimento está estruturada com as seguintes pastas:
+	
+	\begin{itemize}
+		\item \verb|doc|: pasta onde é escrita a documentação, incluindo este mesmo documento em \LaTeX;
+		\item \verb|include|: inclui todos os \textit{header files} (ficheiros \verb|*.h|) necessários ao programa;
+		\item \verb|src|: inclui todos os ficheiros \verb|*.c| com a implementação dos protótipos declarados nos \textit{header files}.
+	\end{itemize}
+	
+	Por sua vez, o \texttt{Makefile} está construído de forma a possibilitar 2 formas de compilação:
+	
+	\begin{itemize}
+		\item \textbf{\textit{Debug}} (\verb|make debug|): versão de desenvolvimento com mensagens de \textit{debugging} bastante detalhadas;
+		
+		\item \textbf{\textit{Release}} (\verb|make release|): versão final sem mensagens de \textit{debug} durante a execução do \chronOS.
+	\end{itemize}
+
+	O \texttt{Makefile} inclui uma série de \textit{flags} adicionais face ao comum a fim de controlar de forma mais apertada o comportamento do \texttt{gcc}, o qual é bastante permissivo por natureza. O modo \textit{debug} inclui \textit{sanitizer flags} que permitem detetar \textit{memory leaks} e detalhar informações acerca de falhas graves na execução relacionadas com acessos indevidos à memória (os clássicos \textit{segmentation faults}).
+	
+	
+	\section{Ciclo principal do programa}
+	\label{sec:main}
+	
+	
+	\section{Gestão de memória}
+	\label{sec:memory}
+	
+	
+	\section{Gestão de processos}
+	\label{sec:process}
 	
 	
 \end{document}
