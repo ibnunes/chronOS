@@ -26,33 +26,33 @@ void processorFunction(MEMORY *mem, process *p) {
     instruction *i = &(mem->cells[p->counter]);
 
     switch (i->ins) {
-        case 'M':
+        case INSTRUCTION_CHANGE:
             changeValue(p, i->n);
             break;
 
-        case 'A':
+        case INSTRUCTION_ADD:
             addValue(p, i->n);
             break;
 
-        case 'S':
+        case INSTRUCTION_SUBTRACT:
             subtractValue(p, i->n);
             break;
 
-        case 'B':
+        case INSTRUCTION_BLOCK:
             blockProcess(p);
             break;
 
-        case 'T':
+        case INSTRUCTION_TERMINATE:
             terminateProcess(p);
             return;
 
-        case 'C':
-            createNewProcess(p);
+        case INSTRUCTION_FORK:
+            forkProcess(mem, p);
             p->counter += i->n; // jump n instructions
             return;
 
-        case 'L':
-            cleanProgram(p, i->name);
+        case INSTRUCTION_CLEAR:
+            cleanProgram(mem, p, i->name);
             break;
 
         default:

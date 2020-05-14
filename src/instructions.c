@@ -26,28 +26,22 @@ void terminateProcess(process * p) {
     // TODO: usar método de switch de estados
 }
 
-void createNewProcess(process * p) {
-    process *new_p    = malloc(sizeof(process));
-    
-    /* strcpy(new_p->name, p->name);
-    new_p->start      = -1; //
-    new_p->pid        = p->pid+1; //find better scheme to number child processes
-    new_p->context    = 0;
-    new_p->counter    = p->counter;
-    new_p->ppid       = p->pid;
-    new_p->priority   = p->priority;
-    new_p->timelimit  = p->timelimit;
-    new_p->state      = STATUS_NEW;
-    new_p->instsize   = p->instsize - p->counter; */
-
-    // TODO: usar métodos memalloc, memfree e processalloc
-
-    //add new_p to the pcb
+void forkProcess(MEMORY *mem, process *p) {
+    instruction *inst = &(mem->cells[p->counter]);
+    size_t size = p->instsize - p->counter;
+    int address = memalloc(mem, inst, size);
+    if (address != MEMERR_ALLOC_NOAVAIL) {
+        processalloc(pcb, p->pid, inst->name, address, size);
+    }
 }
 
-void cleanProgram(process * p, char * filename) {
-    // Remove remaning instructions from memory
-    // ChangeFileName(pcb, p, filename)
-    // Load new file to memory
-    return; 
+void cleanProgram(MEMORY *mem, process *p, char *filename) {
+    memfree(mem, p->counter, p->instsize - p->counter);
+    size_t n;
+    instruction *inst = program_read_from_file(filename, &n);
+    int address = memalloc(mem, inst, n);
+    long index = pcb_index_of_pid(p->pid, pcb);
+    pcb->proc[index].start    = address;
+    pcb->proc[index].instsize = n;
+    strcpy(pcb->proc[index].name, filename);
 }
