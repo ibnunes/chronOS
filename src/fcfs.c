@@ -16,6 +16,7 @@
 //------------------------------------------------------------------------------
 
 #include "fcfs.h"
+#include "debug.h"
 
 /*
 1-  Input the processes along with their burst time (bt).
@@ -33,14 +34,51 @@
 6-  Find average waiting time = total_waiting_time / no_of_processes.
 
 7-  Similarly, find average turnaround time = total_turn_around_time / no_of_processes.
-
 */
+
+
+int_q *int_new(size_t nmemb) {
+    expects(nmemb > 0);
+    int_q *q = malloc(sizeof(*q));
+    q->list = malloc(nmemb * sizeof(*q->list));
+    q->head = q->last = 0;
+    q->capacity = nmemb;
+    return q;
+}
+
+void int_push(int_q *q, int n) {
+    if (q->last >= q->capacity) {
+        q->capacity *= 2;
+        q->list = realloc(q->list, q->capacity * sizeof(*q->list));
+    }
+    q->list[q->last] = n;
+    q->last++;
+}
+
+int int_peek(int_q *q) {
+    return q->list[q->head];
+}
+
+int int_pop(int_q *q) {
+    return q->list[(q->head)++];
+}
+
+int int_empty(int_q *q) {
+    return (q->head == q->last);
+}
+
+int int_length(int_q *q) {
+    return (q->last - q->head);
+}
+
+void int_free(int_q *q) {
+    free(q->list);
+    free(q);
+}
 
 
 int fcfs(process p, int burst_time) {
     return 0;
 }
 
-void findWaitingTime(void) {
-
-}
+// void findWaitingTime(void) {}
