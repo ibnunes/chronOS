@@ -18,47 +18,69 @@
 
 #include "processor.h"
 
-// main file for the processor
+void run(MEMORY *mem, process *p) {
+    instruction *i = &(mem->cells[p->counter]);
 
-
-void processorFunction(instruction *i, process *p) {
-    p->state = STATUS_RUNNING;
-    
     switch (i->ins) {
-        case 'M':
+        case INSTRUCTION_CHANGE:
             changeValue(p, i->n);
             break;
-        
-        case 'A':
+
+        case INSTRUCTION_ADD:
             addValue(p, i->n);
             break;
 
-        case 'S':
+        case INSTRUCTION_SUBTRACT:
             subtractValue(p, i->n);
             break;
 
-        case 'B':
+        case INSTRUCTION_BLOCK:
             blockProcess(p);
             break;
 
-        case 'T':
+        case INSTRUCTION_TERMINATE:
             terminateProcess(p);
             return;
 
-        case 'C':
-            createNewProcess(p);
+        case INSTRUCTION_FORK:
+            forkProcess(mem, p);
             p->counter += i->n; // jump n instructions
             return;
 
-        case 'L':
-            cleanProgram(p, i->name);
-            break;
+        case INSTRUCTION_CLEAR:
+            cleanProgram(mem, p, i->name);
+            return;
 
         default:
             fprintf(stderr, "ERROR: Unknown instruction \"%c\". ABORTING!\n", i->ins);
             exit(-1);
             break;
     }
+
     p->counter += 1;
     p->state = STATUS_READY;
+}
+
+int switchState(int oldstate, int newstate) {
+    switch (oldstate) {
+        case STATUS_NEW:
+            return (newstate == STATUS_READY) ? newstate : oldstate;
+
+        case STATUS_READY:
+            return (newstate == STATUS_RUNNING) ? newstate : oldstate;
+
+        case STATUS_RUNNING:
+            return (
+                    newstate == STATUS_TERMINATED ||
+                    newstate == STATUS_BLOCKED ||
+                    newstate == STATUS_READY
+                ) ? newstate : oldstate;
+
+        case STATUS_BLOCKED:
+            return (newstate == STATUS_READY) ? newstate : oldstate;
+
+        case STATUS_TERMINATED:
+        default:
+            return oldstate;
+    }
 }

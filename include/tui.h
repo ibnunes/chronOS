@@ -19,16 +19,27 @@
 #ifndef TUI_H
 #define TUI_H
 
-void tui_write_error(const char*, ...);
-void tui_write_warning(const char*, ...);
-void tui_write_info(const char*, ...);
-void tui_writeln_alert(const char*, ...);
-void tui_writeb(const char*, ...);
+#include "types.h"
+#include "data.h"
 
-void tui_output(char const*, char const*, ...);
-void tui_write(char const*, ...);
+/* Function:  state2str
+ * --------------------
+ * Converts a process state to a human readable string format.
+ * 
+ *  state: the process state.
+ * 
+ *  returns: a human readable string.
+ */
+const char *state2str(int state);
 
-void println(void);
-void printlnn(unsigned);
+/* Function:  pcbreport
+ * --------------------
+ * Prints a report in the form of a table.
+ * 
+ *  pcb: the PCB table.
+ * 
+ *  returns: nothing.
+ */
+void pcbreport(PCB *pcb);
 
 #endif

@@ -18,80 +18,46 @@
 
 #include "tui.h"
 #include <stdio.h>
-#include <unistd.h>
-#include <stdarg.h>
 
-
-/* === Principal método, sensível ao OS === */
-void tui_output(char const* message, char const* fallback, ...) {
-    va_list args;
-    va_start(args, fallback);
-#ifdef _POSIX_C_SOURCE
-    if (isatty(fileno(stdout)))
-        vfprintf(stdout, message, args);
-    else
-#endif
-    vfprintf(stdout, fallback, args);
-    va_end(args);
+const char *state2str(int state) {
+    switch (state) {
+        case STATUS_NULL:
+            return "Null";
+        case STATUS_NEW:
+            return "New";
+        case STATUS_READY:
+            return "Ready";
+        case STATUS_RUNNING:
+            return "Running";
+        case STATUS_BLOCKED:
+            return "Blocked";
+        case STATUS_TERMINATED:
+            return "Terminated";
+        default:
+            return "Unknown";
+    }
 }
 
+void pcbreport(PCB *pcb) {
+    printf("======== Report =========\n\n");
+    printf("Current time: %ld\n\n", cputime);
 
-/* Métodos para apresentar mensagens de diferentes categorias */
-// Erro (vermelho vivo)
-void tui_write_error(const char* fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
-    tui_output("\x1b[91%s\x1b[0m", "%s", fmt, args);
-    va_end(args);
-}
+    process *p;
+    printf("+------------------------------------+---------+--------------------+\n");
+    printf("|              PROCESS               |         |        TIME        |\n");
+    printf("| PID | PPID | Priority |   Status   | Context | Init | Used | End  |\n");
+    printf("+-----+------+----------+------------+---------+------+------+------+\n");
+    for (size_t i = 0; i < pcb->size; i++) {
+        p = &(pcb->proc[i]);
+        if (p->pid != -1) {
+            printf(
+                "| %3d | %4d | %8d | %10s | %7d | %4ld | %4ld | %4ld |\n",
+                p->pid, p->ppid, p->priority, state2str(p->state),
+                p->context, p->timeinit, p->timeused, p->timeend
+            );
+        }
+    }
+    printf("+-----+------+----------+------------+---------+------+------+------+\n\n");
 
-// Aviso (amarelo vivo)
-void tui_write_warning(const char* fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
-    tui_output("\x1b[93m%s\x1b[0m", "%s", fmt, args);
-    va_end(args);
-}
-
-// Informação (ciano)
-void tui_write_info(const char* fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
-    tui_output("\x1b[36m%s\x1b[0m", "%s", fmt, args);
-    va_end(args);
-}
-
-/* Alerta (fundo vermelho) - faz parágrafo final */
-void tui_writeln_alert(const char* fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
-    tui_output("\x1b[97;101m %s \x1b[0m\n", " %s ", fmt, args);
-    va_end(args);
-}
-
-// Branco
-void tui_writeb(const char* fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
-    tui_output("\x1b[97m%s\x1b[0m", "%s", fmt, args);
-    va_end(args);
-}
-
-// Normal
-void tui_write(char const* fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
-    tui_output(fmt, fmt, args);
-    va_end(args);
-}
-
-
-/* Coloca parágrafos no stdout. */
-void println(void) {
-    printf("\n");
-}
-
-void printlnn(unsigned n) {
-    for (; n > 0; n--)
-        println();
+    printf("===== End of report =====\n\n");
 }

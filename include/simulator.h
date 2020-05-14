@@ -31,15 +31,22 @@
 #include "pcbmgr.h"
 #include "processor.h"
 #include "plan.h"
+#include "debug.h"
 // #include "data.h"
 // #include "types.h"
 
-/* Strings úteis ao programa */
-const char *PROG_EXTENSION = ".prg";        // Extensão de um programa que corre no simulador
-const char *FILE_PLAN      = "plan.txt";    // Ficheiro com o plano de execução
-const char *FILE_CONTROL   = "control.txt"; // Ficheiro com os comandos de controlo
-
 #define DEFAULT_TIME_QUANTUM 0.500F         // 500 milissegundos
+#define PID_MANAGER 0                       // PID do processo gestor
 
+/* Function:  create_new_process
+ * -----------------------------
+ * Creates a new process in memory and in the PCB table.
+ * 
+ *  pcb: the PCB table.
+ *  fname: file name of the program.
+ * 
+ *  return: 1 if success, error code <= 0 if otherwise.
+ */
+int create_new_process(PCB *pcb, char *fname);
 
 #endif

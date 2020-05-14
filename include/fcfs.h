@@ -8,24 +8,20 @@
 //    Copyright (C) 2020 Universidade da Beira Interior (www.ubi.pt)
 //
 // RUNTIME LIBRARIES PACKAGE
-//    data.h
+//    fcfs.h
 //
 // DESCRIPTION:
 // -----------
-// Global variables for the whole program.
+// First Come First Serve algorithm.
 //------------------------------------------------------------------------------
 
-
-#ifndef DATA_H
-#define DATA_H
+#ifndef FCFS_H
+#define FCFS_H
 
 #include "types.h"
-#include <time.h>
 
-MEMORY  *memory;         // Memória
-PCB     *pcb;            // Tabela PCB (Process Control Block)
-clock_t cputime;         // Tempo atual do processador em milissegundos
-plan_q  *plan;           // Plano: lista de processos e tempos de entrada
+int fcfs(process p, int burst_time);
 
+void findWaitingTime(void);
 
 #endif
