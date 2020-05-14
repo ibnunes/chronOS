@@ -1,38 +1,49 @@
+//------------------------------------------------------------------------------
+//
+// chronOS - A scheduling simulator
+//
+//    Copyright (C) 2020 Igor Cordeiro Bordalo Nunes (www.igornunes.com)
+//    Copyright (C) 2020 Jorge Miguel Louro Pissarra
+//    Copyright (C) 2020 Diogo Castanheira Simões
+//    Copyright (C) 2020 Universidade da Beira Interior (www.ubi.pt)
+//
+// RUNTIME LIBRARIES PACKAGE
+//    instructions.c, related to processor.h
+//
+// DESCRIPTION:
+// -----------
+// Process management: instructions.
+//------------------------------------------------------------------------------
+
 #include "processor.h"
 #include "pcbmgr.h"
 
-// file to do the 7 types of intructions
-
-void changeValue (process * p, int n) {
+void changeValue(process *p, int n) {
     p->context = n;
 }
 
-void addValue(process * p, int n) {
+void addValue(process *p, int n) {
     p->context += n;
 }
 
-void subtractValue(process * p, int n) {
+void subtractValue(process *p, int n) {
     p->context -= n;
 }
 
-void blockProcess(process * p) {
-    p->state = STATUS_BLOCKED;
-    // find out what to do with a blocked process
-    // maybe send it to the end of memory
+void blockProcess(process *p) {
+    p->state = switchState(p->state, STATUS_BLOCKED);
 }
 
-void terminateProcess(process * p) {
-    p->state = STATUS_TERMINATED;
-    // TODO: usar método de switch de estados
+void terminateProcess(process *p) {
+    p->state = switchState(p->state, STATUS_TERMINATED);
 }
 
 void forkProcess(MEMORY *mem, process *p) {
     instruction *inst = &(mem->cells[p->counter]);
     size_t size = p->instsize - p->counter;
     int address = memalloc(mem, inst, size);
-    if (address != MEMERR_ALLOC_NOAVAIL) {
+    if (address != MEMERR_ALLOC_NOAVAIL)
         processalloc(pcb, p->pid, inst->name, address, size);
-    }
 }
 
 void cleanProgram(MEMORY *mem, process *p, char *filename) {

@@ -24,16 +24,16 @@
 #include "memmgr.h"
 
 
-/* Function: processorFunction
- * ---------------------------
- * Executes an instruction to the corresponding process.
+/* Function: run
+ * -------------
+ * Executes the next instruction of a process.
  *
  *  mem: pointer to the memory array.
  *  p: pointer to the process that will be executed and/or modified.
  *
  *  returns: void
  */
-void processorFunction(MEMORY *mem, process *p);
+void run(MEMORY *mem, process *p);
 
 /* Function: changeValue
  * ---------------------
