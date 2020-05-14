@@ -26,7 +26,7 @@ void terminateProcess(process * p) {
     // TODO: usar método de switch de estados
 }
 
-void createNewProcess(process * p) {
+void forkProcess(process * p) {
     process *new_p    = malloc(sizeof(process));
     
     /* strcpy(new_p->name, p->name);
@@ -42,12 +42,21 @@ void createNewProcess(process * p) {
 
     // TODO: usar métodos memalloc, memfree e processalloc
 
+    /* memalloc(memory, &instruction[curr], total - curr);
+     * processalloc(...);
+     */
+
     //add new_p to the pcb
 }
 
-void cleanProgram(process * p, char * filename) {
+void cleanProgram(process *p, char *filename) {
     // Remove remaning instructions from memory
     // ChangeFileName(pcb, p, filename)
     // Load new file to memory
+
+    /* memfree(memory, index, total - curr);
+     * memalloc(memory, &instructions[children], size_children);
+     */
+
     return; 
 }

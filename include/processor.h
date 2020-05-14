@@ -97,7 +97,7 @@ void terminateProcess(process* p);
  *
  *  returns: void.
  */
-void createNewProcess(process* p);
+void forkProcess(process *p);
 
 
 /* Function: cleanProgram
@@ -110,7 +110,7 @@ void createNewProcess(process* p);
  *
  *  returns: void
  */
-void cleanProgram(process * p, char * filename);
+void cleanProgram(process *p, char *filename);
 
 
 /* Function:  switchState

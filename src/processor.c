@@ -47,7 +47,7 @@ void processorFunction(MEMORY *mem, process *p) {
             return;
 
         case INSTRUCTION_FORK:
-            createNewProcess(p);
+            forkProcess(p);
             p->counter += i->n; // jump n instructions
             return;
 

@@ -22,6 +22,11 @@
 #include <stdlib.h>
 #include <time.h>
 
+/* Strings úteis ao programa */
+#define PROG_EXTENSION ".prg"           // Extensão de um programa que corre no simulador
+#define FILE_PLAN      "plan.txt"       // Ficheiro com o plano de execução
+#define FILE_CONTROL   "control.txt"    // Ficheiro com os comandos de controlo
+
 /* ======================================== *
  * processor.h                              *
  * ======================================== */
