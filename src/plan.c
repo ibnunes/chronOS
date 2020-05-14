@@ -34,7 +34,7 @@ plan_q *plan_new(size_t nmemb) {
 void plan_push(plan_q *p, char *str, clock_t t) {
     if (p->last >= p->capacity) {
         p->capacity *= 2;
-        p->list = realloc(p->list, p->capacity * sizeof(p->list));
+        p->list = realloc(p->list, p->capacity * sizeof(*p->list));
     }
     p->list[p->last].time = t;
     strcpy(p->list[p->last].program, str);
