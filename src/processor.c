@@ -47,12 +47,12 @@ void processorFunction(MEMORY *mem, process *p) {
             return;
 
         case INSTRUCTION_FORK:
-            forkProcess(p);
+            forkProcess(mem, p);
             p->counter += i->n; // jump n instructions
             return;
 
         case INSTRUCTION_CLEAR:
-            cleanProgram(p, i->name);
+            cleanProgram(mem, p, i->name);
             break;
 
         default:

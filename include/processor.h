@@ -97,7 +97,7 @@ void terminateProcess(process* p);
  *
  *  returns: void.
  */
-void forkProcess(process *p);
+void forkProcess(MEMORY *mem, process *p);
 
 
 /* Function: cleanProgram
@@ -110,7 +110,7 @@ void forkProcess(process *p);
  *
  *  returns: void
  */
-void cleanProgram(process *p, char *filename);
+void cleanProgram(MEMORY *mem, process *p, char *filename);
 
 
 /* Function:  switchState
