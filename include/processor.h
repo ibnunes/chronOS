@@ -119,7 +119,6 @@ void cleanProgram(process * p, char * filename);
  * the new state.
  *
  *  oldstate: integer with the old respective STATUS
- *
  *  newstate: integer with the new respective STATUS
  *
  *  returns: integer
