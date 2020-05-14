@@ -58,7 +58,6 @@ void run(MEMORY *mem, process *p) {
     }
 
     p->counter += 1;
-    p->state = STATUS_READY;
 }
 
 int switchState(int oldstate, int newstate) {

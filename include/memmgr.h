@@ -86,18 +86,6 @@ int memalloc(MEMORY* mem, instruction* ins, size_t size);
  */
 void memfree(MEMORY *mem, size_t init, size_t nmemb);
 
-/* Function: memRemoveInstructions
- * -------------------------------
- * Removes instructions from the memory array.
- * 
- *  mem: the memory structure.
- *  start: index value of the first instruction to be removed.
- *  end: index valie of the last instrucion to be removed.
- *  
- *  returns: nothing.
- */
-void memRemoveInstructions(MEMORY *mem, int start, int end)
-
 /* Function:  program_read_from_file
  * ---------------------------------
  * Loads instructions from a file into heap memory.
