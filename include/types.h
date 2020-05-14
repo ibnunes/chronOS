@@ -70,9 +70,9 @@ typedef struct {
 #define STATUS_BLOCKED 4            // Estado do processo: blocked
 #define STATUS_TERMINATED 5         // Estado do processo: terminated
 
-#define PRIORITY_NULL 0;            // Prioridade: nula
-#define PRIORITY_MIN 1;             // Prioridade: mínima
-#define PRIORITY_MAX 5;             // Prioridade: máxima
+#define PRIORITY_NULL 0             // Prioridade: nula
+#define PRIORITY_MIN 1              // Prioridade: mínima
+#define PRIORITY_MAX 5              // Prioridade: máxima
 
 #define INSTRUCTION_CHANGE 'M'      // M n
 #define INSTRUCTION_ADD 'A'         // A n
