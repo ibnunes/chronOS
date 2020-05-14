@@ -38,26 +38,76 @@ typedef struct {
     size_t last;
 } int_q;
 
-/* Allocates heap memory to a new queue for ints. */
-int_q *int_new(size_t);
+/* Function: int_new
+ * -----------------
+ * Allocates heap memory to a new queue for ints. 
+ * 
+ *  nmemb: number of new elements in the queue.
+ * 
+ *  returns: pointer to a queue.
+ */
+int_q *int_new(size_t nmemb);
 
-/* Inserts a new int element to the queue. */
-void int_push(int_q*, int);
+/* Funtion: int_push
+ * ----------------- 
+ * Inserts a new int element to the queue. 
+ * 
+ *  q: queue.
+ *  n: new element.
+ * 
+ *  returns: nothing.
+ */
+void int_push(int_q *q, int n);
 
-/* Peeks the head of the queue without popping it. */
-int int_peek(int_q*);
+/* Function: int_peek
+ * ------------------
+ * Peeks the head of the queue without popping it. 
+ * 
+ *  q: queue.
+ *  
+ *  returns: int value of the head of the queue.
+ */
+int int_peek(int_q *q);
 
-/* Pops the head element of the queue. */
-int int_pop(int_q*);
+/* Function: int_pop
+ * ------------------
+ * Pops the head element of the queue.
+ * 
+ *  q: queue.
+ *  
+ *  returns: int value of the head of the queue.
+ */
+int int_pop(int_q *q);
 
-/* Checks if the queue is empty. */
-int int_empty(int_q*);
+/* Function: int_empty
+ * -------------------
+ * Checks if the queue is empty.
+ * 
+ *  q: queue.
+ * 
+ *  returns: (int) bool.
+ */
+int int_empty(int_q *q);
 
-/* Returns the number of elements currently present on the queue. */
-int int_length(int_q*);
+/* Function: int_length
+ * --------------------
+ * Returns the number of elements currently present on the queue.
+ * 
+ *  q: queue.
+ * 
+ *  returns: length of the queue.
+ */
+int int_length(int_q *q);
 
-/* Frees all resources from the queue. */
-void int_free(int_q*);
+/* Function: int_free
+ * ------------------
+ * Frees all resources from the queue.
+ * 
+ *  q: queue.
+ * 
+ *  returns: nothing.
+ */
+void int_free(int_q *q);
 
 /* Function:  fcfs
  * ---------------
