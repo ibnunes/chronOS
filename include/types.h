@@ -63,16 +63,25 @@ typedef struct {
     // add whatever else is needed
 } process;
 
-#define STATUS_NULL 0           // Processo não existe: null
-#define STATUS_NEW 1            // Estado do processo: new
-#define STATUS_READY 2          // Estado do processo: ready
-#define STATUS_RUNNING 3        // Estado do processo: running
-#define STATUS_BLOCKED 4        // Estado do processo: blocked
-#define STATUS_TERMINATED 5     // Estado do processo: terminated
+#define STATUS_NULL 0               // Processo não existe: null
+#define STATUS_NEW 1                // Estado do processo: new
+#define STATUS_READY 2              // Estado do processo: ready
+#define STATUS_RUNNING 3            // Estado do processo: running
+#define STATUS_BLOCKED 4            // Estado do processo: blocked
+#define STATUS_TERMINATED 5         // Estado do processo: terminated
 
-#define PRIORITY_NULL 0;        // Prioridade: nula
-#define PRIORITY_MIN 1;         // Prioridade: mínima
-#define PRIORITY_MAX 5;         // Prioridade: máxima
+#define PRIORITY_NULL 0;            // Prioridade: nula
+#define PRIORITY_MIN 1;             // Prioridade: mínima
+#define PRIORITY_MAX 5;             // Prioridade: máxima
+
+#define INSTRUCTION_CHANGE 'M'      // M n
+#define INSTRUCTION_ADD 'A'         // A n
+#define INSTRUCTION_SUBTRACT 'S'    // S n
+#define INSTRUCTION_BLOCK 'B'       // B
+#define INSTRUCTION_TERMINATE 'T'   // T
+#define INSTRUCTION_FORK 'C'        // C n
+#define INSTRUCTION_CLEAR 'L'       // L filename
+
 
 /* ======================================== *
  * pcbmgr.h                                 *
