@@ -8,7 +8,7 @@
 //    Copyright (C) 2020 Universidade da Beira Interior (www.ubi.pt)
 //
 // RUNTIME LIBRARIES PACKAGE
-//    types.h
+//    data.h
 //
 // DESCRIPTION:
 // -----------

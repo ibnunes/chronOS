@@ -18,11 +18,7 @@
 
 #include "processor.h"
 
-// main file for the processor
-
-
-void processorFunction(MEMORY *mem, process *p) {
-    // p->state = STATUS_RUNNING;
+void run(MEMORY *mem, process *p) {
     instruction *i = &(mem->cells[p->counter]);
 
     switch (i->ins) {
@@ -53,13 +49,14 @@ void processorFunction(MEMORY *mem, process *p) {
 
         case INSTRUCTION_CLEAR:
             cleanProgram(mem, p, i->name);
-            break;
+            return;
 
         default:
             fprintf(stderr, "ERROR: Unknown instruction \"%c\". ABORTING!\n", i->ins);
             exit(-1);
             break;
     }
+
     p->counter += 1;
     p->state = STATUS_READY;
 }
