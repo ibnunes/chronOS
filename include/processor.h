@@ -28,12 +28,12 @@
  * ---------------------------
  * Executes an instruction to the corresponding process.
  *
- *  i: pointer to the instruction to be executed.
- *  p: pointer to the process that will be modified.
+ *  mem: pointer to the memory array.
+ *  p: pointer to the process that will be executed and/or modified.
  *
  *  returns: void
  */
-void processorFunction(instruction* i, process* p);
+void processorFunction(MEMORY *mem, process *p);
 
 /* Function: changeValue
  * ---------------------

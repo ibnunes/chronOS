@@ -21,8 +21,9 @@
 // main file for the processor
 
 
-void processorFunction(instruction *i, process *p) {
-    p->state = STATUS_RUNNING;
+void processorFunction(MEMORY *mem, process *p) {
+    // p->state = STATUS_RUNNING;
+    instruction *i = &(mem->cells[p->counter]);
 
     switch (i->ins) {
         case 'M':
