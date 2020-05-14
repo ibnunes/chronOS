@@ -42,6 +42,7 @@ void cleanProgram(MEMORY *mem, process *p, char *filename) {
     int address = memalloc(mem, inst, n);
     long index = pcb_index_of_pid(p->pid, pcb);
     pcb->proc[index].start    = address;
+    pcb->proc[index].counter  = address;
     pcb->proc[index].instsize = n;
     strcpy(pcb->proc[index].name, filename);
 }
