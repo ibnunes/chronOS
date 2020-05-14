@@ -103,8 +103,9 @@ void createNewProcess(process* p);
 /* Function: cleanProgram
  * ----------------------
  * Clears all following instructions associated with the current process 
- * in the memory array and loads the file filename into the memory.
+ * in the memory array and loads the new file into the memory.
  * 
+ *  p: process pointer to be changed.
  *  filename: string with the name of the file from where the new instructions
  *  will be loaded.
  * 

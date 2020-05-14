@@ -3,6 +3,11 @@
 
 // file to do the 7 types of intructions
 
+/* TODO: Write function to add a process to the pcb.
+ *       Write function to copy n amount of intructions from the one place in the memory to another.
+ *       Write memRemoveInstructions in memmrg.c
+ */
+
 void changeValue (process * p, int n) {
     p->context = n;
 }
@@ -18,7 +23,7 @@ void subtractValue(process * p, int n) {
 void blockProcess(process * p) {
     p->state = 'B';
     // find out what to do with a blocked process
-    // maybe send it to the end of memory
+    // maybe send it's instructions to the end of memory
 }
 
 void terminateProcess(process * p) {
@@ -39,11 +44,15 @@ void createNewProcess(process * p) {
     new_p->insNum     = p->insNum - p-> counter;
 
     //add new_p to the pcb
+    //copy remaining instructions from parerent into memory
 }
 
 void cleanProgram(process * p, char * filename) {
-    // Remove remaning instructions from memory
-    // ChangeFileName(pcb, p, filename)
-    // Load new file to memory
-    return; 
+    size_t *n;
+    // vvv not implemented yet vvv
+    memRemoveInstructions(pcb, p->counter, p->insNum - p->counter);
+    strcpy(p->name, filename);
+    instruction *ins = program_read_from_file(p->name, n);
+    p->insNum = *n;
+    memalloc(mem, ins,(size_t)*n);
 }

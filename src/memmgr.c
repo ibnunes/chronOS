@@ -73,6 +73,10 @@ void memfree(MEMORY *mem, size_t init, size_t nmemb) {
         cleaninstruction(&mem->cells[i]);
 }
 
+void memRemoveInstructions(MEMORY *mem, int start, int end)
+{
+    return;
+}
 
 /* TODO: testing */
 instruction* program_read_from_file(char *fname, size_t *n) {
