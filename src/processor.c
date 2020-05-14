@@ -21,8 +21,9 @@
 // main file for the processor
 
 
-void processorFunction(instruction *i, process *p) {
-    p->state = STATUS_RUNNING;
+void processorFunction(MEMORY *mem, process *p) {
+    // p->state = STATUS_RUNNING;
+    instruction *i = &(mem->cells[p->counter]);
 
     switch (i->ins) {
         case 'M':
@@ -66,13 +67,21 @@ void processorFunction(instruction *i, process *p) {
 int switchState(int oldstate, int newstate) {
     switch (oldstate) {
         case STATUS_NEW:
-            return (newstate == STATUS_READY) ? newstate : oldstate);
+            return (newstate == STATUS_READY) ? newstate : oldstate;
+
         case STATUS_READY:
-            return ((newstate == STATUS_RUNNING) ? newstate : oldstate);
+            return (newstate == STATUS_RUNNING) ? newstate : oldstate;
+
         case STATUS_RUNNING:
-            return ((newstate == STATUS_TERMINATED || newstate == STATUS_BLOCKED || newstate == STATUS_READY) ? newstate : oldstate);
+            return (
+                    newstate == STATUS_TERMINATED ||
+                    newstate == STATUS_BLOCKED ||
+                    newstate == STATUS_READY
+                ) ? newstate : oldstate;
+
         case STATUS_BLOCKED:
-            return ((newstate == STATUS_READY) ? newstate : oldstate);
+            return (newstate == STATUS_READY) ? newstate : oldstate;
+
         case STATUS_TERMINATED:
         default:
             return oldstate;
