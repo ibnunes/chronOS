@@ -61,14 +61,7 @@
 
 
 int main(int argc, char const *argv[]) {
-    /* TODO:
-     *  [OK] -> Alocar memória
-     *  [  ] -> Inicializar gestor de processos
-     *  [OK] -> Inicializar gestor de memória
-     *  [OK] -> Ler plan.txt
-     *  [  ] -> Ler control.txt ou stdin
-     *  [  ] -> Passar controlo ao gestor de processos
-     */
+    printf("===== chronOS 1.0.0 =====\n\n");
 
     int __running = 1;
     cputime = 0;
@@ -85,7 +78,6 @@ int main(int argc, char const *argv[]) {
     debug("Reading plan queue from %s:\n", FILE_PLAN);
     plan = plan_read_from_file(FILE_PLAN);
     debug("Got %d elements in queue.\n", plan_length(plan));
-
 
     clock_t clock_start, clock_end;
     float seconds;

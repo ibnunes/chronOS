@@ -44,26 +44,28 @@ void pcbreport(PCB *pcb) {
     printf("Current time: %ld\n\n", cputime);
 
     process *p;
-    printf("+------------------------------------+-----+---------+--------------------+\n");
-    printf("|              PROCESS               | MEM |         |        TIME        |\n");
-    printf("| PID | PPID | Priority |   Status   | ind | Context | Init | Used | End  |\n");
-    printf("+-----+------+----------+------------+-----+---------+------+------+------+\n");
+    printf("+-------------------------------------------------------+-----+---------+--------------------+\n");
+    printf("|                       PROCESS                         | MEM |         |        TIME        |\n");
+    printf("|       Name       | PID | PPID | Priority |   Status   | ind | Context | Init | Used | End  |\n");
+    printf("+------------------+-----+------+----------+------------+-----+---------+------+------+------+\n");
     for (size_t i = 0; i < pcb->size; i++) {
         p = &(pcb->proc[i]);
         if (p->pid != -1) {
             printf(
-                "| %3d | %4d | %8d | %10s | %3ld | %7d | %4ld | %4ld | %4ld |\n",
-                p->pid, p->ppid, p->priority, state2str(p->state),
+                "| %16s | %3d | %4d | %8d | %10s | %3ld | %7d | %4ld | %4ld | %4ld |\n",
+                p->name, p->pid, p->ppid, p->priority, state2str(p->state),
                 p->start,
                 p->context,
                 p->timeinit, p->timeused, p->timeend
             );
         }
     }
-    printf("+-----+------+----------+------------+-----+---------+------+------+------+\n\n");
-
+    printf("+------------------+-----+------+----------+------------+-----+---------+------+------+------+\n\n");
+    
     printf("===== End of report =====\n\n");
 }
+
+#ifndef NDEBUG
 
 void memreport(MEMORY *mem) {
     printf("======== Memory =========\n\n");
@@ -81,3 +83,5 @@ void memreport(MEMORY *mem) {
     printf("+------+-----+-----+------------------+\n");
     printf("===== End of memory =====\n\n");
 }
+
+#endif

@@ -20,6 +20,11 @@
 #include "debug.h"
 
 void run(MEMORY *mem, process *p) {
+    if ((size_t) p->counter >= p->start + p->instsize) {
+        p->state = switchState(p->state, STATUS_TERMINATED);
+        return;
+    }
+
     instruction *i = &(mem->cells[p->counter]);
 
     switch (i->ins) {
@@ -65,7 +70,7 @@ void run(MEMORY *mem, process *p) {
             break;
     }
 
-    p->counter += 1;
+    p->counter++;
 }
 
 int switchState(int oldstate, int newstate) {

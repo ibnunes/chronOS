@@ -34,7 +34,7 @@ const char *state2str(int state);
 
 /* Function:  pcbreport
  * --------------------
- * Prints a report in the form of a table.
+ * Prints a report of the processes in the form of a table.
  * 
  *  pcb: the PCB table.
  * 
@@ -42,6 +42,22 @@ const char *state2str(int state);
  */
 void pcbreport(PCB *pcb);
 
+#ifndef NDEBUG
+
+/* Function:  memreport
+ * --------------------
+ * Prints the contents of memory in the form of a table.
+ * 
+ *  mem: the memory array.
+ * 
+ *  returns: nothing.
+ */
 void memreport(MEMORY *mem);
 
-#endif
+#else
+
+#define memreport(...)
+
+#endif      // NDEBUG
+
+#endif      // TUI_H
