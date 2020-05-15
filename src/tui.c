@@ -65,6 +65,8 @@ void pcbreport(PCB *pcb) {
     printf("===== End of report =====\n\n");
 }
 
+#ifndef NDEBUG
+
 void memreport(MEMORY *mem) {
     printf("======== Memory =========\n\n");
     printf("+------+-----+-----+------------------+\n");
@@ -81,3 +83,5 @@ void memreport(MEMORY *mem) {
     printf("+------+-----+-----+------------------+\n");
     printf("===== End of memory =====\n\n");
 }
+
+#endif

@@ -24,11 +24,13 @@
 
 /* Function:  fcfs
  * ---------------
- * (TODO)
+ * Executes the processes in the PCB table using the FCFS algorithm.
  * 
- *  pcbindex: 
+ *  pcb: the PCB table with the processes.
+ *  mem: the memory array.
+ *  pcbindex: current PCB table index at which the manager is working.
  * 
- *  return: 
+ *  return: next PCB index, or FCFS_END if ended.
  */
 int fcfs(PCB *pcb, MEMORY *mem, int pcbindex);
 

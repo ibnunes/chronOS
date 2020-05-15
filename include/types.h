@@ -153,8 +153,6 @@ typedef struct {
  * plan.h                                   *
  * ======================================== */
 
-// #define cpu_t unsigned long long    // Tempo da CPU em milissegundos
-
 #define DEFAULT_PLAN_Q_SIZE 8       // Tamanho por defeito de uma queue
 #define MAX_PROGRAM 50              // Tamanho máximo do nome de um programa
 
