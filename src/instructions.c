@@ -36,11 +36,13 @@ void blockProcess(process *p) {
 
 void terminateProcess(process *p) {
     p->state = switchState(p->state, STATUS_TERMINATED);
+    if (p->state == STATUS_TERMINATED)
+        p->timeend = cputime;
 }
 
 void forkProcess(MEMORY *mem, process *p) {
-    instruction *inst = &(mem->cells[p->counter]);
-    size_t size = p->instsize - p->counter;
+    instruction *inst = &(mem->cells[p->counter + 1]);
+    size_t size = p->instsize - p->counter + 1;
     int address = memalloc(mem, inst, size);
     if (address != MEMERR_ALLOC_NOAVAIL)
         processalloc(pcb, p->pid, inst->name, address, size);
@@ -57,4 +59,5 @@ void cleanProgram(MEMORY *mem, process *p, char *filename) {
     pcb->proc[index].counter  = address;
     pcb->proc[index].instsize = n;
     strcpy(pcb->proc[index].name, filename);
+    free(inst);
 }

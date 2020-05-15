@@ -32,6 +32,7 @@
 #include "processor.h"
 #include "plan.h"
 #include "debug.h"
+#include "fcfs.h"
 // #include "data.h"
 // #include "types.h"
 

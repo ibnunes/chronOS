@@ -8,40 +8,27 @@
 //    Copyright (C) 2020 Universidade da Beira Interior (www.ubi.pt)
 //
 // RUNTIME LIBRARIES PACKAGE
-//    tui.h
+//    utils.h
 //
 // DESCRIPTION:
 // -----------
-// Text user interface.
+// Miscellaneous utilities.
 //------------------------------------------------------------------------------
 
-
-#ifndef TUI_H
-#define TUI_H
-
+#include "utils.h"
 #include "types.h"
-#include "data.h"
+#include <string.h>
 
-/* Function:  state2str
- * --------------------
- * Converts a process state to a human readable string format.
- * 
- *  state: the process state.
- * 
- *  returns: a human readable string.
- */
-const char *state2str(int state);
+int strendswith(const char *str, const char *suffix) {
+    if (!str || !suffix)
+        return 0;
+    size_t lenstr    = strlen(str);
+    size_t lensuffix = strlen(suffix);
+    if (lensuffix >  lenstr)
+        return 0;
+    return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
+}
 
-/* Function:  pcbreport
- * --------------------
- * Prints a report in the form of a table.
- * 
- *  pcb: the PCB table.
- * 
- *  returns: nothing.
- */
-void pcbreport(PCB *pcb);
-
-void memreport(MEMORY *mem);
-
-#endif
+int strendswithprg(const char *str) {
+    return strendswith(str, PROG_EXTENSION);
+}

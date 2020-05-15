@@ -16,31 +16,50 @@
 //------------------------------------------------------------------------------
 
 #include "fcfs.h"
-
-/*
-1-  Input the processes along with their burst time (bt).
-
-2-  Find waiting time (wt) for all processes.
-
-3-  As first process that comes need not to wait so
-    waiting time for process 1 will be 0 i.e. wt[0] = 0.
-
-4-  Find waiting time for all other processes i.e. for
-                    process i -> wt[i] = bt[i-1] + wt[i-1] .
-
-5-  Find turnaround time = waiting_time + burst_time for all processes.
-
-6-  Find average waiting time = total_waiting_time / no_of_processes.
-
-7-  Similarly, find average turnaround time = total_turn_around_time / no_of_processes.
-
-*/
+#include "processor.h"
+#include "debug.h"
+#include <stdio.h>
 
 
-int fcfs(process p, int burst_time) {
-    return 0;
-}
+int fcfs(PCB *pcb, MEMORY *mem, int pcbindex) {
+    /* Chegou ao fim da tabela PCB, não há mais processos em fila */
+    debug("Working on PCB index %d.\n", pcbindex);
+    if (pcbindex >= pcb->top)
+        return FCFS_END;
+    
+    process *p = &(pcb->proc[pcbindex]);
+    switch (p->state) {
+        case STATUS_NEW:
+            debug("Switching PID %d state to READY.\n", p->pid);
+            p->state = switchState(p->state, STATUS_READY);
+            break;
+        
+        case STATUS_READY:
+            debug("Switching PID %d state to RUNNING.\n", p->pid);
+            p->state = switchState(p->state, STATUS_RUNNING);
+            break;
+        
+        case STATUS_RUNNING:
+            debug("Running PID %d, instruction at PC=%d...\n", p->pid, p->counter);
+            p->timeused++;
+            run(mem, p);
+            break;
+        
+        case STATUS_TERMINATED:
+            debug("Process with PID %d is TERMINATED.\n", p->pid);
+            pcbindex++;
+            break;
 
-void findWaitingTime(void) {
+        case STATUS_BLOCKED:
+            debug("Process with PID %d is BLOCKED.\n", p->pid);
+            pcbindex++;
+            break;
+        
+        default:
+            fprintf(stderr, "ERROR: Unknown process state. ABORTING!\n");
+            exit(-1);
+            break;
+    }
 
+    return pcbindex;
 }
