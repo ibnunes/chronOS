@@ -9,6 +9,7 @@
 %\usepackage{amsmath}
 %\usepackage{systeme}
 \usepackage{hyperref}
+\usepackage[printonlyused]{acronym}
 
 \newcommand{\chronOS}{\textsf{chronOS}}
 \newcommand{\git}{\textsf{git}}
@@ -65,7 +66,7 @@
 	
 	\begin{enumerate}
 		\item Alocar células de memória;
-		\item Alocar a tabela PCB;
+		\item Alocar a tabela \texttt{\ac{PCB}};
 		\item Ler o ficheiro \texttt{plan.txt} e guardar em memória o plano de execução numa \textit{queue};
 		\item Temporizar o sistema de 500 em 500 milissegundos;
 		\item Extrair de um ficheiro \texttt{*.prg} as suas instruções;
@@ -78,7 +79,7 @@
 		
 		\item Imprimir um relatório do estado atual dos processos;
 		\item Libertar os recursos associados à memória;
-		\item Libertar os recursos associados à tabela PCB;
+		\item Libertar os recursos associados à tabela \texttt{\ac{PCB}};
 		\item Libertar os recursos associados à \textit{queue} do plano de execução.
 	\end{enumerate}
 	
@@ -104,13 +105,21 @@
 		\item \textbf{\textit{Release}} (\verb|make release|): versão final sem mensagens de \textit{debug} durante a execução do \chronOS.
 	\end{itemize}
 
-	O \texttt{Makefile} inclui uma série de \textit{flags} adicionais face ao comum a fim de controlar de forma mais apertada o comportamento do \texttt{gcc}, o qual é bastante permissivo por natureza. O modo \textit{debug} inclui \textit{sanitizer flags} que permitem detetar \textit{memory leaks} e detalhar informações acerca de falhas graves na execução relacionadas com acessos indevidos à memória (os clássicos \textit{segmentation faults}).
+	O \texttt{Makefile} inclui uma série de \textit{flags} adicionais face ao comum a fim de controlar de forma mais apertada o comportamento do \texttt{\ac{gcc}}, o qual é bastante permissivo por natureza. O modo \textit{debug} inclui \textit{sanitizer flags} que permitem detetar \textit{memory leaks} e detalhar informações acerca de falhas graves na execução relacionadas com acessos indevidos à memória (os clássicos \textit{segmentation faults}).
 	
 	
 	\section{Ciclo principal do programa}
 	\label{sec:main}
-	
-	
+	No principal ciclo do programa ocorrem quatro operações:
+	\begin{itemize}
+	    \item Lê-se o ficheiro \verb|plan.txt|;
+	    \item É aplicado o algorítmo \texttt{\ac{fcfs}} às estruturas \texttt{memory} e \texttt{\ac{PCB}} para gerir os processos conforme os seus estados;
+	    \item Avança-se o relógio interno do processador;
+	    \item Verifica-se se o program deve terminar.
+	 \end{itemize}  
+	    Caso a última operação se verifique, o programa irá libertar toda a memória alocada e terminar.
+	    
+	    
 	\section{Gestão de memória}
 	\label{sec:memory}
 	A gestão de memória está dividida em duas componentes:
@@ -133,25 +142,36 @@
 	\label{sec:process}
 	Da mesma forma que a gestão de memória,a gestão de processos está dividida em três componentes:
 	\begin{itemize} %Create an acronym session to store this
-	    \item O \verb|PCB| [\textit{Process Control Block}], que representa a estrutura onde estão armazenados todos os processos;
-	    \item As funções definidas no ficheiro \verb|pcbmgr.c|, que servem para manipular o \verb|PCB|;
+	    \item O \texttt{\ac{PCB}}, que representa a estrutura onde estão armazenados todos os processos;
+	    \item As funções definidas no ficheiro \texttt{\ac{PCB}}, que servem para manipular o \texttt{\ac{PCB}};
 	    \item Os algoritmos de escalonamento.
-	\end{itemize}
+	\end{itemize}  
 	
-	Até ao presente momento, é possível efetuar as atuais operações no \verb|PCB|:
+	Até ao presente momento, é possível efetuar as atuais operações no \texttt{\ac{PCB}}:
+    
 	\begin{itemize}
-	    \item Criar um \verb|PCB|;
-	    \item Obter o PID mais elevado presente;
+	    \item Criar um \texttt{\ac{PCB}};
+	    \item Obter o \texttt{\ac{PID}} mais elevado presente;
 	    \item Alocar um processo e armazená-lo;
 	    \item Libertar toda a estrutura;
 	    \item Obter a posição de um processo na estrutura.
 	\end{itemize}
 	
-	O único algoritmo de escalonamento implementado na atual \textit{build} do program é o \verb|fcfs| [\textit{First Come, First Serve}].
+	O único algoritmo de escalonamento implementado na atual \textit{build} do program é o \texttt{\ac{fcfs}}.
 	
 	\section{Conclusão e Trabalho Futuro}
 	\label{sec:con_futwork}
 	
 	%talk about what has been learnt so far on this work and what's missing from the final program.
+	
+	\section{Acrónimos}
+    \label{sec:acron}
+    
+    \begin{acronym}[PCB]
+        \acro{fcfs}{\emph{First Come, First Serve}}
+        \acro{gcc}{\emph{GNU C Compliler}}
+        \acro{PID}{\emph{Process Identifier}}
+        \acro{PCB}{\emph{Process Control Block}}
+    \end{acronym}
 	
 \end{document}
