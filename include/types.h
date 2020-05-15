@@ -94,6 +94,7 @@ typedef struct {
 
 #define MAX_PCB 100             // Nº de entradas da tabela PCB
 #define MEMPCB_ALLOC_NOAVAIL -2 // Erro: não há espaço na tabela PCB
+#define PID_NULL -1             // PID nulo: não há processo nesta linha da tabela
 
 /* Struct:  PCB
  * ------------

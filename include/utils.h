@@ -8,28 +8,17 @@
 //    Copyright (C) 2020 Universidade da Beira Interior (www.ubi.pt)
 //
 // RUNTIME LIBRARIES PACKAGE
-//    fcfs.h
+//    utils.h
 //
 // DESCRIPTION:
 // -----------
-// First Come First Serve algorithm.
+// Miscellaneous utilities.
 //------------------------------------------------------------------------------
 
-#ifndef FCFS_H
-#define FCFS_H
+#ifndef UTILS_H
+#define UTILS_H
 
-#include "types.h"
-
-#define FCFS_END -1
-
-/* Function:  fcfs
- * ---------------
- * (TODO)
- * 
- *  pcbindex: 
- * 
- *  return: 
- */
-int fcfs(PCB *pcb, MEMORY *mem, int pcbindex);
+int strendswith(const char *str, const char *suffix);
+int strendswithprg(const char *str);
 
 #endif
