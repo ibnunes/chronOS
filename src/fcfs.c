@@ -37,6 +37,7 @@ int fcfs(PCB *pcb, MEMORY *mem, int pcbindex) {
         case STATUS_READY:
             debug("Switching PID %d state to RUNNING.\n", p->pid);
             p->state = switchState(p->state, STATUS_RUNNING);
+            p->timeinit = cputime;
             break;
         
         case STATUS_RUNNING:

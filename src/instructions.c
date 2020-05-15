@@ -49,7 +49,6 @@ void forkProcess(MEMORY *mem, process *p) {
 }
 
 void cleanProgram(MEMORY *mem, process *p, char *filename) {
-    // memfree(mem, p->counter, p->instsize - p->counter);
     memfree(mem, p->start, p->instsize);
     size_t n;
     instruction *inst = program_read_from_file(filename, &n);
