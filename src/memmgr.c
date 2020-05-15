@@ -19,10 +19,12 @@
 #include "memmgr.h"
 #include "utils.h"
 #include "debug.h"
+#include <string.h>
 
 void cleaninstruction(instruction *instruct) {
     instruct->ins = INSTRUCTION_VOID;
     instruct->n   = 0;
+    strcpy(instruct->name, "");
 }
 
 MEMORY *memcreate(size_t nmemb) {
@@ -30,7 +32,7 @@ MEMORY *memcreate(size_t nmemb) {
     memory->cells = malloc(nmemb * sizeof(instruction));
     memory->capacity = nmemb;
     for (size_t i = 0; i < nmemb; i++)
-        cleaninstruction(&memory->cells[i]);
+        cleaninstruction(&(memory->cells[i]));
     return memory;
 }
 
@@ -74,8 +76,8 @@ int memalloc(MEMORY* mem, instruction* ins, size_t size) {
 }
 
 void memfree(MEMORY *mem, size_t init, size_t nmemb) {
-    for (size_t i = init; i < nmemb; i++)
-        cleaninstruction(&mem->cells[i]);
+    for (size_t i = init; i < init + nmemb; i++)
+        cleaninstruction(&(mem->cells[i]));
 }
 
 

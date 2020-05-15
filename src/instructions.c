@@ -17,6 +17,7 @@
 
 #include "processor.h"
 #include "pcbmgr.h"
+#include "debug.h"
 
 void changeValue(process *p, int n) {
     p->context = n;
@@ -42,21 +43,25 @@ void terminateProcess(process *p) {
 
 void forkProcess(MEMORY *mem, process *p) {
     instruction *inst = &(mem->cells[p->counter + 1]);
-    size_t size = p->instsize - p->counter + 1;
+    size_t size = p->instsize - (p->counter + 1 - p->start);
     int address = memalloc(mem, inst, size);
+    int pid = PID_NULL;
     if (address != MEMERR_ALLOC_NOAVAIL)
-        processalloc(pcb, p->pid, inst->name, address, size);
+        pid = processalloc(pcb, p->pid, inst->name, address, size);
+    debug("FORKED %ld instructions from PID %d to address %d with new PID %d.\n", size, p->pid, address, pid);
 }
 
 void cleanProgram(MEMORY *mem, process *p, char *filename) {
+    char fname[MAX_NAME];
+    strcpy(fname, filename);
     memfree(mem, p->start, p->instsize);
     size_t n;
-    instruction *inst = program_read_from_file(filename, &n);
+    instruction *inst = program_read_from_file(fname, &n);
     int address = memalloc(mem, inst, n);
-    long index = pcb_index_of_pid(p->pid, pcb);
-    pcb->proc[index].start    = address;
-    pcb->proc[index].counter  = address;
-    pcb->proc[index].instsize = n;
-    strcpy(pcb->proc[index].name, filename);
+    p->start    = address;
+    p->counter  = address;
+    p->instsize = n;
+    strcpy(p->name, fname);
     free(inst);
+    debug("CLEANED, then allocated %ld instructions at address %d.\n", n, address);
 }

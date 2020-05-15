@@ -20,7 +20,7 @@
 #include "debug.h"
 
 void run(MEMORY *mem, process *p) {
-    if (p->counter >= p->start + p->instsize) {
+    if ((size_t) p->counter >= p->start + p->instsize) {
         p->state = switchState(p->state, STATUS_TERMINATED);
         return;
     }
