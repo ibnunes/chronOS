@@ -55,19 +55,13 @@
 
 
 #include "simulator.h"
+#include "fcfs.h"
 #include "tui.h"
 #include <time.h>
 
 
 int main(int argc, char const *argv[]) {
-    /* TODO:
-     *  [OK] -> Alocar memória
-     *  [  ] -> Inicializar gestor de processos
-     *  [OK] -> Inicializar gestor de memória
-     *  [OK] -> Ler plan.txt
-     *  [  ] -> Ler control.txt ou stdin
-     *  [  ] -> Passar controlo ao gestor de processos
-     */
+    printf("===== chronOS 1.0.0 =====\n\n");
 
     int __running = 1;
     cputime = 0;
@@ -85,30 +79,29 @@ int main(int argc, char const *argv[]) {
     plan = plan_read_from_file(FILE_PLAN);
     debug("Got %d elements in queue.\n", plan_length(plan));
 
-
     clock_t clock_start, clock_end;
     float seconds;
+    
+    int __mustexit = 0;
+    int pcbindex = 0;
 
     /* Ciclo principal do programa */
     while (__running) {
-        if (plan_peek(plan).time <= cputime) {
-            debug("cputime = %ld; plan_peek.time = %ld\n", cputime, plan_peek(plan).time);
-            create_new_process(pcb, plan_pop(plan).program);
-
-            /*
-            size_t n;
-            PLAN p = plan_pop(plan);
-            instruction *i = program_read_from_file(p.program, &n);
-            int address = memalloc(memory, i, n);
-            free(i);
-            debug("%ld instructions from %s allocated to address %d.\n", n, p.program, address);
-            */
+        if (!plan_empty(plan)) {
+            if (plan_peek(plan).time <= cputime) {
+                debug("cputime = %ld; plan_peek.time = %ld\n", cputime, plan_peek(plan).time);
+                create_new_process(pcb, plan_pop(plan).program);
+            }
         }
-
-
-        // chamar função de processamento, p.e. fcfs
-
-
+        
+        /* Gestão de processos */
+        pcbindex = fcfs(pcb, memory, pcbindex);
+        if (pcbindex == FCFS_END) {
+            debug("Reached FCFS_END.\n");
+            __mustexit = 1;
+        }
+        
+        /* Clock do processador */
         clock_start = clock();
         while (1) {
             clock_end = clock();
@@ -119,12 +112,13 @@ int main(int argc, char const *argv[]) {
             }
         }
 
-        // TODO: verificar se o simulador deve terminar
-        if (plan_empty(plan))  // faltam condições
+        // Verificar condições nas quais o simulador deve terminar
+        if (plan_empty(plan) && __mustexit)
             __running = 0;
     }
 
     pcbreport(pcb);
+    memreport(memory);
 
     // -3. Libertar queue de plano
     debug("Freeing plan queue\n");

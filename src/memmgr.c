@@ -17,18 +17,22 @@
 
 
 #include "memmgr.h"
+#include "utils.h"
 #include "debug.h"
+#include <string.h>
 
 void cleaninstruction(instruction *instruct) {
     instruct->ins = INSTRUCTION_VOID;
     instruct->n   = 0;
+    strcpy(instruct->name, "");
 }
 
 MEMORY *memcreate(size_t nmemb) {
     MEMORY *memory = malloc(sizeof(MEMORY));
     memory->cells = malloc(nmemb * sizeof(instruction));
+    memory->capacity = nmemb;
     for (size_t i = 0; i < nmemb; i++)
-        cleaninstruction(&memory->cells[i]);
+        cleaninstruction(&(memory->cells[i]));
     return memory;
 }
 
@@ -61,7 +65,7 @@ int memalloc(MEMORY* mem, instruction* ins, size_t size) {
     if (available)
         for (size_t i = init, j = 0; j < size; i++, j++) {
             mem->cells[i].ins = ins[j].ins;
-            mem->cells[i].n   = ins[j].ins;
+            mem->cells[i].n   = ins[j].n;
             strcpy(mem->cells[i].name, ins[j].name);
         }
     else
@@ -72,12 +76,15 @@ int memalloc(MEMORY* mem, instruction* ins, size_t size) {
 }
 
 void memfree(MEMORY *mem, size_t init, size_t nmemb) {
-    for (size_t i = init; i < nmemb; i++)
-        cleaninstruction(&mem->cells[i]);
+    for (size_t i = init; i < init + nmemb; i++)
+        cleaninstruction(&(mem->cells[i]));
 }
 
 /* TODO: testing */
 instruction* program_read_from_file(char *fname, size_t *n) {
+    if (!strendswithprg(fname))
+        strcat(fname, PROG_EXTENSION);
+
     FILE *f = fopen(fname, "r");
     expects(f != NULL);
 
@@ -90,7 +97,7 @@ instruction* program_read_from_file(char *fname, size_t *n) {
     while (!feof(f)) {
         aux.ins  = INSTRUCTION_VOID;
         aux.n    = 0;
-        // aux.name = NULL;
+        strcpy(aux.name, "");
 
         line = fgets(line, MAX_INSTRUCTION, f);
         expects(line != NULL);
@@ -104,16 +111,20 @@ instruction* program_read_from_file(char *fname, size_t *n) {
 
         } else if ((read = sscanf(line, "%c ", &aux.ins)) == 1) {
             debug("Pushing (%c, ---, NULL) to instruction array...\n", aux.ins);
-
-push_instruction:
-            (*n)++;
-            instruct = realloc(instruct, (*n) * sizeof(*instruct));
-            instruct[*n-1] = aux;
-            continue;
+            goto push_instruction;
 
         } else {
             fprintf(stderr, "ERROR: only %d out of 1 or 2 items were corretly read from \"%s\".\n", read, line);
+            continue;
         }
+
+push_instruction:
+        (*n)++;
+        instruct = realloc(instruct, (*n) * sizeof(*instruct));
+        instruct[*n-1].ins = aux.ins;
+        instruct[*n-1].n   = aux.n;
+        strcpy(instruct[*n-1].name, aux.name);
+        continue;
     }
 
     free(line);

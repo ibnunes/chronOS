@@ -17,6 +17,7 @@
 
 
 #include "tui.h"
+#include "types.h"
 #include <stdio.h>
 
 const char *state2str(int state) {
@@ -43,21 +44,44 @@ void pcbreport(PCB *pcb) {
     printf("Current time: %ld\n\n", cputime);
 
     process *p;
-    printf("+------------------------------------+---------+--------------------+\n");
-    printf("|              PROCESS               |         |        TIME        |\n");
-    printf("| PID | PPID | Priority |   Status   | Context | Init | Used | End  |\n");
-    printf("+-----+------+----------+------------+---------+------+------+------+\n");
+    printf("+-------------------------------------------------------+-----+---------+--------------------+\n");
+    printf("|                       PROCESS                         | MEM |         |        TIME        |\n");
+    printf("|       Name       | PID | PPID | Priority |   Status   | ind | Context | Init | Used | End  |\n");
+    printf("+------------------+-----+------+----------+------------+-----+---------+------+------+------+\n");
     for (size_t i = 0; i < pcb->size; i++) {
         p = &(pcb->proc[i]);
         if (p->pid != -1) {
             printf(
-                "| %3d | %4d | %8d | %10s | %7d | %4ld | %4ld | %4ld |\n",
-                p->pid, p->ppid, p->priority, state2str(p->state),
-                p->context, p->timeinit, p->timeused, p->timeend
+                "| %16s | %3d | %4d | %8d | %10s | %3ld | %7d | %4ld | %4ld | %4ld |\n",
+                p->name, p->pid, p->ppid, p->priority, state2str(p->state),
+                p->start,
+                p->context,
+                p->timeinit, p->timeused, p->timeend
             );
         }
     }
-    printf("+-----+------+----------+------------+---------+------+------+------+\n\n");
-
+    printf("+------------------+-----+------+----------+------------+-----+---------+------+------+------+\n\n");
+    
     printf("===== End of report =====\n\n");
 }
+
+#ifndef NDEBUG
+
+void memreport(MEMORY *mem) {
+    printf("======== Memory =========\n\n");
+    printf("+------+-----+-----+------------------+\n");
+    printf("| Cell | Ins |  n  |       name       |\n");
+    printf("+------+-----+-----+------------------+\n");
+    for (size_t i = 0; i < mem->capacity; i++) {
+        if (mem->cells[i].ins != INSTRUCTION_VOID) {
+            printf(
+                "| %4ld | %3c | %3d | %16s |\n",
+                i, mem->cells[i].ins, mem->cells[i].n, mem->cells[i].name
+            );
+        }
+    }
+    printf("+------+-----+-----+------------------+\n");
+    printf("===== End of memory =====\n\n");
+}
+
+#endif
