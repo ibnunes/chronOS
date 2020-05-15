@@ -89,8 +89,7 @@
 	À data de escrita do presente relatório, o programa \chronOS~é capaz de fazer as seguintes tarefas:
 	
 	\begin{enumerate}
-		\item Alocar células de memória e a tabela PCB;
-		\item Alocar a tabela \texttt{\ac{PCB}};
+		\item Alocar células de memória e a tabela \texttt{\ac{PCB}};
 		\item Ler o ficheiro \texttt{plan.txt} e guardar em memória o plano de execução numa \textit{queue};
 		\item Temporizar o sistema de 500 em 500 milissegundos;
 		\item Extrair de um ficheiro \texttt{*.prg} as suas instruções;
@@ -103,7 +102,7 @@
 		\item Libertar os recursos associados à memória, à tabela PCB e à \textit{queue} do plano de execução.
 	\end{enumerate}
 	
-	Todas as tarefas foram testadas em modo \textit{debug} recorrendo a \textit{sanitizer flags} (descrito na secção \ref{sec:struct_makefile}) que nos permitem verificar que não existe nenhum \textit{memory leak} no final da execução do programa.
+	Todas as tarefas foram testadas em modo \textit{debug} recorrendo a \textit{sanitizer flags} (descrito na secção \ref{ssec:dev:struct_makefile}) que nos permitem verificar que não existe nenhum \textit{memory leak} no final da execução do programa.
 	
 	
 	\subsection{Estrutura do código e \texttt{Makefile}}
@@ -171,7 +170,7 @@
 	
 	\begin{itemize}
 		\item \verb|name|: nome do processo;
-		\item \verb|pid|: PID do processo;
+		\item \verb|pid|: \ac{PID} do processo;
 		\item \verb|ppid|: PID do processo pai;
 		\item \verb|context|: variável inteira associada ao processo;
 		\item \verb|start|: endereço de memória da 1ª instrução do processo;
@@ -204,13 +203,13 @@
 	    \item Obter a informação de um processo na estrutura dado o seu PID.
 	\end{itemize}
 	
-	O único algoritmo de escalonamento implementado na atual \textit{build} do program é o \texttt{\ac{fcfs}}.
+	O único algoritmo de escalonamento implementado na atual \textit{build} do program é o \ac{FCFS}.
 	
 	
 	\subsection{Algoritmo FCFS}
 	\label{ssec:process:fcfs}
 	
-	O \textbf{algoritmo FCFS} implementado admite os novos processos (estado \texttt{STATUS\_NEW}) na fila de processos prontos (estado \texttt{STATUS\_READY}) e, uma vez no estado pronto, faz o seu \textit{dispatch} para a fila de processos em execução (estado \texttt{STATUS\_RUNNING}). Uma vez terminada a sua execução, é feito o \textit{release} e o processo fica na fila de processos terminados (estado \texttt{STATUS\_TERMINATED}).
+	O \textbf{algoritmo FCFS} admite os novos processos (estado \texttt{STATUS\_NEW}) na fila de processos prontos (estado \texttt{STATUS\_READY}) e, uma vez no estado pronto, faz o seu \textit{dispatch} para a fila de processos em execução (estado \texttt{STATUS\_RUNNING}). Uma vez terminada a sua execução, é feito o \textit{release} e o processo fica na fila de processos terminados (estado \texttt{STATUS\_TERMINATED}).
 	
 	Tudo é feito segundo o princípio FIFO [\textit{First In, First Out}], i.e., uma \textit{queue}. Dada a forma como a estrutura \verb|PCB| está definida no nosso projeto, o método \verb|fcfs| necessita apenas de saber o índice atual da tabela \verb|PCB| a fim de saber as próximas ações a tomar segundo o modelo de 5 estados.
 	
@@ -269,7 +268,7 @@
 	\begin{itemize}
 		\item Implementação efetiva do controlo do \chronOS~a partir de um ficheiro \texttt{contro.txt} (ou do \texttt{stdin} para \textit{debuggin});
 		\item Melhorias no algoritmo FCFS para permitir escalonamento a longo prazo;
-		\item Implementação de mais algoritmos de escalonamento (e.g. SJF [\textit{Shortest Job First}]);
+		\item Implementação de mais algoritmos de escalonamento (e.g. \ac{SJF});
 		\item Leitura opcional de prioridades de processos a partir do ficheiro \texttt{plan.txt};
 		\item Adição de maior controlo sobre os parâmetros do \chronOS~através de argumentos passados ao programa, tais como:
 		\begin{itemize}
@@ -282,14 +281,18 @@
 		\item Desfragmentador de memória (método \verb|memdefrag|).
 	\end{itemize}
 	
-	\section{Acrónimos}
+	\vspace{1cm}
+	
+	\section*{Acrónimos}
+	\addcontentsline{toc}{section}{Acrónimos}
     \label{sec:acron}
     
     \begin{acronym}[PCB]
-        \acro{fcfs}{\emph{First Come, First Serve}}
-        \acro{gcc}{\emph{GNU C Compliler}}
+        \acro{FCFS}{\emph{First Come, First Serve}}
+        \acro{gcc}{\emph{GNU C Compiler}}
         \acro{PID}{\emph{Process Identifier}}
         \acro{PCB}{\emph{Process Control Block}}
+        \acro{SJF}{\emph{Shortest Job First}}
     \end{acronym}
 	
 \end{document}
