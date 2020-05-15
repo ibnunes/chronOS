@@ -9,6 +9,7 @@
 %\usepackage{amsmath}
 %\usepackage{systeme}
 \usepackage{hyperref}
+\usepackage[printonlyused]{acronym}
 
 \graphicspath{{img/}}
 
@@ -89,6 +90,7 @@
 	
 	\begin{enumerate}
 		\item Alocar células de memória e a tabela PCB;
+		\item Alocar a tabela \texttt{\ac{PCB}};
 		\item Ler o ficheiro \texttt{plan.txt} e guardar em memória o plano de execução numa \textit{queue};
 		\item Temporizar o sistema de 500 em 500 milissegundos;
 		\item Extrair de um ficheiro \texttt{*.prg} as suas instruções;
@@ -123,7 +125,7 @@
 		\item \textbf{\textit{Release}} (\verb|make release|): versão final sem mensagens de \textit{debug} durante a execução do \chronOS.
 	\end{itemize}
 
-	O \texttt{Makefile} inclui uma série de \textit{flags} adicionais face ao comum a fim de controlar de forma mais apertada o comportamento do \texttt{gcc}, o qual é bastante permissivo por natureza. O modo \textit{debug} inclui \textit{sanitizer flags} que permitem detetar \textit{memory leaks} e detalhar informações acerca de falhas graves na execução relacionadas com acessos indevidos à memória (os clássicos \textit{segmentation faults}).
+	O \texttt{Makefile} inclui uma série de \textit{flags} adicionais face ao comum a fim de controlar de forma mais apertada o comportamento do \texttt{\ac{gcc}}, o qual é bastante permissivo por natureza. O modo \textit{debug} inclui \textit{sanitizer flags} que permitem detetar \textit{memory leaks} e detalhar informações acerca de falhas graves na execução relacionadas com acessos indevidos à memória (os clássicos \textit{segmentation faults}).
 	
 	
 	\section{Execução do \chronOS}
@@ -188,10 +190,10 @@
 	Da mesma forma que a gestão de memória, falada na secção \ref{sec:memory}, a gestão de processos está dividida em três componentes:
 	
 	\begin{itemize} %Create an acronym session to store this
-	    \item O \verb|PCB| [\textit{Process Control Block}], que representa a estrutura onde estão armazenados todos os processos;
-	    \item As funções definidas no ficheiro \verb|pcbmgr.c|, que servem para manipular o \verb|PCB|;
+	    \item O \texttt{\ac{PCB}}, que representa a estrutura onde estão armazenados todos os processos;
+	    \item As funções definidas no ficheiro \texttt{\ac{PCB}}, que servem para manipular o \texttt{\ac{PCB}};
 	    \item Os algoritmos de escalonamento.
-	\end{itemize}
+	\end{itemize}  
 	
 	É, portanto, possível efetuar as atuais operações no \verb|PCB|:
 	\begin{itemize}
@@ -202,7 +204,7 @@
 	    \item Obter a informação de um processo na estrutura dado o seu PID.
 	\end{itemize}
 	
-	O único algoritmo de escalonamento implementado na atual \textit{build} do program é o \verb|fcfs| [\textit{First Come, First Serve}].
+	O único algoritmo de escalonamento implementado na atual \textit{build} do program é o \texttt{\ac{fcfs}}.
 	
 	
 	\subsection{Algoritmo FCFS}
@@ -279,5 +281,15 @@
 	
 		\item Desfragmentador de memória (método \verb|memdefrag|).
 	\end{itemize}
+	
+	\section{Acrónimos}
+    \label{sec:acron}
+    
+    \begin{acronym}[PCB]
+        \acro{fcfs}{\emph{First Come, First Serve}}
+        \acro{gcc}{\emph{GNU C Compliler}}
+        \acro{PID}{\emph{Process Identifier}}
+        \acro{PCB}{\emph{Process Control Block}}
+    \end{acronym}
 	
 \end{document}
