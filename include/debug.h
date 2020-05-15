@@ -39,11 +39,21 @@
 
 #define ensures(X) expects(X)
 
+#define write(...) 
+
+
 #else
+
 
 #define debug(...) 
 #define expects(...)
 #define ensures(...)
+
+#define write(...)                                                      \
+   do {                                                                 \
+      fprintf(stdout, __VA_ARGS__);                                     \
+   } while(0)
+
 
 #endif  // NDEBUG
 

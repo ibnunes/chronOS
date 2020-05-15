@@ -8,30 +8,27 @@
 //    Copyright (C) 2020 Universidade da Beira Interior (www.ubi.pt)
 //
 // RUNTIME LIBRARIES PACKAGE
-//    fcfs.h
+//    utils.h
 //
 // DESCRIPTION:
 // -----------
-// First Come First Serve algorithm.
+// Miscellaneous utilities.
 //------------------------------------------------------------------------------
 
-#ifndef FCFS_H
-#define FCFS_H
-
+#include "utils.h"
 #include "types.h"
+#include <string.h>
 
-#define FCFS_END -1
+int strendswith(const char *str, const char *suffix) {
+    if (!str || !suffix)
+        return 0;
+    size_t lenstr    = strlen(str);
+    size_t lensuffix = strlen(suffix);
+    if (lensuffix >  lenstr)
+        return 0;
+    return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
+}
 
-/* Function:  fcfs
- * ---------------
- * Executes the processes in the PCB table using the FCFS algorithm.
- * 
- *  pcb: the PCB table with the processes.
- *  mem: the memory array.
- *  pcbindex: current PCB table index at which the manager is working.
- * 
- *  return: next PCB index, or FCFS_END if ended.
- */
-int fcfs(PCB *pcb, MEMORY *mem, int pcbindex);
-
-#endif
+int strendswithprg(const char *str) {
+    return strendswith(str, PROG_EXTENSION);
+}

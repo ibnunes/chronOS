@@ -99,7 +99,6 @@ void terminateProcess(process* p);
  */
 void forkProcess(MEMORY *mem, process *p);
 
-
 /* Function: cleanProgram
  * ----------------------
  * Clears all following instructions associated with the current process 
@@ -112,7 +111,6 @@ void forkProcess(MEMORY *mem, process *p);
  *  returns: void
  */
 void cleanProgram(MEMORY *mem, process *p, char *filename);
-
 
 /* Function:  switchState
  * ----------------------

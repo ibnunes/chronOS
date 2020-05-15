@@ -27,5 +27,4 @@ PCB     *pcb;            // Tabela PCB (Process Control Block)
 clock_t cputime;         // Tempo atual do processador em milissegundos
 plan_q  *plan;           // Plano: lista de processos e tempos de entrada
 
-
 #endif
