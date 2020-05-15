@@ -113,10 +113,45 @@
 	
 	\section{Gestão de memória}
 	\label{sec:memory}
+	A gestão de memória está dividida em duas componentes:
+	\begin{itemize}
+	    \item A \verb|memory|, que representa a estrutura de memória onde são armazenadas as instruções;
+	    \item As funções definidas no ficheiro \verb|memmgr.c|, que servem para manipular a \verb|memory|.
+	\end{itemize}
 	
-	
+	Na versão do projeto aqui apresentada, é possível efetuar as seguintes operações sobre a \verb|memory|:
+	    \begin{itemize}
+	        \item Limpar uma instrução;
+	        \item Criar um bloco de memória;
+	        \item Libertar toda a memória;
+	        \item Alocar memória para guardar instruções;
+	        \item Libertar a memória associada com um processo;
+	        \item Escrever para a memória a partir de um ficheiro \verb|*.prg|.
+	    \end{itemize}
+	%How to conclude this session?
 	\section{Gestão de processos}
 	\label{sec:process}
+	Da mesma forma que a gestão de memória,a gestão de processos está dividida em três componentes:
+	\begin{itemize} %Create an acronym session to store this
+	    \item O \verb|PCB| [\textit{Process Control Block}], que representa a estrutura onde estão armazenados todos os processos;
+	    \item As funções definidas no ficheiro \verb|pcbmgr.c|, que servem para manipular o \verb|PCB|;
+	    \item Os algoritmos de escalonamento.
+	\end{itemize}
 	
+	Até ao presente momento, é possível efetuar as atuais operações no \verb|PCB|:
+	\begin{itemize}
+	    \item Criar um \verb|PCB|;
+	    \item Obter o PID mais elevado presente;
+	    \item Alocar um processo e armazená-lo;
+	    \item Libertar toda a estrutura;
+	    \item Obter a posição de um processo na estrutura.
+	\end{itemize}
+	
+	O único algoritmo de escalonamento implementado na atual \textit{build} do program é o \verb|fcfs| [\textit{First Come, First Serve}].
+	
+	\section{Conclusão e Trabalho Futuro}
+	\label{sec:con_futwork}
+	
+	%talk about what has been learnt so far on this work and what's missing from the final program.
 	
 \end{document}
