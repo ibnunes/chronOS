@@ -1,6 +1,7 @@
 #include "heapmgr.h"
+#include "data.h"
 
-int heapalloc(const int pid, const int size, const int __algorithm) {
+int heapalloc(const int pid, const int size) {
     clock_t clock_start, clock_end;     // Tempos de início e de fim da alocação
     int crossed;
     int success = 0;                    // Quais algoritmos conseguiram alocar
@@ -49,11 +50,30 @@ int heapalloc(const int pid, const int size, const int __algorithm) {
 }
 
 int heapfree(const int pid) {
-    // TODO
-    return HEAP_FREE_FAILURE;
+    for (int i = 0; i < heap_first->capacity; i++) {
+        if (heap_first->pid[i] == pid)
+            heap_first->pid[i] = 0;
+    }
+
+    for (int i = 0; i < heap_next->capacity; i++) {
+        if (heap_next->pid[i] == pid)
+            heap_next->pid[i] = 0;
+    }
+
+    for (int i = 0; i < heap_best->capacity; i++) {
+        if (heap_best->pid[i] == pid)
+            heap_best->pid[i] = 0;
+    }
+
+    for (int i = 0; i < heap_worst->capacity; i++) {
+        if (heap_worst->pid[i] == pid)
+            heap_worst->pid[i] = 0;
+    }
+
+    return HEAP_FREE_SUCCESS;
 }
 
-int heapfragcount(void) {
+int heapfragcount(HEAP* heap) {
     // TODO
     return 0;
 }
