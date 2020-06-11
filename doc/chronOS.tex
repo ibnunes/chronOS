@@ -48,6 +48,7 @@
 	
 	\newpage
 	\tableofcontents
+	\vspace{1cm}
 	\listoffigures
 	\newpage
 	
@@ -94,12 +95,12 @@
 		\item Temporizar o sistema de 500 em 500 milissegundos;
 		\item Extrair de um ficheiro \texttt{*.prg} as suas instruções;
 		\item Alocar em memória as instruções referentes a um programa recorrendo ao \textbf{algoritmo \textit{first-fit}};
-		\item Ler um programa para memória e alocar os dados na tabela PCB ao tempo exato indicado pelo plano de execução;
+		\item Ler um programa para memória e alocar os dados na tabela \ac{PCB} ao tempo exato indicado pelo plano de execução;
 		\item Executar as instruções em memória, incluindo o \textit{fork} (instrução \verb|C n|) e o \textit{clean} (instrução \verb|L filename|);
-		\item Gerir os processos com recurso ao \textbf{algoritmo FCFS};
+		\item Gerir os processos com recurso ao \textbf{algoritmo \ac{FCFS}};
 		\item Imprimir um relatório do estado dos processos;
 		\item Imprimir um relatório do estado da memória em modo \textit{debug};
-		\item Libertar os recursos associados à memória, à tabela PCB e à \textit{queue} do plano de execução.
+		\item Libertar os recursos associados à memória, à tabela \ac{PCB} e à \textit{queue} do plano de execução.
 	\end{enumerate}
 	
 	Todas as tarefas foram testadas em modo \textit{debug} recorrendo a \textit{sanitizer flags} (descrito na secção \ref{ssec:dev:struct_makefile}) que nos permitem verificar que não existe nenhum \textit{memory leak} no final da execução do programa.
@@ -124,7 +125,7 @@
 		\item \textbf{\textit{Release}} (\verb|make release|): versão final sem mensagens de \textit{debug} durante a execução do \chronOS.
 	\end{itemize}
 
-	O \texttt{Makefile} inclui uma série de \textit{flags} adicionais face ao comum a fim de controlar de forma mais apertada o comportamento do \texttt{\ac{gcc}}, o qual é bastante permissivo por natureza. O modo \textit{debug} inclui \textit{sanitizer flags} que permitem detetar \textit{memory leaks} e detalhar informações acerca de falhas graves na execução relacionadas com acessos indevidos à memória (os clássicos \textit{segmentation faults}).
+	O \texttt{Makefile} inclui uma série de \textit{flags} adicionais face ao comum a fim de controlar de forma mais apertada o comportamento do \ac{GCC}, o qual é bastante permissivo por natureza. O modo \textit{debug} inclui \textit{sanitizer flags} que permitem detetar \textit{memory leaks} e detalhar informações acerca de falhas graves na execução relacionadas com acessos indevidos à memória (os clássicos \textit{segmentation faults}).
 	
 	
 	\section{Execução do \chronOS}
@@ -134,15 +135,15 @@
 	
 	\begin{itemize}
 		\item \verb|memory|: bloco de memória, descrito na secção \ref{sec:memory}, constituída por 1000 células;
-		\item \verb|pcb|: tabela PCB, descrita na secção \ref{sec:process}, constituída por 100 linhas;
+		\item \verb|pcb|: tabela \ac{PCB}, descrita na secção \ref{sec:process}, constituída por 100 linhas;
 		\item \verb|plan|: \textit{queue} com o plano de entrada de processos no sistema, dinamicamente alocada e ajustada.
 	\end{itemize}
 
 	O plano de entrada de processos é lido a partir do ficheiro \texttt{plan.txt}, o qual deve estar obrigatoriamente presente. O plano é alocado em \textit{heap memory} numa \textit{queue} do tipo \verb|plan_q|, definida em \verb|plan.h|. É esperado que o ficheiro tenha os dados ordenados por ordem cronológica de entrada. O comportamento do \chronOS~ para um plano não ordenado não está definido.
 	
-	\chronOS~executa com base num ciclo que simula uma CPU com um \textit{clock} de \SI{2}{\hertz}. A cada ciclo de \textit{clock} é considerado que passou 1 unidade de tempo de CPU, armazenada em \verb|cputime|, e que permite determinar os tempos aos quais os processos entram em execução, quanto tempo levam a ser executados e em que tempo são terminados.
+	\chronOS~executa com base num ciclo que simula uma \ac{CPU} com um \textit{clock} de \SI{2}{\hertz}. A cada ciclo de \textit{clock} é considerado que passou 1 unidade de tempo de \ac{CPU}, armazenada em \verb|cputime|, e que permite determinar os tempos aos quais os processos entram em execução, quanto tempo levam a ser executados e em que tempo são terminados.
 	
-	A cada ciclo de \textit{clock}, um algoritmo de escalonamento é executado, o qual irá definir a próxima ação a ser tomada. Os algoritmos de escalonamento têm o controlo \textit{de facto} da execução das instruções e dos processos, não sendo responsabilidade da função \verb|main| onde se encontra o simulador da CPU.
+	A cada ciclo de \textit{clock}, um algoritmo de escalonamento é executado, o qual irá definir a próxima ação a ser tomada. Os algoritmos de escalonamento têm o controlo \textit{de facto} da execução das instruções e dos processos, não sendo responsabilidade da função \verb|main| onde se encontra o simulador da \ac{CPU}.
 	
 	\begin{figure}[!btp]
 		\centering
@@ -158,7 +159,7 @@
 		\caption{Exemplo de um relatório da memória em modo \textit{debug}.}
 	\end{figure}
 
-	Para terminar, todos os recursos são libertados e é impresso um relatório da tabela PCB (Figura \ref{fig:pcbreport}). Em modo de \textit{debug}, e exclusivamente para efeitos de \textit{debugging} no processo de desenvolvimento, é impresso um relatório adicional da memória (Figura \ref{fig:memreport}).
+	Para terminar, todos os recursos são libertados e é impresso um relatório da tabela \ac{PCB} (Figura \ref{fig:pcbreport}). Em modo de \textit{debug}, e exclusivamente para efeitos de \textit{debugging} no processo de desenvolvimento, é impresso um relatório adicional da memória (Figura \ref{fig:memreport}).
 	
 	
 	
@@ -171,7 +172,7 @@
 	\begin{itemize}
 		\item \verb|name|: nome do processo;
 		\item \verb|pid|: \ac{PID} do processo;
-		\item \verb|ppid|: PID do processo pai;
+		\item \verb|ppid|: \ac{PID} do processo pai;
 		\item \verb|context|: variável inteira associada ao processo;
 		\item \verb|start|: endereço de memória da 1ª instrução do processo;
 		\item \verb|counter|: PC [\textit{Program Counter}] do processo (endereço absoluto no bloco de memória);
@@ -179,8 +180,8 @@
 		\item \verb|state|: estado atual do processo;
 		\item \verb|priority|: nível de prioridade do processo;
 		\item \verb|timelimit|: \textit{burst time} do processo;
-		\item \verb|timeinit|: tempo de CPU ao qual o processo iniciou (passou ao estado \texttt{STATUS\_READY});
-		\item \verb|timeend|: tempo de CPU ao qual o processo terminou (passou ao estado \texttt{STATUS\_TERMINATED});
+		\item \verb|timeinit|: tempo de \ac{CPU} ao qual o processo iniciou (passou ao estado \texttt{STATUS\_READY});
+		\item \verb|timeend|: tempo de \ac{CPU} ao qual o processo terminou (passou ao estado \texttt{STATUS\_TERMINATED});
 		\item \verb|timeused|: tempo total consumido a ser processado (durante o estado \texttt{STATUS\_RUNNING}).
 	\end{itemize}
 	
@@ -194,24 +195,24 @@
 	    \item Os algoritmos de escalonamento.
 	\end{itemize}  
 	
-	É, portanto, possível efetuar as atuais operações no \verb|PCB|:
+	É, portanto, possível efetuar as atuais operações no \ac{PCB}:
 	\begin{itemize}
-	    \item Criar uma tabela \verb|PCB|;
-	    % \item Obter o PID mais elevado presente;
-	    \item Alocar um processo e armazená-lo na tabela \verb|PCB|;
+	    \item Criar uma tabela \ac{PCB};
+	    % \item Obter o \ac{PID} mais elevado presente;
+	    \item Alocar um processo e armazená-lo na tabela \ac{PCB};
 	    \item Libertar toda a estrutura;
-	    \item Obter a informação de um processo na estrutura dado o seu PID.
+	    \item Obter a informação de um processo na estrutura dado o seu \ac{PID}.
 	\end{itemize}
 	
 	O único algoritmo de escalonamento implementado na atual \textit{build} do program é o \ac{FCFS}.
 	
 	
-	\subsection{Algoritmo FCFS}
+	\subsection{Algoritmo \ac{FCFS}}
 	\label{ssec:process:fcfs}
 	
-	O \textbf{algoritmo FCFS} admite os novos processos (estado \texttt{STATUS\_NEW}) na fila de processos prontos (estado \texttt{STATUS\_READY}) e, uma vez no estado pronto, faz o seu \textit{dispatch} para a fila de processos em execução (estado \texttt{STATUS\_RUNNING}). Uma vez terminada a sua execução, é feito o \textit{release} e o processo fica na fila de processos terminados (estado \texttt{STATUS\_TERMINATED}).
+	O \textbf{algoritmo \ac{FCFS}} admite os novos processos (estado \texttt{STATUS\_NEW}) na fila de processos prontos (estado \texttt{STATUS\_READY}) e, uma vez no estado pronto, faz o seu \textit{dispatch} para a fila de processos em execução (estado \texttt{STATUS\_RUNNING}). Uma vez terminada a sua execução, é feito o \textit{release} e o processo fica na fila de processos terminados (estado \texttt{STATUS\_TERMINATED}).
 	
-	Tudo é feito segundo o princípio FIFO [\textit{First In, First Out}], i.e., uma \textit{queue}. Dada a forma como a estrutura \verb|PCB| está definida no nosso projeto, o método \verb|fcfs| necessita apenas de saber o índice atual da tabela \verb|PCB| a fim de saber as próximas ações a tomar segundo o modelo de 5 estados.
+	Tudo é feito segundo o princípio FIFO [\textit{First In, First Out}], i.e., uma \textit{queue}. Dada a forma como a estrutura \ac{PCB} está definida no nosso projeto, o método \verb|fcfs| necessita apenas de saber o índice atual da tabela \ac{PCB} a fim de saber as próximas ações a tomar segundo o modelo de 5 estados.
 	
 	
 	\section{Gestão de memória}
@@ -267,15 +268,15 @@
 	
 	\begin{itemize}
 		\item Implementação efetiva do controlo do \chronOS~a partir de um ficheiro \texttt{contro.txt} (ou do \texttt{stdin} para \textit{debuggin});
-		\item Melhorias no algoritmo FCFS para permitir escalonamento a longo prazo;
+		\item Melhorias no algoritmo \ac{FCFS} para permitir escalonamento a longo prazo;
 		\item Implementação de mais algoritmos de escalonamento (e.g. \ac{SJF});
 		\item Leitura opcional de prioridades de processos a partir do ficheiro \texttt{plan.txt};
 		\item Adição de maior controlo sobre os parâmetros do \chronOS~através de argumentos passados ao programa, tais como:
 		\begin{itemize}
-			\item \textit{Clock} do simulador da CPU;
+			\item \textit{Clock} do simulador da \ac{CPU};
 			\item Algoritmo de escalonamento a ser executado;
 			\item Tamanho do bloco de memória;
-			\item Tamanho da tabela PCB.
+			\item Tamanho da tabela \ac{PCB}.
 		\end{itemize}
 	
 		\item Desfragmentador de memória (método \verb|memdefrag|).
@@ -287,9 +288,10 @@
 	\addcontentsline{toc}{section}{Acrónimos}
     \label{sec:acron}
     
-    \begin{acronym}[PCB]
+    \begin{acronym}[FCFS]
+    	\acro{CPU}{\emph{Central Processing Unit}}
         \acro{FCFS}{\emph{First Come, First Serve}}
-        \acro{gcc}{\emph{GNU C Compiler}}
+        \acro{GCC}{\emph{GNU C Compiler}}
         \acro{PID}{\emph{Process Identifier}}
         \acro{PCB}{\emph{Process Control Block}}
         \acro{SJF}{\emph{Shortest Job First}}

@@ -33,6 +33,9 @@
 #include "plan.h"
 #include "debug.h"
 #include "fcfs.h"
+
+#include "heap.h"
+
 // #include "data.h"
 // #include "types.h"
 
