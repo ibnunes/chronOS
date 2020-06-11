@@ -2,21 +2,19 @@
 #include <stdlib.h>
 
 // criar memória heap
-HEAP *makeheap(const int CAPACITY)
-{
+HEAP *makeheap(const int CAPACITY) {
     HEAP *h = malloc(sizeof(HEAP));
     h->capacity = CAPACITY;
+    h->pid = calloc(CAPACITY, sizeof(int));     // coloca 0s em todos os elementos
     h->blocks = NULL;
-    for (int i = 0; i < CAPACITY; i++)
-    {
+    for (int i = 0; i < CAPACITY; i++) {
         h->blocks = appendblock(h->blocks, makeblock());
     }
     return h;
 }
 
-// criar 2KB de inteiros:
-BLOCK *makeblock(void)
-{
+// criar 2KB de bloco de memória
+BLOCK *makeblock(void) {
     BLOCK *n = malloc(sizeof(BLOCK));
     n->data = malloc(BLOCK_SIZE);
     n->next = NULL;
@@ -24,8 +22,7 @@ BLOCK *makeblock(void)
 }
 
 // fazer append
-BLOCK *appendblock(BLOCK *v, BLOCK *n)
-{
+BLOCK *appendblock(BLOCK *v, BLOCK *n) {
     if (v == NULL)
         return n;
     BLOCK *head = v;
@@ -36,15 +33,14 @@ BLOCK *appendblock(BLOCK *v, BLOCK *n)
 }
 
 // libertar recursos
-void destroyheap(HEAP *h)
-{
+void destroyheap(HEAP *h) {
     BLOCK *aux;
-    while (h->blocks != NULL)
-    {
+    while (h->blocks != NULL) {
         aux = h->blocks;
         h->blocks = h->blocks->next;
         free(aux->data);
         free(aux);
     }
+    free(h->pid);
     free(h);
 }

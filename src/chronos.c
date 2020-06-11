@@ -61,7 +61,7 @@
 
 
 int main(int argc, char const *argv[]) {
-    printf("===== chronOS 1.0.0 =====\n\n");
+    printf("===== chronOS 1.1.0 =====\n\n");
 
     int __running = 1;
     cputime = 0;
