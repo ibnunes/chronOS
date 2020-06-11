@@ -1,6 +1,8 @@
 #ifndef HEAPMGR_H
 #define HEAPMGR_H
 
+#include "types.h"
+
 #define HEAP_ALLOC_MIN 3        // Mínimo de 3 partições alocadas
 #define HEAP_ALLOC_MAX 10       // Máximo de 10 partições alocadas
 
@@ -13,9 +15,9 @@
 #define HEAP_ALG_BEST  4        // Algoritmo de alocação: Best-fit
 #define HEAP_ALG_WORST 8        // Algoritmo de alocação: Worst-fit
 
-int heapalloc(const int pid, const int size, const int __algorithm);
+int heapalloc(const int pid, const int size);
 int heapfree(const int pid);
-int heapfragcount(void);
+int heapfragcount(HEAP* heap);
 
 int heapalloc_first(const int pid, const int size);
 int heapalloc_next(const int pid, const int size);
