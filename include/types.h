@@ -168,4 +168,21 @@ typedef struct {
     size_t last;
 } plan_q;
 
+
+/* ======================================== *
+ * heap.h                                   *
+ * ======================================== */
+
+typedef struct block
+{
+    void *data; // apontador!
+    struct block *next;
+} BLOCK;
+
+typedef struct heap
+{
+    int capacity;
+    BLOCK *blocks;
+} HEAP;
+
 #endif

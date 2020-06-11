@@ -66,9 +66,13 @@ int main(int argc, char const *argv[]) {
     int __running = 1;
     cputime = 0;
 
-    // 1. Alocar células de memória 
+    // 1.1. Alocar células de memória 
     debug("Allocating %d cells of memory\n", MAX_MEM);
     memory = memcreate(MAX_MEM);
+
+    // 1.2. Alocar memória heap
+    debug("Allocating %d KB of heap memory\n", HEAP_CAPACITY * BLOCK_SIZE);
+    heap = makeheap(HEAP_CAPACITY);
 
     // 2. Inicializar tabela PCB
     debug("Allocating %d lines of PCB table\n", MAX_PCB);
@@ -124,9 +128,13 @@ int main(int argc, char const *argv[]) {
     debug("Freeing plan queue\n");
     plan_free(plan);
 
-    // -2. Libertar memória
+    // -2.1 Libertar memória
     debug("Freeing memory\n");
     memdestroy(memory);
+
+    // -2.2 Libertar memória heap
+    debug("Freeing heap memory\n");
+    destroyheap(heap);
 
     // -1. Libertar tabela PCB
     debug("Freeing PCB table\n");

@@ -9,7 +9,7 @@ HEAP *makeheap(const int CAPACITY)
     h->blocks = NULL;
     for (int i = 0; i < CAPACITY; i++)
     {
-        h->blocks = appendblock(h->block, makeblock());
+        h->blocks = appendblock(h->blocks, makeblock());
     }
     return h;
 }
@@ -20,6 +20,7 @@ BLOCK *makeblock(void)
     BLOCK *n = malloc(sizeof(BLOCK));
     n->data = malloc(BLOCK_SIZE);
     n->next = NULL;
+    return n;
 }
 
 // fazer append
@@ -35,7 +36,7 @@ BLOCK *appendblock(BLOCK *v, BLOCK *n)
 }
 
 // libertar recursos
-void freeheap(HEAP *h)
+void destroyheap(HEAP *h)
 {
     BLOCK *aux;
     while (h->blocks != NULL)
