@@ -183,7 +183,11 @@ typedef struct block {
 typedef struct heap {
     BLOCK *blocks;          // blocos de memória
     int capacity;           // capacidade da memória
+    int top;                // para o NEXT-FIT: último bloco alocado
     int *pid;               // PIDs dos processos que alocaram cada um dos blocos de memória
+    int calls;              // número de chamadas de alocação
+    int crossed;            // número de blocos atravessados para as alocações
+    float time;             // tempo total dispendido nas alocações
 } HEAP;
 
 #endif

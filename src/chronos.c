@@ -71,8 +71,11 @@ int main(int argc, char const *argv[]) {
     memory = memcreate(MAX_MEM);
 
     // 1.2. Alocar memória heap
-    debug("Allocating %d KB of heap memory\n", HEAP_CAPACITY * BLOCK_SIZE);
-    heap = makeheap(HEAP_CAPACITY);
+    debug("Allocating %d KB of heap memory for 4 algorithms\n", HEAP_CAPACITY * BLOCK_SIZE);
+    heap_first = makeheap(HEAP_CAPACITY);
+    heap_next  = makeheap(HEAP_CAPACITY);
+    heap_best  = makeheap(HEAP_CAPACITY);
+    heap_worst = makeheap(HEAP_CAPACITY);
 
     // 2. Inicializar tabela PCB
     debug("Allocating %d lines of PCB table\n", MAX_PCB);
@@ -133,8 +136,11 @@ int main(int argc, char const *argv[]) {
     memdestroy(memory);
 
     // -2.2 Libertar memória heap
-    debug("Freeing heap memory\n");
-    destroyheap(heap);
+    debug("Freeing heap memory (4 components)\n");
+    destroyheap(heap_first);
+    destroyheap(heap_next);
+    destroyheap(heap_best);
+    destroyheap(heap_worst);
 
     // -1. Libertar tabela PCB
     debug("Freeing PCB table\n");
