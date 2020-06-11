@@ -23,7 +23,10 @@
 #include <time.h>
 
 MEMORY  *memory;         // Memória
-HEAP    *heap;           // Memória heap
+HEAP    *heap_first;     // Memória heap - componente para first-fit
+HEAP    *heap_next;      // Memória heap - componente para next-fit
+HEAP    *heap_best;      // Memória heap - componente para best-fit
+HEAP    *heap_worst;     // Memória heap - componente para worst-fit
 PCB     *pcb;            // Tabela PCB (Process Control Block)
 clock_t cputime;         // Tempo atual do processador em milissegundos
 plan_q  *plan;           // Plano: lista de processos e tempos de entrada
