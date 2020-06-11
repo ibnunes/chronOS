@@ -170,19 +170,20 @@ typedef struct {
 
 
 /* ======================================== *
- * heap.h                                   *
+ * heap.h e heapmgr.h                       *
  * ======================================== */
 
-typedef struct block
-{
-    void *data; // apontador!
-    struct block *next;
+/* Memória heap */
+typedef struct block {
+    void *data;             // bloco de memória genérico
+    struct block *next;     // lista ligada
 } BLOCK;
 
-typedef struct heap
-{
-    int capacity;
-    BLOCK *blocks;
+/* Gestor da memória heap */
+typedef struct heap {
+    BLOCK *blocks;          // blocos de memória
+    int capacity;           // capacidade da memória
+    int *pid;               // PIDs dos processos que alocaram cada um dos blocos de memória
 } HEAP;
 
 #endif
