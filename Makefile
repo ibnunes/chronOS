@@ -14,7 +14,7 @@ ifneq ($(OS), 'Windows_NT')
     CFLAGS += -D_POSIX_C_SOURCE
 endif
 
-LIBS :=
+LIBS := -lpthread
 LDFLAGS :=
 SANITIZERFLAGS := -fsanitize=address -fsanitize=undefined
 
@@ -24,7 +24,7 @@ BINDIR := bin
 INCDIR := include
 DEPDIR := deps
 
-TARGET := app
+TARGET := chronos
 
 SOURCES := $(wildcard $(SRCDIR)/*.c)
 OBJECTS := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SOURCES))

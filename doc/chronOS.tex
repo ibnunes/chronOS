@@ -1,0 +1,300 @@
+\documentclass[a4paper,11pt,onecolumn,oneside]{article}
+
+\usepackage[english,portuges]{babel}
+%\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{siunitx}
+\usepackage{graphicx}
+%\usepackage{minted}
+%\usepackage{amsmath}
+%\usepackage{systeme}
+\usepackage{hyperref}
+\usepackage[printonlyused]{acronym}
+
+\graphicspath{{img/}}
+
+\newcommand{\chronOS}{\textsf{chronOS}}
+\newcommand{\git}{\textsf{git}}
+
+\title{
+	Sistemas Operativos --- Projeto\\
+	\chronOS~--- \textbf{Relatório preliminar}
+}
+
+\author{
+	\begin{tabular}[!h]{l l}
+		39489 & Jorge Miguel Louro Pissarra\\
+		41266 & Diogo Castanheira Simões\\
+		41381 & Igor Cordeiro Bordalo Nunes
+	\end{tabular}
+}
+
+\date{\today}
+
+\begin{document}
+	\maketitle
+	
+	\begin{abstract}
+		\chronOS~é um programa de simulação de escalonamento de processos e gestão de memória.
+		
+		Encontra-se implementado o algoritmo FCFS para o escalonamento, assim como o algoritmo \textit{first-fit} para a gestão de memória.
+		
+		Um plano de execução é lido no arranque do programa e o simulador de CPU, definido para \SI{2}{\hertz}, invoca o método que implementa o algoritmo de escalonamento para decidir a próxima ação, a qual pode ser um \textit{switch} no estado de um processo ou a execução de uma instrução.
+		
+		Sempre que possível é utilizada a memória \textit{heap} do computador para albergar os componentes do programa. Tal inclui o bloco de memória e a tabela PCB.
+		
+		Trabalho futuro é necessário para aumentar significativamente as capacidades do \chronOS, incluindo mais algoritmos de escalonamento.
+	\end{abstract}
+	
+	\newpage
+	\tableofcontents
+	\vspace{1cm}
+	\listoffigures
+	\newpage
+	
+	\section{Preâmbulo}
+	\label{sec:intro}
+	
+	Conhecer o coração dos sistemas operativos modernos implica conhecer diversos métodos de gestão de memória e de processos. \chronOS~propõe-se enquanto projeto de simulação de escalonamento a fim de consolidar conhecimentos na área no âmbito da unidade curricular de Sistemas Operativos.
+	
+	
+	\section{Pesquisa e desenvolvimento}
+	\label{sec:dev}
+	
+	\subsection{Linguagem e pesquisa}
+	\label{ssec:dev:sota}
+	
+	Para este projeto foram consideradas as linguagens C, C++ e OCaml. Optou-se pela linguagem C devido à facilidade em se trabalhar a um mais baixo nível e à grande versatilidade que os apontadores permitem. C++ teria sido uma linguagem ideal para usar orientação a objetos, mas a pouca familiaridade com esta forçou-nos a optar pelo C.
+	
+	Para reforçar a nossa aprendizagem, decidimos implementar tudo \textit{in-house}, \textbf{não} recorrendo a códigos já existentes ou projetos semelhantes na Internet e em repositórios \git~públicos.
+	
+	
+	\subsection{Repositório no GitLab}
+	\label{ssec:dev:gitlab}
+	
+	O projeto encontra-se alojado num servidor GitLab privado no seguinte \textit{link}: \url{https://gitlab.pcdev.pt/inunes/chronos/}
+	
+	O repositório \git~em causa inclui vários \textit{branches} nos quais nos encontramos a trabalhar, a saber:
+	
+	\begin{itemize}
+		\item \texttt{master}: \textit{branch} principal para onde é feito \textit{merge} de versões finais funcionais;
+		\item \texttt{dev}: \textit{branch} de desevolvimento dedicado do elemento de grupo Jorge Pissarra;
+		\item \texttt{dev-in}: \textit{branch} de desevolvimento dedicado do elemento de grupo Igor Nunes (regra geral é neste \textit{branch} que se encontram as \textbf{versões compiláveis sem erros com recurso ao \texttt{Makefile}});
+		\item \texttt{dev-ds}: \textit{branch} de desevolvimento dedicado do elemento de grupo Diogo Simões;
+	\end{itemize}
+	
+
+	\subsection{Resumo do estado atual do projeto}
+	\label{ssec:dev:summary}
+	
+	À data de escrita do presente relatório, o programa \chronOS~é capaz de fazer as seguintes tarefas:
+	
+	\begin{enumerate}
+		\item Alocar células de memória e a tabela \texttt{\ac{PCB}};
+		\item Ler o ficheiro \texttt{plan.txt} e guardar em memória o plano de execução numa \textit{queue};
+		\item Temporizar o sistema de 500 em 500 milissegundos;
+		\item Extrair de um ficheiro \texttt{*.prg} as suas instruções;
+		\item Alocar em memória as instruções referentes a um programa recorrendo ao \textbf{algoritmo \textit{first-fit}};
+		\item Ler um programa para memória e alocar os dados na tabela \ac{PCB} ao tempo exato indicado pelo plano de execução;
+		\item Executar as instruções em memória, incluindo o \textit{fork} (instrução \verb|C n|) e o \textit{clean} (instrução \verb|L filename|);
+		\item Gerir os processos com recurso ao \textbf{algoritmo \ac{FCFS}};
+		\item Imprimir um relatório do estado dos processos;
+		\item Imprimir um relatório do estado da memória em modo \textit{debug};
+		\item Libertar os recursos associados à memória, à tabela \ac{PCB} e à \textit{queue} do plano de execução.
+	\end{enumerate}
+	
+	Todas as tarefas foram testadas em modo \textit{debug} recorrendo a \textit{sanitizer flags} (descrito na secção \ref{ssec:dev:struct_makefile}) que nos permitem verificar que não existe nenhum \textit{memory leak} no final da execução do programa.
+	
+	
+	\subsection{Estrutura do código e \texttt{Makefile}}
+	\label{ssec:dev:struct_makefile}
+	
+	A pasta de desenvolvimento está estruturada com as seguintes pastas:
+	
+	\begin{itemize}
+		\item \verb|doc|: pasta onde é escrita a documentação, incluindo este mesmo documento em \LaTeX;
+		\item \verb|include|: inclui todos os \textit{header files} (ficheiros \verb|*.h|) necessários ao programa;
+		\item \verb|src|: inclui todos os ficheiros \verb|*.c| com a implementação dos protótipos declarados nos \textit{header files}.
+	\end{itemize}
+	
+	Por sua vez, o \texttt{Makefile} está construído de forma a possibilitar 2 formas de compilação:
+	
+	\begin{itemize}
+		\item \textbf{\textit{Debug}} (\verb|make debug|): versão de desenvolvimento com mensagens de \textit{debugging} bastante detalhadas;
+		
+		\item \textbf{\textit{Release}} (\verb|make release|): versão final sem mensagens de \textit{debug} durante a execução do \chronOS.
+	\end{itemize}
+
+	O \texttt{Makefile} inclui uma série de \textit{flags} adicionais face ao comum a fim de controlar de forma mais apertada o comportamento do \ac{GCC}, o qual é bastante permissivo por natureza. O modo \textit{debug} inclui \textit{sanitizer flags} que permitem detetar \textit{memory leaks} e detalhar informações acerca de falhas graves na execução relacionadas com acessos indevidos à memória (os clássicos \textit{segmentation faults}).
+	
+	
+	\section{Execução do \chronOS}
+	\label{sec:main}
+	
+	O programa começa por alocar todos os recursos necessários à execução do programa, nomeadamente:
+	
+	\begin{itemize}
+		\item \verb|memory|: bloco de memória, descrito na secção \ref{sec:memory}, constituída por 1000 células;
+		\item \verb|pcb|: tabela \ac{PCB}, descrita na secção \ref{sec:process}, constituída por 100 linhas;
+		\item \verb|plan|: \textit{queue} com o plano de entrada de processos no sistema, dinamicamente alocada e ajustada.
+	\end{itemize}
+
+	O plano de entrada de processos é lido a partir do ficheiro \texttt{plan.txt}, o qual deve estar obrigatoriamente presente. O plano é alocado em \textit{heap memory} numa \textit{queue} do tipo \verb|plan_q|, definida em \verb|plan.h|. É esperado que o ficheiro tenha os dados ordenados por ordem cronológica de entrada. O comportamento do \chronOS~ para um plano não ordenado não está definido.
+	
+	\chronOS~executa com base num ciclo que simula uma \ac{CPU} com um \textit{clock} de \SI{2}{\hertz}. A cada ciclo de \textit{clock} é considerado que passou 1 unidade de tempo de \ac{CPU}, armazenada em \verb|cputime|, e que permite determinar os tempos aos quais os processos entram em execução, quanto tempo levam a ser executados e em que tempo são terminados.
+	
+	A cada ciclo de \textit{clock}, um algoritmo de escalonamento é executado, o qual irá definir a próxima ação a ser tomada. Os algoritmos de escalonamento têm o controlo \textit{de facto} da execução das instruções e dos processos, não sendo responsabilidade da função \verb|main| onde se encontra o simulador da \ac{CPU}.
+	
+	\begin{figure}[!btp]
+		\centering
+		\includegraphics[width=\textwidth]{pcbreport}
+		\label{fig:pcbreport}
+		\caption{Exemplo de um relatório da tabela de processos.}
+	\end{figure}
+	
+	\begin{figure}[!btp]
+		\centering
+		\includegraphics[scale=0.5]{memreport}
+		\label{fig:memreport}
+		\caption{Exemplo de um relatório da memória em modo \textit{debug}.}
+	\end{figure}
+
+	Para terminar, todos os recursos são libertados e é impresso um relatório da tabela \ac{PCB} (Figura \ref{fig:pcbreport}). Em modo de \textit{debug}, e exclusivamente para efeitos de \textit{debugging} no processo de desenvolvimento, é impresso um relatório adicional da memória (Figura \ref{fig:memreport}).
+	
+	
+	
+	
+	\section{Gestão de processos}
+	\label{sec:process}
+	
+	Um \textbf{processo} inclui as seguintes informações, definidas na estrutura \verb|process| no \textit{header file} \texttt{types.h}:
+	
+	\begin{itemize}
+		\item \verb|name|: nome do processo;
+		\item \verb|pid|: \ac{PID} do processo;
+		\item \verb|ppid|: \ac{PID} do processo pai;
+		\item \verb|context|: variável inteira associada ao processo;
+		\item \verb|start|: endereço de memória da 1ª instrução do processo;
+		\item \verb|counter|: PC [\textit{Program Counter}] do processo (endereço absoluto no bloco de memória);
+		\item \verb|instsize|: número de instruções do processo;
+		\item \verb|state|: estado atual do processo;
+		\item \verb|priority|: nível de prioridade do processo;
+		\item \verb|timelimit|: \textit{burst time} do processo;
+		\item \verb|timeinit|: tempo de \ac{CPU} ao qual o processo iniciou (passou ao estado \texttt{STATUS\_READY});
+		\item \verb|timeend|: tempo de \ac{CPU} ao qual o processo terminou (passou ao estado \texttt{STATUS\_TERMINATED});
+		\item \verb|timeused|: tempo total consumido a ser processado (durante o estado \texttt{STATUS\_RUNNING}).
+	\end{itemize}
+	
+	Neste momento, \chronOS~implementa o modelo de 5 estados de processos, controlado por um método \verb|switchState|. Este método será utilizado por todos os algoritmos de gestão e escalonamento que serão implementados.
+	
+	Da mesma forma que a gestão de memória, falada na secção \ref{sec:memory}, a gestão de processos está dividida em três componentes:
+	
+	\begin{itemize} %Create an acronym session to store this
+	    \item O \texttt{\ac{PCB}}, que representa a estrutura onde estão armazenados todos os processos;
+	    \item As funções definidas no ficheiro \texttt{\ac{PCB}}, que servem para manipular o \texttt{\ac{PCB}};
+	    \item Os algoritmos de escalonamento.
+	\end{itemize}  
+	
+	É, portanto, possível efetuar as atuais operações no \ac{PCB}:
+	\begin{itemize}
+	    \item Criar uma tabela \ac{PCB};
+	    % \item Obter o \ac{PID} mais elevado presente;
+	    \item Alocar um processo e armazená-lo na tabela \ac{PCB};
+	    \item Libertar toda a estrutura;
+	    \item Obter a informação de um processo na estrutura dado o seu \ac{PID}.
+	\end{itemize}
+	
+	O único algoritmo de escalonamento implementado na atual \textit{build} do program é o \ac{FCFS}.
+	
+	
+	\subsection{Algoritmo \ac{FCFS}}
+	\label{ssec:process:fcfs}
+	
+	O \textbf{algoritmo \ac{FCFS}} admite os novos processos (estado \texttt{STATUS\_NEW}) na fila de processos prontos (estado \texttt{STATUS\_READY}) e, uma vez no estado pronto, faz o seu \textit{dispatch} para a fila de processos em execução (estado \texttt{STATUS\_RUNNING}). Uma vez terminada a sua execução, é feito o \textit{release} e o processo fica na fila de processos terminados (estado \texttt{STATUS\_TERMINATED}).
+	
+	Tudo é feito segundo o princípio FIFO [\textit{First In, First Out}], i.e., uma \textit{queue}. Dada a forma como a estrutura \ac{PCB} está definida no nosso projeto, o método \verb|fcfs| necessita apenas de saber o índice atual da tabela \ac{PCB} a fim de saber as próximas ações a tomar segundo o modelo de 5 estados.
+	
+	
+	\section{Gestão de memória}
+	\label{sec:memory}
+	
+	A memória no \chronOS~é, na sua essência, um bloco monolítico constituído células de memória. Cada célula é uma instrução. A estrutura \verb|MEMORY| definida em \texttt{types.h} define este bloco.
+	
+	A gestão de memória está dividida em duas componentes:
+	\begin{itemize}
+		\item A \verb|memory|, que representa a estrutura de memória onde são armazenadas as instruções;
+		\item As funções definidas no ficheiro \verb|memmgr.c|, que servem para manipular a \verb|memory|.
+	\end{itemize}
+	
+	Na versão do projeto aqui apresentada, é possível efetuar as seguintes operações sobre a \verb|memory|:
+	\begin{itemize}
+		\item Criar um bloco de memória (\verb|memcreate|);
+		\item Limpar instruções na memória (\verb|cleaninstruction|);
+		\item Libertar toda a memória (\verb|memdestroy|);
+		\item Alocar memória para guardar instruções (\verb|memalloc|);
+		\item Libertar a memória associada a um processo (\verb|memfree|);
+		\item Obter as instruções a partir de um ficheiro \verb|*.prg|, as quais podem ser alocadas \textit{à posteriori} com o método \verb|memalloc|.
+	\end{itemize}
+	
+	De notar que foi utilizado o \textbf{algoritmo \textit{first-fit}} para alocar memória no método \verb|memalloc|. Portanto, as instruções são armazenadas no primeiro bloco disponível com o tamanho necessário.
+	
+	
+	\section{Leitura e execução de um programa}
+	\label{sec:program}
+	
+	No \chronOS, um programa é um conjunto de \textbf{instruções} constituídas por 3 elementos: instrução, valor inteiro e nome de processo filho. A estrutura \verb|instruction| definida em \verb|types.h| define, portanto, uma instrução.
+	
+	O módulo \texttt{instructions} (definido com os respetivos \textit{header file} e ficheiro \verb|*.c|) contém as funções que executam as instruções propriamente ditas, conforme definidas em enunciado.
+	
+	O método \verb|program_read_from_file| lê as instruções de um programa, guardado num ficheiro com a extensão \verb|*.prg|, e aloca em memória \textit{heap} um vetor de instruções, cujo apontador é retornado como resultado.
+	
+	O método \verb|memalloc| recebe um vetor deste tipo e a sua dimensão, e assim aloca no bloco de memória \verb|memory| o espaço necessário para armazenar as instruções, fazendo uma cópia.
+	
+	O vetor alocado por \verb|program_read_from_file| não é libertado pelo método \verb|memalloc|, pelo que um \verb|free| deve ser executado após este último método.
+	
+	Os algoritmos de escalonamento são responsáveis por invocar o método \verb|run|, o qual executa a próxima instrução de um processo.
+	
+	
+	\section{Conclusão e trabalho futuro}
+	\label{sec:con_futwork}
+	
+	Até este ponto do projeto, \chronOS~permitiu consolidar uma vasta gama de conhecimentos, não só de Sistemas Operativos como também de Estruturas de Dados e da linguagem C \textit{per se}.
+	
+	A forte estruturação do projeto em diferentes módulos, constituindo o que chamámos de \textit{Runtime Libraries Package} (RTL), permite que este seja facilmente escalável para mais algoritmos de escalonamento, além de ter facilitado a implementação de certas componentes do \textit{core} do programa.
+	
+	\vspace{0.6cm}
+	
+	Para trabalho futuro, propõem-se os seguintes pontos:
+	
+	\begin{itemize}
+		\item Implementação efetiva do controlo do \chronOS~a partir de um ficheiro \texttt{contro.txt} (ou do \texttt{stdin} para \textit{debuggin});
+		\item Melhorias no algoritmo \ac{FCFS} para permitir escalonamento a longo prazo;
+		\item Implementação de mais algoritmos de escalonamento (e.g. \ac{SJF});
+		\item Leitura opcional de prioridades de processos a partir do ficheiro \texttt{plan.txt};
+		\item Adição de maior controlo sobre os parâmetros do \chronOS~através de argumentos passados ao programa, tais como:
+		\begin{itemize}
+			\item \textit{Clock} do simulador da \ac{CPU};
+			\item Algoritmo de escalonamento a ser executado;
+			\item Tamanho do bloco de memória;
+			\item Tamanho da tabela \ac{PCB}.
+		\end{itemize}
+	
+		\item Desfragmentador de memória (método \verb|memdefrag|).
+	\end{itemize}
+	
+	\vspace{1cm}
+	
+	\section*{Acrónimos}
+	\addcontentsline{toc}{section}{Acrónimos}
+    \label{sec:acron}
+    
+    \begin{acronym}[FCFS]
+    	\acro{CPU}{\emph{Central Processing Unit}}
+        \acro{FCFS}{\emph{First Come, First Serve}}
+        \acro{GCC}{\emph{GNU C Compiler}}
+        \acro{PID}{\emph{Process Identifier}}
+        \acro{PCB}{\emph{Process Control Block}}
+        \acro{SJF}{\emph{Shortest Job First}}
+    \end{acronym}
+	
+\end{document}
