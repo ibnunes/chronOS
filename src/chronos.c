@@ -126,6 +126,7 @@ int main(int argc, char const *argv[]) {
 
     pcbreport(pcb);
     memreport(memory);
+    heapreport(heap_first, heap_next, heap_best, heap_worst);
 
     // -3. Libertar queue de plano
     debug("Freeing plan queue\n");

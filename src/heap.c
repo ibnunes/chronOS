@@ -5,9 +5,10 @@
 HEAP *makeheap(const int CAPACITY) {
     HEAP *h     = malloc(sizeof(HEAP));
     h->capacity = CAPACITY;
-    h->pid      = malloc(CAPACITY * sizeof(int));     // coloca 0s em todos os elementos
+    h->pid      = malloc(CAPACITY * sizeof(int));
     h->top      = 0;
     h->calls    = 0;
+    h->negated  = 0;
     h->crossed  = 0;
     h->time     = 0.F;
     h->blocks   = NULL;

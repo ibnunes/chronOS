@@ -15,6 +15,8 @@ int heapalloc(const int pid, const int size) {
         heap_first->calls++;
         heap_first->crossed += crossed;
         success += HEAP_ALG_FIRST;
+    } else {
+        heap_first->negated++;
     }
 
     /* Next-fit */
@@ -25,6 +27,8 @@ int heapalloc(const int pid, const int size) {
         heap_next->calls++;
         heap_next->crossed += crossed;
         success += HEAP_ALG_NEXT;
+    } else {
+        heap_next->negated++;
     }
 
     /* Best-fit */
@@ -35,6 +39,8 @@ int heapalloc(const int pid, const int size) {
         heap_best->calls++;
         heap_best->crossed += crossed;
         success += HEAP_ALG_BEST;
+    } else {
+        heap_best->negated++;
     }
 
     /* Worst-fit */
@@ -45,6 +51,8 @@ int heapalloc(const int pid, const int size) {
         heap_worst->calls++;
         heap_worst->crossed += crossed;
         success += HEAP_ALG_WORST;
+    } else {
+        heap_worst->negated++;
     }
 
     return success;
@@ -75,17 +83,19 @@ int heapfree(const int pid) {
 }
 
 int heapfragcount(HEAP* heap) {
-    int free = 0;
-    int frag = 0;
+    int free  = 0;
+    int frag  = 0;
 
     for (int i = 0; i < heap->capacity; i++) {
         if (heap->pid[i] == PID_NULL) {
             free++;
-            if (i == heap->capacity - 1 && (free == 1 || free == 2))
+            if (i == heap->capacity - 1 && (free == 1 || free == 2)) {
                 frag++;
+            }
         } else {
-            if (free == 1 || free == 2)
+            if (free == 1 || free == 2) {
                 frag++;
+            }
             free = 0;
         }
     }
