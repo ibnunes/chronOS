@@ -15,6 +15,8 @@ int heapalloc(const int pid, const int size) {
         heap_first->calls++;
         heap_first->crossed += crossed;
         success += HEAP_ALG_FIRST;
+    } else {
+        heap_first->negated++;
     }
 
     /* Next-fit */
@@ -25,6 +27,8 @@ int heapalloc(const int pid, const int size) {
         heap_next->calls++;
         heap_next->crossed += crossed;
         success += HEAP_ALG_NEXT;
+    } else {
+        heap_next->negated++;
     }
 
     /* Best-fit */
@@ -35,6 +39,8 @@ int heapalloc(const int pid, const int size) {
         heap_best->calls++;
         heap_best->crossed += crossed;
         success += HEAP_ALG_BEST;
+    } else {
+        heap_best->negated++;
     }
 
     /* Worst-fit */
@@ -45,6 +51,8 @@ int heapalloc(const int pid, const int size) {
         heap_worst->calls++;
         heap_worst->crossed += crossed;
         success += HEAP_ALG_WORST;
+    } else {
+        heap_worst->negated++;
     }
 
     return success;
@@ -53,30 +61,46 @@ int heapalloc(const int pid, const int size) {
 int heapfree(const int pid) {
     for (int i = 0; i < heap_first->capacity; i++) {
         if (heap_first->pid[i] == pid)
-            heap_first->pid[i] = 0;
+            heap_first->pid[i] = PID_NULL;
     }
 
     for (int i = 0; i < heap_next->capacity; i++) {
         if (heap_next->pid[i] == pid)
-            heap_next->pid[i] = 0;
+            heap_next->pid[i] = PID_NULL;
     }
 
     for (int i = 0; i < heap_best->capacity; i++) {
         if (heap_best->pid[i] == pid)
-            heap_best->pid[i] = 0;
+            heap_best->pid[i] = PID_NULL;
     }
 
     for (int i = 0; i < heap_worst->capacity; i++) {
         if (heap_worst->pid[i] == pid)
-            heap_worst->pid[i] = 0;
+            heap_worst->pid[i] = PID_NULL;
     }
 
     return HEAP_FREE_SUCCESS;
 }
 
 int heapfragcount(HEAP* heap) {
-    // TODO
-    return 0;
+    int free  = 0;
+    int frag  = 0;
+
+    for (int i = 0; i < heap->capacity; i++) {
+        if (heap->pid[i] == PID_NULL) {
+            free++;
+            if (i == heap->capacity - 1 && (free == 1 || free == 2)) {
+                frag++;
+            }
+        } else {
+            if (free == 1 || free == 2) {
+                frag++;
+            }
+            free = 0;
+        }
+    }
+
+    return frag;
 }
 
 int heapalloc_first(const int pid, const int size) {
@@ -85,11 +109,9 @@ int heapalloc_first(const int pid, const int size) {
     int available = 0;
     int crossed   = 0;
 
-
-    
     for (int i = 0; i < heap_first->capacity; i++) {
         crossed++;
-        if (heap_first->pid[i] == 0) {
+        if (heap_first->pid[i] == PID_NULL) {
             if (free == 0) 
                 init = i;
             free++;
@@ -106,7 +128,7 @@ int heapalloc_first(const int pid, const int size) {
     if (available) {
         for (int i = init; i < size; i++)
             heap_first->pid[i] = pid;
-        heap_first->top = (init + size);
+        heap_first->top = init + size;
         return crossed; // devolve os blocos que percorreu
     }
     else
@@ -122,7 +144,7 @@ int heapalloc_next(const int pid, const int size) {
     for (int i = heap_next->top; i < heap_next->capacity; i++)
     {
         crossed++;
-        if (heap_next->pid[i] == 0)
+        if (heap_next->pid[i] == PID_NULL)
         {
             if (free == 0)
                 init = i;
@@ -142,7 +164,7 @@ int heapalloc_next(const int pid, const int size) {
     {
         for (int i = init; i < size; i++)
             heap_next->pid[i] = pid;
-        heap_next->top = (init + size); // devolve os blocos que percorreu
+        heap_next->top = init + size; // devolve os blocos que percorreu
         return crossed;
     }
     else
@@ -160,7 +182,7 @@ int heapalloc_best(const int pid, const int size) {
 
     for (int i = 0; i < heap_best->capacity; i++) {
         crossed++;
-        if (heap_best->pid[i] == 0) {
+        if (heap_best->pid[i] == PID_NULL) {
             if (free == 0) curr = i;
             free++;
             if (free == size) {
@@ -205,7 +227,7 @@ int heapalloc_worst(const int pid, const int size) {
 
     for (int i = 0; i < heap_worst->capacity; i++) {
         crossed++;
-        if (heap_worst->pid[i] == 0) {
+        if (heap_worst->pid[i] == PID_NULL) {
             if (free == 0) curr = i;
             free++;
             if (free == size) {

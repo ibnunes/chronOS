@@ -63,6 +63,16 @@ void run(MEMORY *mem, process *p) {
             debug("PID %d: instruction \"L %s\"\n", p->pid, i->name);
             cleanProgram(mem, p, i->name);
             return;
+        
+        case INSTRUCTION_ALLOC:
+            debug("PID %d: instruction \"K %d\"\n", p->pid, i->n);
+            heapalloc(p->pid, i->n);
+            break;
+        
+        case INSTRUCTION_FREE:
+            debug("PID %d: instruction \"F\"\n", p->pid);
+            heapfree(p->pid);
+            break;
 
         default:
             fprintf(stderr, "ERROR: Unknown instruction \"%c\". ABORTING!\n", i->ins);

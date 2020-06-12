@@ -65,7 +65,6 @@ typedef struct {
     clock_t timeinit;
     clock_t timeused;
     clock_t timeend;
-    // add whatever else is needed
 } process;
 
 #define STATUS_NULL 0               // Processo não existe: null
@@ -79,13 +78,15 @@ typedef struct {
 #define PRIORITY_MIN 1              // Prioridade: mínima
 #define PRIORITY_MAX 5              // Prioridade: máxima
 
-#define INSTRUCTION_CHANGE 'M'      // M n
-#define INSTRUCTION_ADD 'A'         // A n
-#define INSTRUCTION_SUBTRACT 'S'    // S n
-#define INSTRUCTION_BLOCK 'B'       // B
+#define INSTRUCTION_CHANGE    'M'   // M n
+#define INSTRUCTION_ADD       'A'   // A n
+#define INSTRUCTION_SUBTRACT  'S'   // S n
+#define INSTRUCTION_BLOCK     'B'   // B
 #define INSTRUCTION_TERMINATE 'T'   // T
-#define INSTRUCTION_FORK 'C'        // C n
-#define INSTRUCTION_CLEAR 'L'       // L filename
+#define INSTRUCTION_FORK      'C'   // C n
+#define INSTRUCTION_CLEAR     'L'   // L filename
+#define INSTRUCTION_ALLOC     'K'   // K blocks (of size 2KB)
+#define INSTRUCTION_FREE      'F'   // F
 
 
 /* ======================================== *
@@ -108,7 +109,7 @@ typedef struct {
     process *proc;
     size_t  size;
     size_t  top;
-} PCB;        // workaround for the meantime
+} PCB;
 
 #define MAX_TIMELIMIT 100   // (temporário) burst time de um processo
 
@@ -186,6 +187,7 @@ typedef struct heap {
     int top;                // para o NEXT-FIT: último bloco alocado
     int *pid;               // PIDs dos processos que alocaram cada um dos blocos de memória
     int calls;              // número de chamadas de alocação
+    int negated;            // número de alocações negadas
     int crossed;            // número de blocos atravessados para as alocações
     float time;             // tempo total dispendido nas alocações
 } HEAP;

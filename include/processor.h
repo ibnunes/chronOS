@@ -22,6 +22,7 @@
 #include "types.h"
 #include "data.h"
 #include "memmgr.h"
+#include "heapmgr.h"
 
 
 /* Function: run

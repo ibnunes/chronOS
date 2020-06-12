@@ -18,6 +18,7 @@
 
 #include "tui.h"
 #include "types.h"
+#include "heapmgr.h"
 #include <stdio.h>
 
 const char *state2str(int state) {
@@ -64,6 +65,43 @@ void pcbreport(PCB *pcb) {
     
     printf("===== End of report =====\n\n");
 }
+
+
+void heapreport(HEAP *first, HEAP *next, HEAP *best, HEAP *worst) {
+    struct heapstat {
+        int   frag;     // Número de fragmentos externos
+        float time;     // Tempo médio de alocação
+        float neg;      // Percentagem de vezes que uma alocação foi negada
+    } f, n, b, w;
+
+    f.frag = heapfragcount(first);
+    f.time = first->time / first->crossed;
+    f.neg  = (float) first->negated / first->calls * 100;
+
+    n.frag = heapfragcount(next);
+    n.time = next->time / next->crossed;
+    n.neg  = (float) next->negated / next->calls * 100.;
+
+    b.frag = heapfragcount(best);
+    b.time = best->time / best->crossed;
+    b.neg  = (float) best->negated / best->calls * 100.;
+
+    w.frag = heapfragcount(worst);
+    w.time = worst->time / worst->crossed;
+    w.neg  = (float) worst->negated / worst->calls * 100.;
+    
+    printf("====== Heap memory ======\n\n");
+    printf("+-----------+----------------+----------------+----------------+\n");
+    printf("| Algorithm |   # fragments  | Alloc avg time |  Perc no-alloc |\n");
+    printf("+-----------+----------------+----------------+----------------+\n");
+    printf("| First-fit | %14d | %14.3f | %14.3f |\n", f.frag, f.time, f.neg);
+    printf("|  Next-fit | %14d | %14.3f | %14.3f |\n", n.frag, n.time, n.neg);
+    printf("|  Best-fit | %14d | %14.3f | %14.3f |\n", b.frag, b.time, b.neg);
+    printf("| Worst-fit | %14d | %14.3f | %14.3f |\n", w.frag, w.time, w.neg);
+    printf("+-----------+----------------+----------------+----------------+\n");
+    printf("=== End of heap memory ==\n\n");
+}
+
 
 #ifndef NDEBUG
 
