@@ -34,5 +34,6 @@ int create_new_process(PCB *pcb, char *fname) {
 
     free(i);        // Libertar os recursos previamente alocados
     debug("%ld instructions from %s allocated to address %d with PID %d.\n", n, fname, address, pid);
+    write("%ld instructions from %s allocated to address %d with PID %d.\n", n, fname, address, pid);
     return 1;
 }

@@ -66,6 +66,8 @@ int main(int argc, char const *argv[]) {
     int __running = 1;
     cputime = 0;
 
+    write("Initializing...\n");
+
     // 1.1. Alocar células de memória 
     debug("Allocating %d cells of memory\n", MAX_MEM);
     memory = memcreate(MAX_MEM);
@@ -85,6 +87,7 @@ int main(int argc, char const *argv[]) {
     debug("Reading plan queue from %s:\n", FILE_PLAN);
     plan = plan_read_from_file(FILE_PLAN);
     debug("Got %d elements in queue.\n", plan_length(plan));
+    write("Got %d elements in queue.\n", plan_length(plan));
 
     clock_t clock_start, clock_end;
     float seconds;
@@ -97,15 +100,20 @@ int main(int argc, char const *argv[]) {
         if (!plan_empty(plan)) {
             if (plan_peek(plan).time <= cputime) {
                 debug("cputime = %ld; plan_peek.time = %ld\n", cputime, plan_peek(plan).time);
+                write("Creating new process from \"%s\" at CPU time %ld\n", plan_peek(plan).program, cputime);
                 create_new_process(pcb, plan_pop(plan).program);
+                __mustexit = 0;
             }
         }
         
         /* Gestão de processos */
-        pcbindex = fcfs(pcb, memory, pcbindex);
-        if (pcbindex == FCFS_END) {
-            debug("Reached FCFS_END.\n");
-            __mustexit = 1;
+        if (!__mustexit) {
+            pcbindex = fcfs(pcb, memory, pcbindex);
+            if (pcbindex == FCFS_END) {
+                debug("Reached FCFS_END.\n");
+                write("Reached end of FCFS plan.\n");
+                __mustexit = 1;
+            }
         }
         
         /* Clock do processador */
@@ -124,9 +132,13 @@ int main(int argc, char const *argv[]) {
             __running = 0;
     }
 
+    write("Reached end of execution. Printing final reports...\n\n");
+
     pcbreport(pcb);
     memreport(memory);
     heapreport(heap_first, heap_next, heap_best, heap_worst);
+
+    write("Finalizing...\n");
 
     // -3. Libertar queue de plano
     debug("Freeing plan queue\n");

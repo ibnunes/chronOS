@@ -3,6 +3,19 @@
 #include <limits.h>
 
 int heapalloc(const int pid, const int size) {
+    if (size < HEAP_ALLOC_MIN || size > HEAP_ALLOC_MAX) {
+        // Conta como alocação recusada
+        heap_first->calls++;
+        heap_first->negated++;
+        heap_next->calls++;
+        heap_next->negated++;
+        heap_best->calls++;
+        heap_best->negated++;
+        heap_worst->calls++;
+        heap_worst->negated++;
+        return HEAP_ALLOC_OUTOFRANGE;
+    }
+
     clock_t clock_start, clock_end;     // Tempos de início e de fim da alocação
     int crossed;
     int success = 0;                    // Quais algoritmos conseguiram alocar

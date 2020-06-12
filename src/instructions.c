@@ -49,6 +49,7 @@ void forkProcess(MEMORY *mem, process *p) {
     if (address != MEMERR_ALLOC_NOAVAIL)
         pid = processalloc(pcb, p->pid, inst->name, address, size);
     debug("FORKED %ld instructions from PID %d to address %d with new PID %d.\n", size, p->pid, address, pid);
+    write("FORKED %ld instructions from PID %d to address %d with new PID %d.\n", size, p->pid, address, pid);
 }
 
 void cleanProgram(MEMORY *mem, process *p, char *filename) {
@@ -64,4 +65,5 @@ void cleanProgram(MEMORY *mem, process *p, char *filename) {
     strcpy(p->name, fname);
     free(inst);
     debug("CLEANED, then allocated %ld instructions at address %d.\n", n, address);
+    write("CLEANED, then allocated %ld instructions at address %d.\n", n, address);
 }
