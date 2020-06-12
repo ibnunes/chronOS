@@ -53,22 +53,22 @@ int heapalloc(const int pid, const int size) {
 int heapfree(const int pid) {
     for (int i = 0; i < heap_first->capacity; i++) {
         if (heap_first->pid[i] == pid)
-            heap_first->pid[i] = 0;
+            heap_first->pid[i] = PID_NULL;
     }
 
     for (int i = 0; i < heap_next->capacity; i++) {
         if (heap_next->pid[i] == pid)
-            heap_next->pid[i] = 0;
+            heap_next->pid[i] = PID_NULL;
     }
 
     for (int i = 0; i < heap_best->capacity; i++) {
         if (heap_best->pid[i] == pid)
-            heap_best->pid[i] = 0;
+            heap_best->pid[i] = PID_NULL;
     }
 
     for (int i = 0; i < heap_worst->capacity; i++) {
         if (heap_worst->pid[i] == pid)
-            heap_worst->pid[i] = 0;
+            heap_worst->pid[i] = PID_NULL;
     }
 
     return HEAP_FREE_SUCCESS;
@@ -85,11 +85,9 @@ int heapalloc_first(const int pid, const int size) {
     int available = 0;
     int crossed   = 0;
 
-
-    
     for (int i = 0; i < heap_first->capacity; i++) {
         crossed++;
-        if (heap_first->pid[i] == 0) {
+        if (heap_first->pid[i] == PID_NULL) {
             if (free == 0) 
                 init = i;
             free++;
@@ -122,7 +120,7 @@ int heapalloc_next(const int pid, const int size) {
     for (int i = heap_next->top; i < heap_next->capacity; i++)
     {
         crossed++;
-        if (heap_next->pid[i] == 0)
+        if (heap_next->pid[i] == PID_NULL)
         {
             if (free == 0)
                 init = i;
@@ -160,7 +158,7 @@ int heapalloc_best(const int pid, const int size) {
 
     for (int i = 0; i < heap_best->capacity; i++) {
         crossed++;
-        if (heap_best->pid[i] == 0) {
+        if (heap_best->pid[i] == PID_NULL) {
             if (free == 0) curr = i;
             free++;
             if (free == size) {
@@ -205,7 +203,7 @@ int heapalloc_worst(const int pid, const int size) {
 
     for (int i = 0; i < heap_worst->capacity; i++) {
         crossed++;
-        if (heap_worst->pid[i] == 0) {
+        if (heap_worst->pid[i] == PID_NULL) {
             if (free == 0) curr = i;
             free++;
             if (free == size) {
