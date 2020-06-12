@@ -1,5 +1,6 @@
 #include "heapmgr.h"
 #include "data.h"
+#include <limits.h>
 
 int heapalloc(const int pid, const int size) {
     clock_t clock_start, clock_end;     // Tempos de início e de fim da alocação
@@ -89,11 +90,91 @@ int heapalloc_next(const int pid, const int size) {
 }
 
 int heapalloc_best(const int pid, const int size) {
-    // TODO
-    return HEAP_ALLOC_NOAVAIL;
+    int init      = 0;          // Bloco a partir do qual se irá alocar memória
+    int curr      = 0;          // Bloco actual a ser considerado para alocação
+    int min       = INT_MAX;    // Menor tamanho disponível tal que seja pelo menos size
+    int free      = 0;          // Blocos livres contíguos
+    int crossed   = 0;          // Blocos percorridos na pesquisa
+    int available = 0;          // Existe memória disponível para alocar?
+    int hasmem    = 0;          // O bloco curr tem size blocos após si disponíveis?
+
+    for (int i = 0; i < heap_best->capacity; i++) {
+        crossed++;
+        if (heap_best->pid[i] == 0) {
+            if (free == 0) curr = i;
+            free++;
+            if (free == size) {
+                available = 1;
+                hasmem    = 1;
+            }
+            if ((i == heap_best->capacity - 1) && hasmem && (free < min)) {
+                min  = free;
+                init = curr;
+            }
+        } else {
+            if (hasmem) {
+                if (free < min) {
+                    min  = free;
+                    init = curr;
+                }
+                hasmem = 0;
+            }
+            free = 0;
+        }
+    }
+
+    if (available) {
+        for (int i = init; i < size; i++) {
+            heap_best->pid[i] = pid;
+        }
+        heap_best->top = init + size;
+    } else
+        return HEAP_ALLOC_NOAVAIL;
+
+    return crossed;
 }
 
 int heapalloc_worst(const int pid, const int size) {
-    // TODO
-    return HEAP_ALLOC_NOAVAIL;
+    int init      = 0;          // Bloco a partir do qual se irá alocar memória
+    int curr      = 0;          // Bloco actual a ser considerado para alocação
+    int max       = 0;          // Maior tamanho disponível tal que seja pelo menos size
+    int free      = 0;          // Blocos livres contíguos
+    int crossed   = 0;          // Blocos percorridos na pesquisa
+    int available = 0;          // Existe memória disponível para alocar?
+    int hasmem    = 0;          // O bloco curr tem size blocos após si disponíveis?
+
+    for (int i = 0; i < heap_worst->capacity; i++) {
+        crossed++;
+        if (heap_worst->pid[i] == 0) {
+            if (free == 0) curr = i;
+            free++;
+            if (free == size) {
+                available = 1;
+                hasmem    = 1;
+            }
+            if ((i == heap_worst->capacity - 1) && hasmem && (free > max)) {
+                max  = free;
+                init = curr;
+            }
+        } else {
+            if (hasmem) {
+                if (free > max) {
+                    max  = free;
+                    init = curr;
+                }
+                hasmem = 0;
+            }
+            free = 0;
+        }
+    }
+
+    if (available) {
+        for (int i = init; i < size; i++) {
+            heap_worst->pid[i] = pid;
+        }
+        heap_worst->top = init + size;
+    } else
+        return HEAP_ALLOC_NOAVAIL;
+
+    return crossed;
 }
