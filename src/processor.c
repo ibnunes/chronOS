@@ -66,12 +66,18 @@ void run(MEMORY *mem, process *p) {
         
         case INSTRUCTION_ALLOC:
             debug("PID %d: instruction \"K %d\"\n", p->pid, i->n);
-            heapalloc(p->pid, i->n);
+            if (heapalloc(p->pid, i->n) == HEAP_ALLOC_OUTOFRANGE) {
+                debug("Failed to allocate memory for PID %d\n", p->pid);
+                write("Failed to allocate memory for PID %d\n", p->pid);
+            }
             break;
         
         case INSTRUCTION_FREE:
             debug("PID %d: instruction \"F\"\n", p->pid);
-            heapfree(p->pid);
+            if (heapfree(p->pid) == HEAP_FREE_FAILURE) {
+                debug("Failed to deallocate heap memory for PID %d\n", p->pid);
+                write("Failed to deallocate heap memory for PID %d\n", p->pid);
+            }
             break;
 
         default:
