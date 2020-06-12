@@ -1,5 +1,6 @@
 #include "heapmgr.h"
 #include "data.h"
+#include "types.h"
 
 int heapalloc(const int pid, const int size) {
     clock_t clock_start, clock_end;     // Tempos de início e de fim da alocação
@@ -79,13 +80,73 @@ int heapfragcount(HEAP* heap) {
 }
 
 int heapalloc_first(const int pid, const int size) {
-    // TODO
-    return HEAP_ALLOC_NOAVAIL;
+    int free      = 0;
+    int init      = 0;
+    int available = 0;
+    int crossed   = 0;
+
+
+    
+    for (int i = 0; i < heap_first->capacity; i++) {
+        crossed++;
+        if (heap_first->pid[i] == 0) {
+            if (free == 0) 
+                init = i;
+            free++;
+
+            if (free == size) {
+                available = 1;
+                break;
+            }
+        }
+        else
+            free = 0;
+    }
+
+    if (available) {
+        for (int i = init; i < size; i++)
+            heap_first->pid[i] = pid;
+        heap_first->top = (init + size);
+        return crossed; // devolve os blocos que percorreu
+    }
+    else
+        return HEAP_ALLOC_NOAVAIL;
 }
 
 int heapalloc_next(const int pid, const int size) {
-    // TODO
-    return HEAP_ALLOC_NOAVAIL;
+    int free      = 0;
+    int init      = 0;
+    int available = 0;
+    int crossed   = 0;
+
+    for (int i = heap_next->top; i < heap_next->capacity; i++)
+    {
+        crossed++;
+        if (heap_next->pid[i] == 0)
+        {
+            if (free == 0)
+                init = i;
+            free++;
+
+            if (free == size)
+            {
+                available = 1;
+                break;
+            }
+        }
+        else
+            free = 0;
+    }
+
+    if (available)
+    {
+        for (int i = init; i < size; i++)
+            heap_next->pid[i] = pid;
+        heap_next->top = (init + size); // devolve os blocos que percorreu
+        return crossed;
+    }
+    else
+        return HEAP_ALLOC_NOAVAIL;
 }
 
 int heapalloc_best(const int pid, const int size) {
