@@ -75,8 +75,22 @@ int heapfree(const int pid) {
 }
 
 int heapfragcount(HEAP* heap) {
-    // TODO
-    return 0;
+    int free = 0;
+    int frag = 0;
+
+    for (int i = 0; i < heap->capacity; i++) {
+        if (heap->pid[i] == PID_NULL) {
+            free++;
+            if (i == heap->capacity - 1 && (free == 1 || free == 2))
+                frag++;
+        } else {
+            if (free == 1 || free == 2)
+                frag++;
+            free = 0;
+        }
+    }
+
+    return frag;
 }
 
 int heapalloc_first(const int pid, const int size) {
@@ -104,7 +118,7 @@ int heapalloc_first(const int pid, const int size) {
     if (available) {
         for (int i = init; i < size; i++)
             heap_first->pid[i] = pid;
-        heap_first->top = (init + size);
+        heap_first->top = init + size;
         return crossed; // devolve os blocos que percorreu
     }
     else
@@ -140,7 +154,7 @@ int heapalloc_next(const int pid, const int size) {
     {
         for (int i = init; i < size; i++)
             heap_next->pid[i] = pid;
-        heap_next->top = (init + size); // devolve os blocos que percorreu
+        heap_next->top = init + size; // devolve os blocos que percorreu
         return crossed;
     }
     else
