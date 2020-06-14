@@ -8,30 +8,43 @@
 //    Copyright (C) 2020 Universidade da Beira Interior (www.ubi.pt)
 //
 // RUNTIME LIBRARIES PACKAGE
-//    fcfs.h
+//    scheduling.h
 //
 // DESCRIPTION:
 // -----------
-// First Come First Serve algorithm.
+// Scheduling algorithms.
 //------------------------------------------------------------------------------
 
-#ifndef FCFS_H
-#define FCFS_H
+#ifndef SCHEDULING_H
+#define SCHEDULING_H
 
 #include "types.h"
 
 #define FCFS_END -1
+#define SJF_END  -1
 
 /* Function:  fcfs
  * ---------------
  * Executes the processes in the PCB table using the FCFS algorithm.
- * 
+ *  
  *  pcb: the PCB table with the processes.
  *  mem: the memory array.
  *  pcbindex: current PCB table index at which the manager is working.
- * 
+ *  
  *  return: next PCB index, or FCFS_END if ended.
  */
 int fcfs(PCB *pcb, MEMORY *mem, int pcbindex);
+
+/* Function:  SJF
+ * ---------------
+ * Executes the processes in the PCB table using the SJF algorithm.
+ *  
+ *  pcb: the PCB table with the processes.
+ *  mem: the memory array.
+ *  pcbindex: current PCB table index at which the manager is working.
+ *  
+ *  return: next PCB index, or SJF_END if ended.
+ */
+int sjf(PCB *pcb, MEMORY *mem, int pcbindex);       
 
 #endif

@@ -32,7 +32,7 @@
 #include "processor.h"
 #include "plan.h"
 #include "debug.h"
-#include "fcfs.h"
+#include "scheduling.h"
 
 #include "heap.h"
 

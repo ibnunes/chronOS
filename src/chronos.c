@@ -55,7 +55,7 @@
 
 
 #include "simulator.h"
-#include "fcfs.h"
+#include "scheduling.h"
 #include "tui.h"
 #include <time.h>
 

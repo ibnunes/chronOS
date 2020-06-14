@@ -8,18 +8,78 @@
 //    Copyright (C) 2020 Universidade da Beira Interior (www.ubi.pt)
 //
 // RUNTIME LIBRARIES PACKAGE
-//    fcfs.h
+//    scheduling.h
 //
 // DESCRIPTION:
 // -----------
-// First Come First Serve algorithm.
+// Scheduling algorithms.
 //------------------------------------------------------------------------------
 
-#include "fcfs.h"
+#include "scheduling.h"
 #include "processor.h"
 #include "debug.h"
 #include <stdio.h>
 
+int comparebt(const void *v1, const void *v2) { // compara o Burst time dos processos
+    const process *p1 = (process *)v1;
+    const process *p2 = (process *)v2;
+
+    if (p1->timelimit == p2->timelimit) return 0;
+    else if (p1->timelimit < p2->timelimit)
+        return -1;
+    else return 1;
+}
+
+int sjf(PCB *pcb, MEMORY *mem, int pcbindex) {
+    
+    int temp;
+    debug("Working on PCB index %d.\n", pcbindex);
+    
+    /* Reorganizar o PCB por Burst Time*/
+    qsort(pcb->proc, (sizeof(pcb->proc)/sizeof(process)), sizeof(process), comparebt);
+
+    /* Chegou ao fim da tabela PCB, não há mais processos em fila */
+    if ((size_t) pcbindex >= pcb->top)
+        return SJF_END;
+
+    process *p = &(pcb->proc[pcbindex]);
+    switch (p->state)
+    {
+        case STATUS_NEW:
+            debug("Switching PID %d state to READY.\n", p->pid);
+            p->state = switchState(p->state, STATUS_READY);
+            break;
+
+        case STATUS_READY:
+            debug("Switching PID %d state to RUNNING.\n", p->pid);
+            p->state = switchState(p->state, STATUS_RUNNING);
+            p->timeinit = cputime;
+            break;
+
+        case STATUS_RUNNING:
+            debug("Running PID %d, instruction at PC=%d...\n", p->pid, p->counter);
+            p->timeused++;
+            run(mem, p);
+            break;
+
+        case STATUS_TERMINATED:
+            debug("Process with PID %d is TERMINATED.\n", p->pid);
+            pcbindex++;
+            break;
+
+        case STATUS_BLOCKED:
+            debug("Process with PID %d is BLOCKED.\n", p->pid);
+            pcbindex++;
+            break;
+
+        default:
+            fprintf(stderr, "ERROR: Unknown process state. ABORTING!\n");
+            exit(-1);
+            break;
+    }
+
+    return pcbindex;
+}
 
 int fcfs(PCB *pcb, MEMORY *mem, int pcbindex) {
     /* Chegou ao fim da tabela PCB, não há mais processos em fila */
