@@ -19,7 +19,9 @@
 #include "memmgr.h"
 #include "utils.h"
 #include "debug.h"
+#include "data.h"
 #include <string.h>
+#include <limits.h>
 
 void cleaninstruction(instruction *instruct) {
     instruct->ins = INSTRUCTION_VOID;
@@ -85,7 +87,11 @@ instruction* program_read_from_file(char *fname, size_t *n) {
     if (!strendswithprg(fname))
         strcat(fname, PROG_EXTENSION);
 
-    FILE *f = fopen(fname, "r");
+    char fullpath[PATH_MAX + 1];
+    strcpy(fullpath, w.pwd);
+    strcat(fullpath, fname);
+    
+    FILE *f = fopen(fullpath, "r");
     expects(f != NULL);
 
     *n = 0;

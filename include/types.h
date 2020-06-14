@@ -21,6 +21,7 @@
 
 #include <stdlib.h>
 #include <time.h>
+#include <limits.h>
 
 /* Strings úteis ao programa */
 #define PROG_EXTENSION ".prg"           // Extensão de um programa que corre no simulador
@@ -89,6 +90,14 @@ typedef struct {
 #define INSTRUCTION_CLEAR     'L'   // L filename
 #define INSTRUCTION_ALLOC     'K'   // K blocks (of size 2KB)
 #define INSTRUCTION_FREE      'F'   // F
+
+
+/* ======================================== *
+ * simulator.h                              *
+ * ======================================== */
+
+#define DEFAULT_TIME_QUANTUM 0.500F         // 500 milissegundos
+#define PID_MANAGER PID_CHRONOS             // PID do processo gestor
 
 
 /* ======================================== *
@@ -209,5 +218,43 @@ typedef struct heap {
     int crossed;            // número de blocos atravessados para as alocações
     float time;             // tempo total dispendido nas alocações
 } HEAP;
+
+
+/* ======================================== *
+ * world.h                                  *
+ * ======================================== */
+
+#define SCHEDULING_FCFS   1
+#define SCHEDULING_SJF    2
+#define SCHEDULING_RROBIN 4
+
+struct world {
+    struct {
+        char name[8];
+        char version[20];
+    } app;
+    int pid;
+    clock_t cputime;
+    float timequantum;
+    struct {
+        int __running;
+        int __mustexit;
+    } flag;
+    struct {
+        int capacity;
+        int blocksize;
+        unsigned requestseed;
+    } heap;
+    struct {
+        int capacity;
+    } memory;
+    struct {
+        int size;
+        int index;
+        int algorithm;
+    } pcb;
+    char pwd[PATH_MAX + 1];
+    char fileplan[PATH_MAX + 1];
+};
 
 #endif

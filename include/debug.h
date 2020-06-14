@@ -29,6 +29,24 @@
       fprintf(stderr, __VA_ARGS__);                                     \
    } while(0)
 
+#define write(...) 
+
+
+#else
+
+
+#define debug(...) 
+// #define expects(...)
+// #define ensures(...)
+
+#define write(...)                                                      \
+   do {                                                                 \
+      fprintf(stdout, __VA_ARGS__);                                     \
+   } while(0)
+
+
+#endif  // NDEBUG
+
 #define expects(X)                        \
    do {                                   \
       if (!(X)) {                         \
@@ -38,23 +56,5 @@
    } while(0)
 
 #define ensures(X) expects(X)
-
-#define write(...) 
-
-
-#else
-
-
-#define debug(...) 
-#define expects(...)
-#define ensures(...)
-
-#define write(...)                                                      \
-   do {                                                                 \
-      fprintf(stdout, __VA_ARGS__);                                     \
-   } while(0)
-
-
-#endif  // NDEBUG
 
 #endif  // INCLUDE_DEBUG_H
