@@ -27,6 +27,8 @@
 #define FILE_PLAN      "plan.txt"       // Ficheiro com o plano de execução
 #define FILE_CONTROL   "control.txt"    // Ficheiro com os comandos de controlo
 
+#define PID_CHRONOS 0               // PID da aplicação chronOS
+
 /* ======================================== *
  * processor.h                              *
  * ======================================== */

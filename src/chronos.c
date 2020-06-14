@@ -95,6 +95,9 @@ int main(int argc, char const *argv[]) {
     int __mustexit = 0;
     int pcbindex = 0;
 
+    time_t t;
+    heaprequest_start((unsigned) time(&t));
+
     /* Ciclo principal do programa */
     while (__running) {
         if (!plan_empty(plan)) {
@@ -108,6 +111,12 @@ int main(int argc, char const *argv[]) {
         
         /* Gestão de processos */
         if (!__mustexit) {
+            if (heaprequest()) {
+                int size = heaprequest_size();
+                int ret = heapalloc(PID_CHRONOS, size);
+                debug("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
+                write("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
+            }
             pcbindex = fcfs(pcb, memory, pcbindex);
             if (pcbindex == FCFS_END) {
                 debug("Reached FCFS_END.\n");
@@ -131,6 +140,10 @@ int main(int argc, char const *argv[]) {
         if (plan_empty(plan) && __mustexit)
             __running = 0;
     }
+
+    debug("Deallocating heap memory requested by chronOS...\n");
+    write("Deallocating heap memory requested by chronOS...\n");
+    heapfree(PID_CHRONOS);  // para evitar memory leaks na heap memory por parte do chronOS
 
     write("Reached end of execution. Printing final reports...\n\n");
 
