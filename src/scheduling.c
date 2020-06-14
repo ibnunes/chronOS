@@ -73,7 +73,7 @@ int sjf(PCB *pcb, MEMORY *mem, int pcbindex) {
 
         case STATUS_TERMINATED:
             debug("Process with PID %d is TERMINATED.\n", p->pid);
-            pcbindex++;
+            pcbindex = sjf(pcb, mem, ++pcbindex);
             break;
 
         case STATUS_BLOCKED:
