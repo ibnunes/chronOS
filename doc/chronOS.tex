@@ -195,6 +195,42 @@
 	Para terminar, todos os recursos são libertados e é impresso um relatório da tabela \ac{PCB} (Figura \ref{fig:pcbreport}) e um das memórias dinâmicas (Figura \ref{fig:heapreport}). Em modo de \textit{debug}, e exclusivamente para efeitos de \textit{debugging} no processo de desenvolvimento, é impresso um relatório adicional da memória estática (Figura \ref{fig:memreport}) e \textit{dumps} das 4 memórias dinâmicas (Figura \ref{fig:heapdump}).
 	
 	
+	\section{Argumentos passados pela linha de comandos}
+	\label{ssec:main:argv}
+	
+	\chronOS~admite passagem opcional de argumentos pela linha de comandos a fim de modificar a configuração padrão do programa, definida com a estrutura \mintinline{c}{struct world w} (definida em \verb|types.h|, declarada em \verb|data.h| e inicializada em \verb|world.c|).
+	
+	A sintaxe é a seguinte:
+	
+	\begin{verbatim}
+./chronos
+   [<--fcfs | --sjf | <--rr | --robin | --round-robin>>]
+   [<--seed | -s> n]
+	\end{verbatim}
+	
+	\begin{enumerate}
+		\item Definição do algoritmo de escalonamento:
+		\begin{itemize}
+			\item \verb|--fcfs|: algoritmo \ac{FCFS} (algoritmo definido por defeito);
+			\item \verb|--sjf|: algoritmo \ac{SJF};
+			\item \verb|--rr|, \verb|--robin| ou \verb|--round-robin|: algoritmo \textit{round-robin}. 
+		\end{itemize}
+	
+		\item Definição da semente de solicitações pseudoaleatórias da memória \textit{heap}:
+		\begin{itemize}
+			\item \verb|--seed n| ou \verb|-s n|: define semente dada pelo número inteiro \verb|n|. Caso seja fornecido um número fraccionário é admitida a parte inteira. Em caso de não ser um número é definido 0 (zero). O valor por defeito é definido pelo tempo (descrito na secção \ref{ssec:heap:request}).
+		\end{itemize}
+	\end{enumerate}
+	
+	Chamadas válidas do \chronOS~incluem:
+	
+	\begin{verbatim}
+./chronos
+./chronos --seed 2020
+./chronos --fcfs -s 15
+	\end{verbatim}
+	
+	
 	
 	\chapter{Gestão de processos}
 	\label{sec:process}
@@ -392,7 +428,7 @@ T
 	
 	O próprio programa \chronOS~pode fazer solicitações de alocação de memória \textit{heap} a fim de testar a fundo a gestão de memória com os 4 algoritmos previamente mencionados. Estas solicitações são decididas com base num algoritmo pseudoaleatório desenvolvido pelo elemento de grupo Igor Nunes (descrito na subsecção \ref{sssec:heap:request:alg}).
 	
-	Inicialmente \chronOS~faz chamada do método \verb|heaprequest_start|, o qual arranca o gerador de números pseudoaleatórios. É fornecida por argumento uma semente de geração. Na falta de fornecimento de uma pela linha de comandos, é assumida uma semente com base no tempo (função \verb|time()|).
+	Inicialmente \chronOS~faz chamada do método \verb|heaprequest_start|, o qual arranca o gerador de números pseudoaleatórios. É fornecida por argumento uma semente de geração. Esta semente é, por sua vez, fornecida \textbf{opcionalmente} em argumento pela \textit{shell} (conforme sintaxe definida na secção \ref{ssec:main:argv}). Na falta de fornecimento de uma pela linha de comandos, é assumida uma semente com base no tempo (função \verb|time()|).
 	
 	A cada ciclo de \textit{clock} é feita uma chamada à função \verb|heaprequest|, a qual devolve 1 para solicitar a alocação de memória, ou 0 em caso contrário. Para a solicitação é invocada a função \verb|heapalloc| com o PID do \chronOS (definida em \verb|PID_CHRONOS|), sendo o número de partições definida pela função \verb|heaprequest_size|.
 	
