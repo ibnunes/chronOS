@@ -22,6 +22,12 @@
 
 #define FCFS_END -1
 
+#define FCFS 1
+#define SJF 2
+#define RR 3
+
+#define SCHEDUALING_COUNTER 4 //Number of instructions to be executed in a row before moving to next process
+
 /* Function:  fcfs
  * ---------------
  * Executes the processes in the PCB table using the FCFS algorithm.

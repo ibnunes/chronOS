@@ -144,7 +144,7 @@ int checkPCBStatus(PCB *pcb)
     return 1;
 }
 
-int rrobin(PCB *pcb, MEMORY *mem, int pcbindex)
+int rrobin(PCB *pcb, MEMORY *mem, int pcbindex, int schedualer_timer)
 {
     debug("Working on PCB index %d.\n", pcbindex);
     if ((size_t) pcbindex >= pcb->top)
@@ -168,18 +168,27 @@ int rrobin(PCB *pcb, MEMORY *mem, int pcbindex)
             debug("Running PID %d, instruction at PC=%d...\n", p->pid, p->counter);
             p->timeused++;
             run(mem, p);
+            if(schedualer_timer == SCHEDUALING_COUNTER)
+            {
+                p->state = switchState(p->state, STATUS_READY);
+                if ((size_t) pcbindex+1 >= pcb->top)
+                    pcbindex = -1;
+                pcbindex++;
+            }
             break;
         
         case STATUS_TERMINATED:
             debug("Process with PID %d is TERMINATED.\n", p->pid);
             if ((size_t) pcbindex+1 >= pcb->top)
-                pcbindex = 0;
+                pcbindex = -1;
+            pcbindex++;
             break;
 
         case STATUS_BLOCKED:
             debug("Process with PID %d is BLOCKED.\n", p->pid);
             if ((size_t) pcbindex+1 >= pcb->top)
-                pcbindex = 0;
+                pcbindex = -1;
+            pcbindex++;
             break;
         
         default:

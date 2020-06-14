@@ -98,6 +98,9 @@ int main(int argc, char const *argv[]) {
     time_t t;
     heaprequest_start((unsigned) time(&t));
 
+
+    int schedualer_timer = 0;
+
     /* Ciclo principal do programa */
     while (__running) {
         if (!plan_empty(plan)) {
@@ -117,7 +120,21 @@ int main(int argc, char const *argv[]) {
                 debug("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
                 write("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
             }
-            pcbindex = fcfs(pcb, memory, pcbindex);
+            switch (schedualing_algorithm)
+            {
+                case FCFS:
+                    pcbindex = fcfs(pcb, memory, pcbindex);
+                    break;
+                case SJF:
+                    pcbindex = sjf(pcb, memory, pcbindex);
+                    break;
+                case RR:
+                    pcbindex = rrobin(pcb, memory, pcbindex, schedualer_timer);
+                    break;
+                default:
+                    pcbindex = fcfs(pcb, memory, pcbindex); //leaving fcfs as default for now, change later if needed
+                    break;
+            }
             if (pcbindex == FCFS_END) {
                 debug("Reached FCFS_END.\n");
                 write("Reached end of FCFS plan.\n");
@@ -132,6 +149,7 @@ int main(int argc, char const *argv[]) {
             seconds = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
             if (seconds >= DEFAULT_TIME_QUANTUM) {
                 cputime++;
+                schedualer_timer++;
                 break;
             }
         }
