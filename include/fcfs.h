@@ -52,9 +52,19 @@ int findsj(PCB *pcb);
  *  mem: the memory array;
  *  pcbindex: current PCB table index at which the manager is working.
  * 
- *  return: return: next PCB index, or FCFS_END if ended.
+ *  return: next PCB index, or FCFS_END if ended.
  */
 int sjf(PCB *pcb, MEMORY *mem, int pcbindex);
+
+/* Function: checkPCBStatus
+ * ------------------------
+ * Checks if there is any process left to run through the processor.
+ * 
+ *  pcb: the PCB table with the processes;
+ *  
+ *  return: 1 if true, 0 if false.
+ */
+int checkPCBStatus(PCB *pcb);
 
 /* Function: rrobin
  * ----------------

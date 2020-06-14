@@ -21,6 +21,13 @@
 #include <stdio.h>
 
 
+/* TODO: - Change filename and respective .h to schalg(scheduling algorithms)(better names encoraged);
+ *       - Refactor code to get rid of repetetive code;
+ *       - Check if SJF is working;
+ *       - Add a limit of instructions to execute for the schedualing algorithms(Round Robin in this case);
+ *       - 
+ */
+
 int fcfs(PCB *pcb, MEMORY *mem, int pcbindex) {
     /* Chegou ao fim da tabela PCB, não há mais processos em fila */
     debug("Working on PCB index %d.\n", pcbindex);
@@ -124,11 +131,25 @@ int sjf(PCB *pcb, MEMORY *mem, int pcbindex)
     return pcbindex;
 }
 
+int checkPCBStatus(PCB *pcb)
+{
+    int tempPCBCounter = 0;
+    int shortestJobIndex = MAX_TIMELIMIT;
+    while(tempPCBCounter < pcb->size)
+    {
+        if(pcb->proc[tempPCBCounter].state != STATUS_BLOCKED && pcb->proc[tempPCBCounter].state != STATUS_TERMINATED)
+            return 0;
+        tempPCBCounter++;
+    }
+    return 1;
+}
+
 int rrobin(PCB *pcb, MEMORY *mem, int pcbindex)
 {
     debug("Working on PCB index %d.\n", pcbindex);
     if ((size_t) pcbindex >= pcb->top)
-        return FCFS_END;
+        if(checkPCBStatus(pcb))
+            return FCFS_END;
 
     process *p = &(pcb->proc[pcbindex]);
     switch (p->state) {
@@ -151,12 +172,14 @@ int rrobin(PCB *pcb, MEMORY *mem, int pcbindex)
         
         case STATUS_TERMINATED:
             debug("Process with PID %d is TERMINATED.\n", p->pid);
-            // move to next job or if last go back to first job
+            if ((size_t) pcbindex+1 >= pcb->top)
+                pcbindex = 0;
             break;
 
         case STATUS_BLOCKED:
             debug("Process with PID %d is BLOCKED.\n", p->pid);
-            // move to next job or if last go back to first job
+            if ((size_t) pcbindex+1 >= pcb->top)
+                pcbindex = 0;
             break;
         
         default:
