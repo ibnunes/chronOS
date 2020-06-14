@@ -20,6 +20,14 @@
 #include "debug.h"
 #include <stdio.h>
 
+int sorted(process *p, size_t size) {
+    for (size_t i = 1; i < size; i++) {
+        if (p[i-1].timelimit > p[i].timelimit)
+            return 0;
+    }
+    return 1;
+}
+
 int comparebt(const void *v1, const void *v2) { // compara o Burst time dos processos
     const process *p1 = (process *)v1;
     const process *p2 = (process *)v2;
@@ -31,12 +39,13 @@ int comparebt(const void *v1, const void *v2) { // compara o Burst time dos proc
 }
 
 int sjf(PCB *pcb, MEMORY *mem, int pcbindex) {
-    
-    int temp;
     debug("Working on PCB index %d.\n", pcbindex);
     
     /* Reorganizar o PCB por Burst Time*/
-    qsort(pcb->proc, (sizeof(pcb->proc)/sizeof(process)), sizeof(process), comparebt);
+    if (!sorted(pcb->proc, pcb->size)) {
+        qsort(pcb->proc, pcb->size, sizeof(process), comparebt);
+        pcbindex = 0;
+    }
 
     /* Chegou ao fim da tabela PCB, não há mais processos em fila */
     if ((size_t) pcbindex >= pcb->top)

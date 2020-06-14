@@ -45,6 +45,9 @@ int fcfs(PCB *pcb, MEMORY *mem, int pcbindex);
  *  
  *  return: next PCB index, or SJF_END if ended.
  */
-int sjf(PCB *pcb, MEMORY *mem, int pcbindex);       
+int sjf(PCB *pcb, MEMORY *mem, int pcbindex);
+
+int sorted(process *p, size_t size);
+int comparebt(const void *v1, const void *v2);
 
 #endif
