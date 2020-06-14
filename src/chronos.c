@@ -61,7 +61,7 @@
 
 
 int main(int argc, char const *argv[]) {
-    printf("===== chronOS 1.1.0 =====\n\n");
+    printf("===== chronOS 1.2.0 =====\n\n");
 
     int __running = 1;
     cputime = 0;
@@ -95,6 +95,9 @@ int main(int argc, char const *argv[]) {
     int __mustexit = 0;
     int pcbindex = 0;
 
+    time_t t;
+    heaprequest_start((unsigned) time(&t));
+
     /* Ciclo principal do programa */
     while (__running) {
         if (!plan_empty(plan)) {
@@ -108,6 +111,12 @@ int main(int argc, char const *argv[]) {
         
         /* Gestão de processos */
         if (!__mustexit) {
+            if (heaprequest()) {
+                int size = heaprequest_size();
+                int ret = heapalloc(PID_CHRONOS, size);
+                debug("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
+                write("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
+            }
             pcbindex = fcfs(pcb, memory, pcbindex);
             if (pcbindex == FCFS_END) {
                 debug("Reached FCFS_END.\n");
@@ -132,11 +141,19 @@ int main(int argc, char const *argv[]) {
             __running = 0;
     }
 
+    debug("Deallocating heap memory requested by chronOS...\n");
+    write("Deallocating heap memory requested by chronOS...\n");
+    heapfree(PID_CHRONOS);  // para evitar memory leaks na heap memory por parte do chronOS
+
     write("Reached end of execution. Printing final reports...\n\n");
 
     pcbreport(pcb);
     memreport(memory);
     heapreport(heap_first, heap_next, heap_best, heap_worst);
+    heapdump(heap_first, "first-fit");
+    heapdump(heap_next,  "next-fit");
+    heapdump(heap_best,  "best-fit");
+    heapdump(heap_worst, "worst-fit");
 
     write("Finalizing...\n");
 
