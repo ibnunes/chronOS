@@ -82,7 +82,7 @@ void heapreport(HEAP *first, HEAP *next, HEAP *best, HEAP *worst) {
     f.frag  = heapfragcount(first);
     f.leak  = heapleakcount(first) * BLOCK_SIZE / 1024;
     f.time  = first->time / first->crossed;
-    f.neg   = (float) first->negated / first->calls * 100;
+    f.neg   = (float) first->negated / first->calls * 100.;
 
     n.calls = next->calls;
     n.cross = next->crossed;

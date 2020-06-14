@@ -13,4 +13,9 @@ int heapalloc_next(const int pid, const int size);
 int heapalloc_best(const int pid, const int size);
 int heapalloc_worst(const int pid, const int size);
 
+/* Solicitação de alocação */
+void heaprequest_start(unsigned int seed);
+int heaprequest(void);
+int heaprequest_size(void);
+
 #endif

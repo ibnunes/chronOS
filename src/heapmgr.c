@@ -1,19 +1,23 @@
 #include "heapmgr.h"
 #include "data.h"
+#include "debug.h"
 #include <limits.h>
+#include <stdlib.h>
+#include <math.h>
 
 // #define mb asm volatile ("mfence":::"memory")
 
 int heapalloc(const int pid, const int size) {
+    heap_first->calls++;
+    heap_next->calls++;
+    heap_best->calls++;
+    heap_worst->calls++;
+
     if (size < HEAP_ALLOC_MIN || size > HEAP_ALLOC_MAX) {
         // Conta como alocação recusada
-        heap_first->calls++;
         heap_first->negated++;
-        heap_next->calls++;
         heap_next->negated++;
-        heap_best->calls++;
         heap_best->negated++;
-        heap_worst->calls++;
         heap_worst->negated++;
         return HEAP_ALLOC_OUTOFRANGE;
     }
@@ -27,7 +31,6 @@ int heapalloc(const int pid, const int size) {
     if ((crossed = heapalloc_first(pid, size)) != HEAP_ALLOC_NOAVAIL) {
         clock_end = clock();
         heap_first->time += (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
-        heap_first->calls++;
         heap_first->crossed += crossed;
         success += HEAP_ALG_FIRST;
     } else {
@@ -39,7 +42,6 @@ int heapalloc(const int pid, const int size) {
     if ((crossed = heapalloc_next(pid, size)) != HEAP_ALLOC_NOAVAIL) {
         clock_end = clock();
         heap_next->time += (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
-        heap_next->calls++;
         heap_next->crossed += crossed;
         success += HEAP_ALG_NEXT;
     } else {
@@ -51,7 +53,6 @@ int heapalloc(const int pid, const int size) {
     if ((crossed = heapalloc_best(pid, size)) != HEAP_ALLOC_NOAVAIL) {
         clock_end = clock();
         heap_best->time += (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
-        heap_best->calls++;
         heap_best->crossed += crossed;
         success += HEAP_ALG_BEST;
     } else {
@@ -63,7 +64,6 @@ int heapalloc(const int pid, const int size) {
     if ((crossed = heapalloc_worst(pid, size)) != HEAP_ALLOC_NOAVAIL) {
         clock_end = clock();
         heap_worst->time += (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
-        heap_worst->calls++;
         heap_worst->crossed += crossed;
         success += HEAP_ALG_WORST;
     } else {
@@ -284,4 +284,24 @@ int heapalloc_worst(const int pid, const int size) {
         return HEAP_ALLOC_NOAVAIL;
 
     return crossed;
+}
+
+
+void heaprequest_start(unsigned int seed) {
+    /* Método: aleatoriedade */
+    srand(seed);
+}
+
+#define M_PI acos(-1.0)
+
+int heaprequest(void) {
+    double x = (rand() % 6284) / 1000.;                     // Gera [0 .. 2×pi]
+    int p = (int) ((sin(x - M_PI / 2.) + 1.) / 2. * 100.);  // Gera [0 .. 100]
+    int r = rand() % 101;                                   // Gera [0 .. 100]
+    debug("x = %.3lf; p = %3d; r = %3d => [%s]\n", x, p, r, (p - r >= 0) ? "ACCEPTED" : "REJECTED");
+    return (p - r >= 0);
+}
+
+int heaprequest_size(void) {
+    return (rand() % (HEAP_ALLOC_MAX - HEAP_ALLOC_MIN + 1) + HEAP_ALLOC_MIN);
 }
