@@ -39,14 +39,17 @@ obj/
 
 # Documentation
 doc/ignore/
+doc/imagens/
 doc/_minted-chronOS
 doc/*.aux
+doc/*.idx
+doc/*.lof
 doc/*.log
 doc/*.out
-doc/*.synctex.gz
 doc/*.pdf
+doc/*.synctex.gz
 doc/*.toc
-doc/*.lof
 
 # Others
 *.png
+*.jpg
