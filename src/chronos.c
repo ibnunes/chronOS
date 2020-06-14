@@ -127,7 +127,7 @@ int main(int argc, char const *argv[]) {
                 
                 case SCHEDULING_SJF:
                     w.pcb.index = sjf(pcb, memory, w.pcb.index);
-                    if (w.pcb.index = SJF_END) {
+                    if (w.pcb.index == SJF_END) {
                         debug("Reached SJF_END.\n");
                         write("Reached end of SJF plan.\n");
                         w.flag.__mustexit = 1;
