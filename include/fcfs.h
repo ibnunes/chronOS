@@ -34,4 +34,37 @@
  */
 int fcfs(PCB *pcb, MEMORY *mem, int pcbindex);
 
+/* Funtion: findsj
+ * ---------------
+ * Searches pcb table for process with shortest timelimit(burst time).
+ * 
+ *  pcb: the PCB table with the processes.
+ * 
+ *  return: PCB table index of process with shorstest timelimit.
+ */
+int findsj(PCB *pcb);
+
+/* Function: sjf
+ * ------------
+ * Executes the process in the PCB table using the SJF algorithm.
+ * 
+ *  pcb: the PCB table with the processes;
+ *  mem: the memory array;
+ *  pcbindex: current PCB table index at which the manager is working.
+ * 
+ *  return: return: next PCB index, or FCFS_END if ended.
+ */
+int sjf(PCB *pcb, MEMORY *mem, int pcbindex);
+
+/* Function: rrobin
+ * ----------------
+ * Executes the process in the PCB table using the Round Robin algorithm.
+ *  
+ *  pcb: the PCB table with the processes;
+ *  mem: the memory array;
+ *  pcbindex: current PCB table index at which the manager is working.
+ * 
+ *  return: return: next PCB index, or FCFS_END if ended.
+ */
+int rrobin(PCB *pcb, MEMORY *mem, int pcbindex);
 #endif
