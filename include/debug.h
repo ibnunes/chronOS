@@ -21,6 +21,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define expects(X)                        \
+   do {                                   \
+      if (!(X)) {                         \
+         debug("Expected '%s'.\n", #X);   \
+         exit(1);                         \
+      }                                   \
+   } while(0)
+
+#define ensures(X) expects(X)
+
 #ifndef NDEBUG
 
 #define debug(...)                                                      \
@@ -36,8 +46,6 @@
 
 
 #define debug(...) 
-// #define expects(...)
-// #define ensures(...)
 
 #define write(...)                                                      \
    do {                                                                 \
@@ -46,15 +54,5 @@
 
 
 #endif  // NDEBUG
-
-#define expects(X)                        \
-   do {                                   \
-      if (!(X)) {                         \
-         debug("Expected '%s'.\n", #X);   \
-         exit(1);                         \
-      }                                   \
-   } while(0)
-
-#define ensures(X) expects(X)
 
 #endif  // INCLUDE_DEBUG_H

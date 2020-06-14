@@ -1,11 +1,11 @@
 #include "world.h"
-#include "debug.h"
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
 #include <libgen.h>
 #include <errno.h>
+#include "debug.h"
 
 void halt(int e, char const *msg) {
     if (e != 0) errno = e;
@@ -59,8 +59,6 @@ void loadargs(struct world *world, int argc, char const *argv[]) {
     strcpy(world->pwd, bin);
     strcat(bin, world->fileplan);
     strcpy(world->fileplan, bin);
-    printf("plan = %s\n", world->fileplan);
-    printf(" pwd = %s\n", world->pwd);
 
     int i = 0;
     while (i + 1 < argc) {
