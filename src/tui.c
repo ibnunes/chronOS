@@ -69,36 +69,51 @@ void pcbreport(PCB *pcb) {
 
 void heapreport(HEAP *first, HEAP *next, HEAP *best, HEAP *worst) {
     struct heapstat {
+        int   calls;    // Número de chamadas de alocação
+        int   cross;    // Blocos de memória percorridos
         int   frag;     // Número de fragmentos externos
+        int   leak;     // KB de memory leak
         float time;     // Tempo médio de alocação
         float neg;      // Percentagem de vezes que uma alocação foi negada
     } f, n, b, w;
 
-    f.frag = heapfragcount(first);
-    f.time = first->time / first->crossed;
-    f.neg  = (float) first->negated / first->calls * 100;
+    f.calls = first->calls;
+    f.cross = first->crossed;
+    f.frag  = heapfragcount(first);
+    f.leak  = heapleakcount(first) * BLOCK_SIZE / 1024;
+    f.time  = first->time / first->crossed;
+    f.neg   = (float) first->negated / first->calls * 100;
 
-    n.frag = heapfragcount(next);
-    n.time = next->time / next->crossed;
-    n.neg  = (float) next->negated / next->calls * 100.;
+    n.calls = next->calls;
+    n.cross = next->crossed;
+    n.frag  = heapfragcount(next);
+    n.leak  = heapleakcount(next) * BLOCK_SIZE / 1024;
+    n.time  = next->time / next->crossed;
+    n.neg   = (float) next->negated / next->calls * 100.;
 
-    b.frag = heapfragcount(best);
-    b.time = best->time / best->crossed;
-    b.neg  = (float) best->negated / best->calls * 100.;
+    b.calls = best->calls;
+    b.cross = best->crossed;
+    b.frag  = heapfragcount(best);
+    b.leak  = heapleakcount(best) * BLOCK_SIZE / 1024;
+    b.time  = best->time / best->crossed;
+    b.neg   = (float) best->negated / best->calls * 100.;
 
-    w.frag = heapfragcount(worst);
-    w.time = worst->time / worst->crossed;
-    w.neg  = (float) worst->negated / worst->calls * 100.;
+    w.calls = worst->calls;
+    w.cross = worst->crossed;
+    w.frag  = heapfragcount(worst);
+    w.leak  = heapleakcount(worst) * BLOCK_SIZE / 1024;
+    w.time  = worst->time / worst->crossed;
+    w.neg   = (float) worst->negated / worst->calls * 100.;
     
     printf("====== Heap memory ======\n\n");
-    printf("+-----------+----------------+----------------+----------------+\n");
-    printf("| Algorithm |   # fragments  | Alloc avg time |  Perc no-alloc |\n");
-    printf("+-----------+----------------+----------------+----------------+\n");
-    printf("| First-fit | %14d | %14.3f | %14.3f |\n", f.frag, f.time, f.neg);
-    printf("|  Next-fit | %14d | %14.3f | %14.3f |\n", n.frag, n.time, n.neg);
-    printf("|  Best-fit | %14d | %14.3f | %14.3f |\n", b.frag, b.time, b.neg);
-    printf("| Worst-fit | %14d | %14.3f | %14.3f |\n", w.frag, w.time, w.neg);
-    printf("+-----------+----------------+----------------+----------------+\n");
+    printf("+-----------+-------+---------+------------+----------------+----------------+----------------+\n");
+    printf("| Algorithm | Calls | Crossed | Leaks (KB) |   # fragments  | Alloc avg time |  Perc no-alloc |\n");
+    printf("+-----------+-------+---------+------------+----------------+----------------+----------------+\n");
+    printf("| First-fit | %5d | %7d | %10d | %14d | %14.3f | %14.3f |\n", f.calls, f.cross, f.leak, f.frag, f.time, f.neg);
+    printf("|  Next-fit | %5d | %7d | %10d | %14d | %14.3f | %14.3f |\n", n.calls, n.cross, n.leak, n.frag, n.time, n.neg);
+    printf("|  Best-fit | %5d | %7d | %10d | %14d | %14.3f | %14.3f |\n", b.calls, b.cross, b.leak, b.frag, b.time, b.neg);
+    printf("| Worst-fit | %5d | %7d | %10d | %14d | %14.3f | %14.3f |\n", w.calls, w.cross, w.leak, w.frag, w.time, w.neg);
+    printf("+-----------+-------+---------+------------+----------------+----------------+----------------+\n\n");
     printf("=== End of heap memory ==\n\n");
 }
 
@@ -120,6 +135,24 @@ void memreport(MEMORY *mem) {
     }
     printf("+------+-----+-----+------------------+\n");
     printf("===== End of memory =====\n\n");
+}
+
+void heapdump(HEAP *heap, const char *hname) {
+    printf("====== Heap memory dump =====\n");
+    printf("Heap: %s\n\n", (hname == NULL) ? "n/a" : hname);
+    printf("+------+------+\n");
+    printf("| Cell |  PID |\n");
+    printf("+------+------+\n");
+    for (int i = 0; i < heap->capacity; i++) {
+        if (heap->pid[i] != PID_NULL) {
+            printf(
+                "| %4d | %4d |\n",
+                i, heap->pid[i]
+            );
+        }
+    }
+    printf("+------+------+\n\n");
+    printf("== End of heap memory dump ==\n\n");
 }
 
 #endif

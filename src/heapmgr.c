@@ -2,6 +2,8 @@
 #include "data.h"
 #include <limits.h>
 
+// #define mb asm volatile ("mfence":::"memory")
+
 int heapalloc(const int pid, const int size) {
     if (size < HEAP_ALLOC_MIN || size > HEAP_ALLOC_MAX) {
         // Conta como alocação recusada
@@ -95,7 +97,7 @@ int heapfree(const int pid) {
     return HEAP_FREE_SUCCESS;
 }
 
-int heapfragcount(HEAP* heap) {
+int heapfragcount(HEAP *heap) {
     int free  = 0;
     int frag  = 0;
 
@@ -114,6 +116,16 @@ int heapfragcount(HEAP* heap) {
     }
 
     return frag;
+}
+
+int heapleakcount(HEAP *heap) {
+    /* Assumimos que a aplicação chegou ao fim. */
+    int count = 0;
+    for (int i = 0; i < heap->capacity; i++) {
+        if (heap->pid[i] != PID_NULL)
+            count++;
+    }
+    return count;
 }
 
 int heapalloc_first(const int pid, const int size) {
@@ -139,7 +151,7 @@ int heapalloc_first(const int pid, const int size) {
     }
 
     if (available) {
-        for (int i = init; i < size; i++)
+        for (int i = init; i < init + size; i++)
             heap_first->pid[i] = pid;
         heap_first->top = init + size;
         return crossed; // devolve os blocos que percorreu
@@ -175,7 +187,7 @@ int heapalloc_next(const int pid, const int size) {
 
     if (available)
     {
-        for (int i = init; i < size; i++)
+        for (int i = init; i < init + size; i++)
             heap_next->pid[i] = pid;
         heap_next->top = init + size; // devolve os blocos que percorreu
         return crossed;
@@ -219,7 +231,7 @@ int heapalloc_best(const int pid, const int size) {
     }
 
     if (available) {
-        for (int i = init; i < size; i++) {
+        for (int i = init; i < init + size; i++) {
             heap_best->pid[i] = pid;
         }
         heap_best->top = init + size;
@@ -264,7 +276,7 @@ int heapalloc_worst(const int pid, const int size) {
     }
 
     if (available) {
-        for (int i = init; i < size; i++) {
+        for (int i = init; i < init + size; i++) {
             heap_worst->pid[i] = pid;
         }
         heap_worst->top = init + size;

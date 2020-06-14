@@ -56,9 +56,12 @@ void heapreport(HEAP *first, HEAP *next, HEAP *best, HEAP *worst);
  */
 void memreport(MEMORY *mem);
 
+void heapdump(HEAP *heap, const char *hname);
+
 #else
 
 #define memreport(...)
+#define heapdump(...)
 
 #endif      // NDEBUG
 

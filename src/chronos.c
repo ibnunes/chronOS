@@ -137,6 +137,10 @@ int main(int argc, char const *argv[]) {
     pcbreport(pcb);
     memreport(memory);
     heapreport(heap_first, heap_next, heap_best, heap_worst);
+    heapdump(heap_first, "first-fit");
+    heapdump(heap_next,  "next-fit");
+    heapdump(heap_best,  "best-fit");
+    heapdump(heap_worst, "worst-fit");
 
     write("Finalizing...\n");
 
