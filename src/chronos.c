@@ -95,6 +95,9 @@ int main(int argc, char const *argv[]) {
 
     heaprequest_start(w.heap.requestseed);
 
+
+    int schedualer_timer = 0;
+
     /* Ciclo principal do programa */
     while (w.flag.__running) {
         if (!plan_empty(plan)) {
@@ -124,10 +127,23 @@ int main(int argc, char const *argv[]) {
                         w.flag.__mustexit = 1;
                     }
                     break;
-                
+                case SCHEDULING_SJF:
+                    w.pcb.index = sjf(pcb, memory, w.pcb.index);
+                    if (w.pcb.index == FCFS_END) {
+                        debug("Reached FCFS_END.\n");
+                        write("Reached end of FCFS plan.\n");
+                        w.flag.__mustexit = 1;
+                    }
+                    break;
+                case SCHEDULING_RROBIN:
+                    w.pcb.index = rrobin(pcb, memory, w.pcb.index);
+                    if (w.pcb.index == FCFS_END) {
+                        debug("Reached FCFS_END.\n");
+                        write("Reached end of FCFS plan.\n");
+                        w.flag.__mustexit = 1;
+                    }
+                    break;
                 default: break;
-            }
-            
         }
         
         /* Clock do processador */
@@ -137,6 +153,7 @@ int main(int argc, char const *argv[]) {
             seconds = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
             if (seconds >= w.timequantum) {
                 w.cputime++;
+                schedualer_timer++;
                 break;
             }
         }
