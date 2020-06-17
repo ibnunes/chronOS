@@ -57,48 +57,77 @@
 #include "simulator.h"
 #include "fcfs.h"
 #include "tui.h"
-#include <time.h>
+#include "world.h"
 
 
 int main(int argc, char const *argv[]) {
-    printf("===== chronOS 1.0.0 =====\n\n");
+    // struct world w;
+    startworld(&w);
 
-    int __running = 1;
-    cputime = 0;
+    printf("===== %s %s =====\n\n", w.app.name, w.app.version);
+    write("Initializing...\n");
 
-    // 1. Alocar células de memória 
-    debug("Allocating %d cells of memory\n", MAX_MEM);
-    memory = memcreate(MAX_MEM);
+    loadargs(&w, argc, argv);
 
-    // 2. Inicializar tabela PCB
-    debug("Allocating %d lines of PCB table\n", MAX_PCB);
-    pcb = pcballoc(MAX_PCB);
+    // Alocar células de memória 
+    debug("Allocating %d cells of memory\n", w.memory.capacity);
+    memory = memcreate(w.memory.capacity);
 
-    // 3. Inicializar queue de plano com o ficheiro plan.txt
-    debug("Reading plan queue from %s:\n", FILE_PLAN);
-    plan = plan_read_from_file(FILE_PLAN);
+    // Alocar memória heap
+    debug("Allocating %d KB of heap memory for 4 algorithms\n", w.heap.capacity * w.heap.blocksize);
+    heap_first = makeheap(w.heap.capacity);
+    heap_next  = makeheap(w.heap.capacity);
+    heap_best  = makeheap(w.heap.capacity);
+    heap_worst = makeheap(w.heap.capacity);
+
+    // Inicializar tabela PCB
+    debug("Allocating %d lines of PCB table\n", w.pcb.size);
+    pcb = pcballoc(w.pcb.size);
+
+    // Inicializar queue de plano com o ficheiro plan.txt
+    debug("Reading plan queue from %s:\n", w.fileplan);
+    plan = plan_read_from_file(w.fileplan);
     debug("Got %d elements in queue.\n", plan_length(plan));
+    write("Got %d elements in queue.\n", plan_length(plan));
 
     clock_t clock_start, clock_end;
     float seconds;
-    
-    int __mustexit = 0;
-    int pcbindex = 0;
+
+    heaprequest_start(w.heap.requestseed);
 
     /* Ciclo principal do programa */
-    while (__running) {
+    while (w.flag.__running) {
         if (!plan_empty(plan)) {
-            if (plan_peek(plan).time <= cputime) {
+            if (plan_peek(plan).time <= w.cputime) {
                 debug("cputime = %ld; plan_peek.time = %ld\n", cputime, plan_peek(plan).time);
+                write("Creating new process from \"%s\" at CPU time %ld\n", plan_peek(plan).program, w.cputime);
                 create_new_process(pcb, plan_pop(plan).program);
+                w.flag.__mustexit = 0;
             }
         }
         
         /* Gestão de processos */
-        pcbindex = fcfs(pcb, memory, pcbindex);
-        if (pcbindex == FCFS_END) {
-            debug("Reached FCFS_END.\n");
-            __mustexit = 1;
+        if (!w.flag.__mustexit) {
+            if (heaprequest()) {
+                int size = heaprequest_size();
+                int ret = heapalloc(w.pid, size);
+                debug("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
+                write("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
+            }
+
+            switch (w.pcb.algorithm) {
+                case SCHEDULING_FCFS:
+                    w.pcb.index = fcfs(pcb, memory, w.pcb.index);
+                    if (w.pcb.index == FCFS_END) {
+                        debug("Reached FCFS_END.\n");
+                        write("Reached end of FCFS plan.\n");
+                        w.flag.__mustexit = 1;
+                    }
+                    break;
+                
+                default: break;
+            }
+            
         }
         
         /* Clock do processador */
@@ -106,29 +135,51 @@ int main(int argc, char const *argv[]) {
         while (1) {
             clock_end = clock();
             seconds = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
-            if (seconds >= DEFAULT_TIME_QUANTUM) {
-                cputime++;
+            if (seconds >= w.timequantum) {
+                w.cputime++;
                 break;
             }
         }
 
         // Verificar condições nas quais o simulador deve terminar
-        if (plan_empty(plan) && __mustexit)
-            __running = 0;
+        if (plan_empty(plan) && w.flag.__mustexit)
+            w.flag.__running = 0;
     }
 
+    // Dealocação de memória heap do chronOS
+    debug("Deallocating heap memory requested by chronOS...\n");
+    write("Deallocating heap memory requested by chronOS...\n");
+    heapfree(w.pid);  // para evitar memory leaks na heap memory por parte do chronOS
+
+    write("Reached end of execution. Printing final reports...\n\n");
+
+    // Relatórios e estatísticas
     pcbreport(pcb);
     memreport(memory);
+    heapreport(heap_first, heap_next, heap_best, heap_worst);
+    heapdump(heap_first, "first-fit");
+    heapdump(heap_next,  "next-fit");
+    heapdump(heap_best,  "best-fit");
+    heapdump(heap_worst, "worst-fit");
 
-    // -3. Libertar queue de plano
+    write("Finalizing...\n");
+
+    // Libertar queue de plano
     debug("Freeing plan queue\n");
     plan_free(plan);
 
-    // -2. Libertar memória
+    // Libertar memória
     debug("Freeing memory\n");
     memdestroy(memory);
 
-    // -1. Libertar tabela PCB
+    // Libertar memória heap
+    debug("Freeing heap memory (4 components)\n");
+    destroyheap(heap_first);
+    destroyheap(heap_next);
+    destroyheap(heap_best);
+    destroyheap(heap_worst);
+
+    // Libertar tabela PCB
     debug("Freeing PCB table\n");
     pcbfree(pcb);
 

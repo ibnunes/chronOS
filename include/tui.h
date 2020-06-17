@@ -42,6 +42,8 @@ const char *state2str(int state);
  */
 void pcbreport(PCB *pcb);
 
+void heapreport(HEAP *first, HEAP *next, HEAP *best, HEAP *worst);
+
 #ifndef NDEBUG
 
 /* Function:  memreport
@@ -54,9 +56,12 @@ void pcbreport(PCB *pcb);
  */
 void memreport(MEMORY *mem);
 
+void heapdump(HEAP *heap, const char *hname);
+
 #else
 
 #define memreport(...)
+#define heapdump(...)
 
 #endif      // NDEBUG
 

@@ -21,11 +21,14 @@
 
 #include <stdlib.h>
 #include <time.h>
+#include <limits.h>
 
 /* Strings úteis ao programa */
 #define PROG_EXTENSION ".prg"           // Extensão de um programa que corre no simulador
 #define FILE_PLAN      "plan.txt"       // Ficheiro com o plano de execução
 #define FILE_CONTROL   "control.txt"    // Ficheiro com os comandos de controlo
+
+#define PID_CHRONOS 0               // PID da aplicação chronOS
 
 /* ======================================== *
  * processor.h                              *
@@ -65,7 +68,6 @@ typedef struct {
     clock_t timeinit;
     clock_t timeused;
     clock_t timeend;
-    // add whatever else is needed
 } process;
 
 #define STATUS_NULL 0               // Processo não existe: null
@@ -79,13 +81,23 @@ typedef struct {
 #define PRIORITY_MIN 1              // Prioridade: mínima
 #define PRIORITY_MAX 5              // Prioridade: máxima
 
-#define INSTRUCTION_CHANGE 'M'      // M n
-#define INSTRUCTION_ADD 'A'         // A n
-#define INSTRUCTION_SUBTRACT 'S'    // S n
-#define INSTRUCTION_BLOCK 'B'       // B
+#define INSTRUCTION_CHANGE    'M'   // M n
+#define INSTRUCTION_ADD       'A'   // A n
+#define INSTRUCTION_SUBTRACT  'S'   // S n
+#define INSTRUCTION_BLOCK     'B'   // B
 #define INSTRUCTION_TERMINATE 'T'   // T
-#define INSTRUCTION_FORK 'C'        // C n
-#define INSTRUCTION_CLEAR 'L'       // L filename
+#define INSTRUCTION_FORK      'C'   // C n
+#define INSTRUCTION_CLEAR     'L'   // L filename
+#define INSTRUCTION_ALLOC     'K'   // K blocks (of size 2KB)
+#define INSTRUCTION_FREE      'F'   // F
+
+
+/* ======================================== *
+ * simulator.h                              *
+ * ======================================== */
+
+#define DEFAULT_TIME_QUANTUM 0.500F         // 500 milissegundos
+#define PID_MANAGER PID_CHRONOS             // PID do processo gestor
 
 
 /* ======================================== *
@@ -108,7 +120,7 @@ typedef struct {
     process *proc;
     size_t  size;
     size_t  top;
-} PCB;        // workaround for the meantime
+} PCB;
 
 #define MAX_TIMELIMIT 100   // (temporário) burst time de um processo
 
@@ -167,5 +179,82 @@ typedef struct {
     size_t capacity;
     size_t last;
 } plan_q;
+
+
+/* ======================================== *
+ * heap.h e heapmgr.h                       *
+ * ======================================== */
+
+#define HEAP_CAPACITY  128      // 128 partições
+#define BLOCK_SIZE    2048      // 2KB por partição
+
+#define HEAP_ALLOC_MIN 3            // Mínimo de 3 partições alocadas
+#define HEAP_ALLOC_MAX 10           // Máximo de 10 partições alocadas
+
+#define HEAP_ALLOC_NOAVAIL    -1    // Erro: não há memória heap disponível
+#define HEAP_ALLOC_OUTOFRANGE -2    // Erro: número de blocos não está entre MIN e MAX
+#define HEAP_FREE_SUCCESS      1    // Sucesso: memória heap libertada
+#define HEAP_FREE_FAILURE     -1    // Erro: a memória heap não pôde ser libertada
+
+#define HEAP_ALG_FIRST 1            // Algoritmo de alocação: First-fit
+#define HEAP_ALG_NEXT  2            // Algoritmo de alocação: Next-fit
+#define HEAP_ALG_BEST  4            // Algoritmo de alocação: Best-fit
+#define HEAP_ALG_WORST 8            // Algoritmo de alocação: Worst-fit
+
+/* Memória heap */
+typedef struct block {
+    void *data;             // bloco de memória genérico
+    struct block *next;     // lista ligada
+} BLOCK;
+
+/* Gestor da memória heap */
+typedef struct heap {
+    BLOCK *blocks;          // blocos de memória
+    int capacity;           // capacidade da memória
+    int top;                // para o NEXT-FIT: último bloco alocado
+    int *pid;               // PIDs dos processos que alocaram cada um dos blocos de memória
+    int calls;              // número de chamadas de alocação
+    int negated;            // número de alocações negadas
+    int crossed;            // número de blocos atravessados para as alocações
+    float time;             // tempo total dispendido nas alocações
+} HEAP;
+
+
+/* ======================================== *
+ * world.h                                  *
+ * ======================================== */
+
+#define SCHEDULING_FCFS   1
+#define SCHEDULING_SJF    2
+#define SCHEDULING_RROBIN 4
+
+struct world {
+    struct {
+        char name[8];
+        char version[20];
+    } app;
+    int pid;
+    clock_t cputime;
+    float timequantum;
+    struct {
+        int __running;
+        int __mustexit;
+    } flag;
+    struct {
+        int capacity;
+        int blocksize;
+        unsigned requestseed;
+    } heap;
+    struct {
+        int capacity;
+    } memory;
+    struct {
+        int size;
+        int index;
+        int algorithm;
+    } pcb;
+    char pwd[PATH_MAX + 1];
+    char fileplan[PATH_MAX + 1];
+};
 
 #endif

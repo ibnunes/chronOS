@@ -63,6 +63,29 @@ void run(MEMORY *mem, process *p) {
             debug("PID %d: instruction \"L %s\"\n", p->pid, i->name);
             cleanProgram(mem, p, i->name);
             return;
+        
+        case INSTRUCTION_ALLOC:
+            debug("PID %d: instruction \"K %d\"\n", p->pid, i->n);
+            int alg;
+            if ((alg = heapalloc(p->pid, i->n)) == HEAP_ALLOC_OUTOFRANGE) {
+                debug("Failed to allocate memory for PID %d\n", p->pid);
+                write("Failed to allocate memory for PID %d\n", p->pid);
+            } else {
+                debug("Allocated %d block of heap memory (return code = %d)\n", i->n, alg);
+                write("Allocated %d block of heap memory (return code = %d)\n", i->n, alg);
+            }
+            break;
+        
+        case INSTRUCTION_FREE:
+            debug("PID %d: instruction \"F\"\n", p->pid);
+            if (heapfree(p->pid) == HEAP_FREE_FAILURE) {
+                debug("Failed to deallocate heap memory for PID %d\n", p->pid);
+                write("Failed to deallocate heap memory for PID %d\n", p->pid);
+            } else {
+                debug("Deallocated heap memory\n");
+                write("Deallocated heap memory\n");
+            }
+            break;
 
         default:
             fprintf(stderr, "ERROR: Unknown instruction \"%c\". ABORTING!\n", i->ins);
