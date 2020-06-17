@@ -224,9 +224,13 @@ typedef struct heap {
  * world.h                                  *
  * ======================================== */
 
+#define SCHEDULER_END -1
+
 #define SCHEDULING_FCFS   1
 #define SCHEDULING_SJF    2
 #define SCHEDULING_RROBIN 4
+
+#define SCHEDUALING_COUNTER 5 //Number of instructions to be executed in a row before moving to next process
 
 struct world {
     struct {

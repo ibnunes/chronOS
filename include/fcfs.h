@@ -20,13 +20,7 @@
 
 #include "types.h"
 
-#define FCFS_END -1
-
-#define FCFS 1
-#define SJF 2
-#define RR 3
-
-#define SCHEDUALING_COUNTER 4 //Number of instructions to be executed in a row before moving to next process
+#define SCHEDUALING_COUNTER 5 //Number of instructions to be executed in a row before moving to next process
 
 /* Function:  fcfs
  * ---------------
@@ -36,7 +30,7 @@
  *  mem: the memory array.
  *  pcbindex: current PCB table index at which the manager is working.
  * 
- *  return: next PCB index, or FCFS_END if ended.
+ *  return: next PCB index, or SCHEDULER_END if ended.
  */
 int fcfs(PCB *pcb, MEMORY *mem, int pcbindex);
 
@@ -58,7 +52,7 @@ int findsj(PCB *pcb);
  *  mem: the memory array;
  *  pcbindex: current PCB table index at which the manager is working.
  * 
- *  return: next PCB index, or FCFS_END if ended.
+ *  return: next PCB index, or SCHEDULER_END if ended.
  */
 int sjf(PCB *pcb, MEMORY *mem, int pcbindex);
 
@@ -80,7 +74,7 @@ int checkPCBStatus(PCB *pcb);
  *  mem: the memory array;
  *  pcbindex: current PCB table index at which the manager is working.
  * 
- *  return: return: next PCB index, or FCFS_END if ended.
+ *  return: return: next PCB index, or SCHEDULER_END if ended.
  */
-int rrobin(PCB *pcb, MEMORY *mem, int pcbindex);
+int rrobin(PCB *pcb, MEMORY *mem, int pcbindex, int schedualer_timer);
 #endif

@@ -121,24 +121,24 @@ int main(int argc, char const *argv[]) {
             switch (w.pcb.algorithm) {
                 case SCHEDULING_FCFS:
                     w.pcb.index = fcfs(pcb, memory, w.pcb.index);
-                    if (w.pcb.index == FCFS_END) {
-                        debug("Reached FCFS_END.\n");
+                    if (w.pcb.index == SCHEDULER_END) {
+                        debug("Reached SCHEDULER_END.\n");
                         write("Reached end of FCFS plan.\n");
                         w.flag.__mustexit = 1;
                     }
                     break;
                 case SCHEDULING_SJF:
                     w.pcb.index = sjf(pcb, memory, w.pcb.index);
-                    if (w.pcb.index == FCFS_END) {
-                        debug("Reached FCFS_END.\n");
+                    if (w.pcb.index == SCHEDULER_END) {
+                        debug("Reached SCHEDULER_END.\n");
                         write("Reached end of FCFS plan.\n");
                         w.flag.__mustexit = 1;
                     }
                     break;
                 case SCHEDULING_RROBIN:
-                    w.pcb.index = rrobin(pcb, memory, w.pcb.index);
-                    if (w.pcb.index == FCFS_END) {
-                        debug("Reached FCFS_END.\n");
+                    w.pcb.index = rrobin(pcb, memory, w.pcb.index, schedualer_timer);
+                    if (w.pcb.index == SCHEDULER_END) {
+                        debug("Reached SCHEDULER_END.\n");
                         write("Reached end of FCFS plan.\n");
                         w.flag.__mustexit = 1;
                     }

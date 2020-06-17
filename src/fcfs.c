@@ -32,7 +32,7 @@ int fcfs(PCB *pcb, MEMORY *mem, int pcbindex) {
     /* Chegou ao fim da tabela PCB, não há mais processos em fila */
     debug("Working on PCB index %d.\n", pcbindex);
     if ((size_t) pcbindex >= pcb->top)
-        return FCFS_END;
+        return SCHEDULER_END;
     
     process *p = &(pcb->proc[pcbindex]);
     switch (p->state) {
@@ -91,7 +91,7 @@ int sjf(PCB *pcb, MEMORY *mem, int pcbindex)
 {
     debug("Working on PCB index %d.\n", pcbindex);
     if ((size_t) pcbindex >= pcb->top)
-        return FCFS_END;
+        return SCHEDULER_END;
 
     process *p = &(pcb->proc[pcbindex]);
     switch (p->state) {
@@ -149,7 +149,7 @@ int rrobin(PCB *pcb, MEMORY *mem, int pcbindex, int schedualer_timer)
     debug("Working on PCB index %d.\n", pcbindex);
     if ((size_t) pcbindex >= pcb->top)
         if(checkPCBStatus(pcb))
-            return FCFS_END;
+            return SCHEDULER_END;
 
     process *p = &(pcb->proc[pcbindex]);
     switch (p->state) {
