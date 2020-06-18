@@ -57,72 +57,93 @@
 #include "simulator.h"
 #include "fcfs.h"
 #include "tui.h"
-#include <time.h>
+#include "world.h"
 
 
 int main(int argc, char const *argv[]) {
-    printf("===== chronOS 1.2.0 =====\n\n");
+    // struct world w;
+    startworld(&w);
 
-    int __running = 1;
-    cputime = 0;
-
+    printf("===== %s %s =====\n\n", w.app.name, w.app.version);
     write("Initializing...\n");
 
-    // 1.1. Alocar células de memória 
-    debug("Allocating %d cells of memory\n", MAX_MEM);
-    memory = memcreate(MAX_MEM);
+    loadargs(&w, argc, argv);
 
-    // 1.2. Alocar memória heap
-    debug("Allocating %d KB of heap memory for 4 algorithms\n", HEAP_CAPACITY * BLOCK_SIZE);
-    heap_first = makeheap(HEAP_CAPACITY);
-    heap_next  = makeheap(HEAP_CAPACITY);
-    heap_best  = makeheap(HEAP_CAPACITY);
-    heap_worst = makeheap(HEAP_CAPACITY);
+    // Alocar células de memória 
+    debug("Allocating %d cells of memory\n", w.memory.capacity);
+    memory = memcreate(w.memory.capacity);
 
-    // 2. Inicializar tabela PCB
-    debug("Allocating %d lines of PCB table\n", MAX_PCB);
-    pcb = pcballoc(MAX_PCB);
+    // Alocar memória heap
+    debug("Allocating %d KB of heap memory for 4 algorithms\n", w.heap.capacity * w.heap.blocksize);
+    heap_first = makeheap(w.heap.capacity);
+    heap_next  = makeheap(w.heap.capacity);
+    heap_best  = makeheap(w.heap.capacity);
+    heap_worst = makeheap(w.heap.capacity);
 
-    // 3. Inicializar queue de plano com o ficheiro plan.txt
-    debug("Reading plan queue from %s:\n", FILE_PLAN);
-    plan = plan_read_from_file(FILE_PLAN);
+    // Inicializar tabela PCB
+    debug("Allocating %d lines of PCB table\n", w.pcb.size);
+    pcb = pcballoc(w.pcb.size);
+
+    // Inicializar queue de plano com o ficheiro plan.txt
+    debug("Reading plan queue from %s:\n", w.fileplan);
+    plan = plan_read_from_file(w.fileplan);
     debug("Got %d elements in queue.\n", plan_length(plan));
     write("Got %d elements in queue.\n", plan_length(plan));
 
     clock_t clock_start, clock_end;
     float seconds;
-    
-    int __mustexit = 0;
-    int pcbindex = 0;
 
-    time_t t;
-    heaprequest_start((unsigned) time(&t));
+    heaprequest_start(w.heap.requestseed);
+
+
+    int schedualer_timer = 0;
 
     /* Ciclo principal do programa */
-    while (__running) {
+    while (w.flag.__running) {
         if (!plan_empty(plan)) {
-            if (plan_peek(plan).time <= cputime) {
+            if (plan_peek(plan).time <= w.cputime) {
                 debug("cputime = %ld; plan_peek.time = %ld\n", cputime, plan_peek(plan).time);
-                write("Creating new process from \"%s\" at CPU time %ld\n", plan_peek(plan).program, cputime);
+                write("Creating new process from \"%s\" at CPU time %ld\n", plan_peek(plan).program, w.cputime);
                 create_new_process(pcb, plan_pop(plan).program);
-                __mustexit = 0;
+                w.flag.__mustexit = 0;
             }
         }
         
         /* Gestão de processos */
-        if (!__mustexit) {
+        if (!w.flag.__mustexit) {
             if (heaprequest()) {
                 int size = heaprequest_size();
-                int ret = heapalloc(PID_CHRONOS, size);
+                int ret = heapalloc(w.pid, size);
                 debug("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
                 write("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
             }
-            pcbindex = fcfs(pcb, memory, pcbindex);
-            if (pcbindex == FCFS_END) {
-                debug("Reached FCFS_END.\n");
-                write("Reached end of FCFS plan.\n");
-                __mustexit = 1;
-            }
+
+            switch (w.pcb.algorithm) {
+                case SCHEDULING_FCFS:
+                    w.pcb.index = fcfs(pcb, memory, w.pcb.index);
+                    if (w.pcb.index == SCHEDULER_END) {
+                        debug("Reached SCHEDULER_END.\n");
+                        write("Reached end of FCFS plan.\n");
+                        w.flag.__mustexit = 1;
+                    }
+                    break;
+                case SCHEDULING_SJF:
+                    w.pcb.index = sjf(pcb, memory, w.pcb.index);
+                    if (w.pcb.index == SCHEDULER_END) {
+                        debug("Reached SCHEDULER_END.\n");
+                        write("Reached end of FCFS plan.\n");
+                        w.flag.__mustexit = 1;
+                    }
+                    break;
+                case SCHEDULING_RROBIN:
+                    w.pcb.index = rrobin(pcb, memory, w.pcb.index, schedualer_timer);
+                    if (w.pcb.index == SCHEDULER_END) {
+                        debug("Reached SCHEDULER_END.\n");
+                        write("Reached end of FCFS plan.\n");
+                        w.flag.__mustexit = 1;
+                    }
+                    break;
+                default: break;
         }
         
         /* Clock do processador */
@@ -130,23 +151,26 @@ int main(int argc, char const *argv[]) {
         while (1) {
             clock_end = clock();
             seconds = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
-            if (seconds >= DEFAULT_TIME_QUANTUM) {
-                cputime++;
+            if (seconds >= w.timequantum) {
+                w.cputime++;
+                schedualer_timer++;
                 break;
             }
         }
 
         // Verificar condições nas quais o simulador deve terminar
-        if (plan_empty(plan) && __mustexit)
-            __running = 0;
+        if (plan_empty(plan) && w.flag.__mustexit)
+            w.flag.__running = 0;
     }
 
+    // Dealocação de memória heap do chronOS
     debug("Deallocating heap memory requested by chronOS...\n");
     write("Deallocating heap memory requested by chronOS...\n");
-    heapfree(PID_CHRONOS);  // para evitar memory leaks na heap memory por parte do chronOS
+    heapfree(w.pid);  // para evitar memory leaks na heap memory por parte do chronOS
 
     write("Reached end of execution. Printing final reports...\n\n");
 
+    // Relatórios e estatísticas
     pcbreport(pcb);
     memreport(memory);
     heapreport(heap_first, heap_next, heap_best, heap_worst);
@@ -157,22 +181,22 @@ int main(int argc, char const *argv[]) {
 
     write("Finalizing...\n");
 
-    // -3. Libertar queue de plano
+    // Libertar queue de plano
     debug("Freeing plan queue\n");
     plan_free(plan);
 
-    // -2.1 Libertar memória
+    // Libertar memória
     debug("Freeing memory\n");
     memdestroy(memory);
 
-    // -2.2 Libertar memória heap
+    // Libertar memória heap
     debug("Freeing heap memory (4 components)\n");
     destroyheap(heap_first);
     destroyheap(heap_next);
     destroyheap(heap_best);
     destroyheap(heap_worst);
 
-    // -1. Libertar tabela PCB
+    // Libertar tabela PCB
     debug("Freeing PCB table\n");
     pcbfree(pcb);
 
