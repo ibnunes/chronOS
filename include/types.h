@@ -230,33 +230,44 @@ typedef struct heap {
 #define SCHEDULING_SJF    2
 #define SCHEDULING_RROBIN 4
 
-#define SCHEDUALING_COUNTER 5 //Number of instructions to be executed in a row before moving to next process
+#define SCHEDULING_COUNTER 5 //Number of instructions to be executed in a row before moving to next process
+
+#define HEAP_REQUEST_INACTIVE 0
+#define HEAP_REQUEST_ACTIVE   1
 
 struct world {
     struct {
         char name[8];
         char version[20];
     } app;
+
     int pid;
     clock_t cputime;
     float timequantum;
+
     struct {
         int __running;
         int __mustexit;
     } flag;
+
     struct {
         int capacity;
         int blocksize;
+        int shouldrequest;
         unsigned requestseed;
     } heap;
+
     struct {
         int capacity;
     } memory;
+
     struct {
         int size;
         int index;
         int algorithm;
+        int rr_time;
     } pcb;
+
     char pwd[PATH_MAX + 1];
     char fileplan[PATH_MAX + 1];
 };

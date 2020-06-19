@@ -55,7 +55,7 @@
 
 
 #include "simulator.h"
-#include "fcfs.h"
+#include "scheduling.h"
 #include "tui.h"
 #include "world.h"
 
@@ -96,7 +96,7 @@ int main(int argc, char const *argv[]) {
     heaprequest_start(w.heap.requestseed);
 
 
-    int schedualer_timer = 0;
+    // int scheduler_timer = 0;
 
     /* Ciclo principal do programa */
     while (w.flag.__running) {
@@ -111,39 +111,40 @@ int main(int argc, char const *argv[]) {
         
         /* Gestão de processos */
         if (!w.flag.__mustexit) {
-            if (heaprequest()) {
-                int size = heaprequest_size();
-                int ret = heapalloc(w.pid, size);
-                debug("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
-                write("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
+            if (w.heap.shouldrequest) {
+                if (heaprequest()) {
+                    int size = heaprequest_size();
+                    int ret = heapalloc(w.pid, size);
+                    debug("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
+                    write("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
+                }
             }
 
             switch (w.pcb.algorithm) {
                 case SCHEDULING_FCFS:
                     w.pcb.index = fcfs(pcb, memory, w.pcb.index);
-                    if (w.pcb.index == SCHEDULER_END) {
-                        debug("Reached SCHEDULER_END.\n");
-                        write("Reached end of FCFS plan.\n");
-                        w.flag.__mustexit = 1;
-                    }
                     break;
+                
                 case SCHEDULING_SJF:
                     w.pcb.index = sjf(pcb, memory, w.pcb.index);
-                    if (w.pcb.index == SCHEDULER_END) {
-                        debug("Reached SCHEDULER_END.\n");
-                        write("Reached end of FCFS plan.\n");
-                        w.flag.__mustexit = 1;
-                    }
                     break;
+                
                 case SCHEDULING_RROBIN:
-                    w.pcb.index = rrobin(pcb, memory, w.pcb.index, schedualer_timer);
-                    if (w.pcb.index == SCHEDULER_END) {
-                        debug("Reached SCHEDULER_END.\n");
-                        write("Reached end of FCFS plan.\n");
-                        w.flag.__mustexit = 1;
-                    }
+                    w.pcb.index = rrobin(pcb, memory, w.pcb.index);
+                    w.pcb.rr_time++;
                     break;
-                default: break;
+                
+                default:
+                    fprintf(stderr, "ERROR: Unknown scheduling algorithm. ABORTING!\n");
+                    exit(EXIT_FAILURE);
+                    break;
+            }
+
+            if (w.pcb.index == SCHEDULER_END) {
+                debug("Reached SCHEDULER_END.\n");
+                write("Reached end of plan queue.\n");
+                w.flag.__mustexit = 1;
+            }
         }
         
         /* Clock do processador */
@@ -153,7 +154,7 @@ int main(int argc, char const *argv[]) {
             seconds = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
             if (seconds >= w.timequantum) {
                 w.cputime++;
-                schedualer_timer++;
+                // scheduler_timer++;
                 break;
             }
         }

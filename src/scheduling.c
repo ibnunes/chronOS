@@ -8,24 +8,22 @@
 //    Copyright (C) 2020 Universidade da Beira Interior (www.ubi.pt)
 //
 // RUNTIME LIBRARIES PACKAGE
-//    fcfs.h
+//    scheduling.h
 //
 // DESCRIPTION:
 // -----------
-// First Come First Serve algorithm.
+// Scheduling algorithms.
 //------------------------------------------------------------------------------
 
-#include "fcfs.h"
+#include "scheduling.h"
 #include "processor.h"
 #include "debug.h"
 #include <stdio.h>
 
 
-/* TODO: - Change filename and respective .h to schalg(scheduling algorithms)(better names encoraged);
- *       - Refactor code to get rid of repetetive code;
+/* TODO: - Refactor code to get rid of repetetive code;
  *       - Check if SJF is working;
- *       - Add a limit of instructions to execute for the schedualing algorithms(Round Robin in this case);
- *       - 
+ *       - Add a limit of instructions to execute for the scheduling algorithms (Round Robin in this case);
  */
 
 int fcfs(PCB *pcb, MEMORY *mem, int pcbindex) {
@@ -72,24 +70,20 @@ int fcfs(PCB *pcb, MEMORY *mem, int pcbindex) {
     return pcbindex;
 }
 
-int findsj(PCB *pcb) // TODO: clean up funtion 
-{
-    int tempPCBCounter = 0;
-    int shortestJobIndex = MAX_TIMELIMIT;
-    while(tempPCBCounter < pcb->size)
-    {
-        if(pcb->proc[tempPCBCounter].state != STATUS_READY) // not sure if ready status is the right one for the processes to be in
+int findsj(PCB *pcb) {
+    int index = MAX_TIMELIMIT;
+    for (size_t i = 0; i < pcb->size; i++) {
+        if (pcb->proc[i].state != STATUS_READY)     // not sure if ready status is the right one for the processes to be in
             continue;
-        if(pcb->proc[tempPCBCounter].timelimit < shortestJobIndex)
-        shortestJobIndex = tempPCBCounter;
-        tempPCBCounter++;
+        if (pcb->proc[i].timelimit < index)
+            index = i;
     }
-    return shortestJobIndex;
+    return index;
 }
 
-int sjf(PCB *pcb, MEMORY *mem, int pcbindex)
-{
+int sjf(PCB *pcb, MEMORY *mem, int pcbindex) {
     debug("Working on PCB index %d.\n", pcbindex);
+
     if ((size_t) pcbindex >= pcb->top)
         return SCHEDULER_END;
 
@@ -131,25 +125,19 @@ int sjf(PCB *pcb, MEMORY *mem, int pcbindex)
     return pcbindex;
 }
 
-int checkPCBStatus(PCB *pcb)
-{
-    int tempPCBCounter = 0;
-    int shortestJobIndex = MAX_TIMELIMIT;
-    while(tempPCBCounter < pcb->size)
-    {
-        if(pcb->proc[tempPCBCounter].state != STATUS_BLOCKED && pcb->proc[tempPCBCounter].state != STATUS_TERMINATED)
+int checkPCBStatus(PCB *pcb) {
+    for (size_t i = 0; i < pcb->top; i++) {
+        if (pcb->proc[i].state != STATUS_TERMINATED && pcb->proc[i].state != STATUS_BLOCKED)
             return 0;
-        tempPCBCounter++;
     }
     return 1;
 }
 
-int rrobin(PCB *pcb, MEMORY *mem, int pcbindex, int schedualer_timer)
-{
+int rrobin(PCB *pcb, MEMORY *mem, int pcbindex) {
     debug("Working on PCB index %d.\n", pcbindex);
-    if ((size_t) pcbindex >= pcb->top)
-        if(checkPCBStatus(pcb))
-            return SCHEDULER_END;
+    // if ((size_t) pcbindex >= pcb->top)
+    if (checkPCBStatus(pcb))
+        return SCHEDULER_END;
 
     process *p = &(pcb->proc[pcbindex]);
     switch (p->state) {
@@ -168,25 +156,25 @@ int rrobin(PCB *pcb, MEMORY *mem, int pcbindex, int schedualer_timer)
             debug("Running PID %d, instruction at PC=%d...\n", p->pid, p->counter);
             p->timeused++;
             run(mem, p);
-            if(schedualer_timer == SCHEDUALING_COUNTER)
-            {
+            if (w.pcb.rr_time == SCHEDULING_COUNTER) {
                 p->state = switchState(p->state, STATUS_READY);
-                if ((size_t) pcbindex+1 >= pcb->top)
+                if ((size_t) pcbindex + 1 >= pcb->top)
                     pcbindex = -1;
                 pcbindex++;
+                w.pcb.rr_time = 0;
             }
             break;
         
         case STATUS_TERMINATED:
             debug("Process with PID %d is TERMINATED.\n", p->pid);
-            if ((size_t) pcbindex+1 >= pcb->top)
+            if ((size_t) pcbindex + 1 >= pcb->top)
                 pcbindex = -1;
             pcbindex++;
             break;
 
         case STATUS_BLOCKED:
             debug("Process with PID %d is BLOCKED.\n", p->pid);
-            if ((size_t) pcbindex+1 >= pcb->top)
+            if ((size_t) pcbindex + 1 >= pcb->top)
                 pcbindex = -1;
             pcbindex++;
             break;
