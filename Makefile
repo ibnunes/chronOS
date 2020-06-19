@@ -14,7 +14,7 @@ ifneq ($(OS), 'Windows_NT')
     CFLAGS += -D_POSIX_C_SOURCE
 endif
 
-LIBS := -lpthread
+LIBS := -lpthread -lm
 LDFLAGS :=
 SANITIZERFLAGS := -fsanitize=address -fsanitize=undefined
 
