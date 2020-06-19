@@ -74,7 +74,7 @@ int main(int argc, char const *argv[]) {
     memory = memcreate(w.memory.capacity);
 
     // Alocar memória heap
-    debug("Allocating %d KB of heap memory for 4 algorithms\n", w.heap.capacity * w.heap.blocksize);
+    debug("Allocating %d KB of heap memory for 4 algorithms\n", w.heap.capacity * w.heap.blocksize / 1024);
     heap_first = makeheap(w.heap.capacity);
     heap_next  = makeheap(w.heap.capacity);
     heap_best  = makeheap(w.heap.capacity);
@@ -88,15 +88,26 @@ int main(int argc, char const *argv[]) {
     debug("Reading plan queue from %s:\n", w.fileplan);
     plan = plan_read_from_file(w.fileplan);
     debug("Got %d elements in queue.\n", plan_length(plan));
-    write("Got %d elements in queue.\n", plan_length(plan));
+    write("Got %d elements in plan queue.\n", plan_length(plan));
+
+    // Obter instruções de controlo
+    if (w.control.controller == CONTROLLER_FILE) {
+        debug("Reading control queue from %s:\n", w.control.file);
+        control = control_read_from_file(w.control.file);
+        if (control != NULL) {
+            debug("Got %d elements in queue.\n", control_length(control));
+            write("Got %d elements in control queue.\n", control_length(control));
+        } else {
+            debug("Forcefully setting control to AUTO.\n");
+            write("Forcefully setting control to automatic.\n");
+            w.control.controller = CONTROLLER_AUTO;
+        }
+    }
 
     clock_t clock_start, clock_end;
     float seconds;
 
     heaprequest_start(w.heap.requestseed);
-
-
-    // int scheduler_timer = 0;
 
     /* Ciclo principal do programa */
     while (w.flag.__running) {
@@ -104,7 +115,7 @@ int main(int argc, char const *argv[]) {
             if (plan_peek(plan).time <= w.cputime) {
                 debug("cputime = %ld; plan_peek.time = %ld\n", cputime, plan_peek(plan).time);
                 write("Creating new process from \"%s\" at CPU time %ld\n", plan_peek(plan).program, w.cputime);
-                create_new_process(pcb, plan_pop(plan).program);
+                create_new_process(pcb, plan_pop(plan));
                 w.flag.__mustexit = 0;
             }
         }
@@ -119,6 +130,35 @@ int main(int argc, char const *argv[]) {
                     write("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
                 }
             }
+
+            if (w.pcb.index == SCHEDULER_END)
+                w.pcb.index = 0;
+
+            switch (w.control.controller) {
+                case CONTROLLER_AUTO:
+                    // void
+                    break;
+
+                case CONTROLLER_STDIN:
+                    if (w.control.fetch)
+                        w.control.currentoperation = control_scan();
+                    w.control.fetch = execcontrol(w.control.currentoperation, pcb, w.pcb.index);
+                    break;
+
+                case CONTROLLER_FILE:
+                    if (w.control.fetch)
+                        w.control.currentoperation = control_pop(control);
+                    w.control.fetch = execcontrol(w.control.currentoperation, pcb, w.pcb.index);
+                    break;
+
+                default:
+                    fprintf(stderr, "ERROR: Unknown controller. ABORTING!\n");
+                    exit(EXIT_FAILURE);
+            }
+
+            // Is it still running?
+            if (!w.flag.__running)
+                break;
 
             switch (w.pcb.algorithm) {
                 case SCHEDULING_FCFS:
@@ -137,7 +177,6 @@ int main(int argc, char const *argv[]) {
                 default:
                     fprintf(stderr, "ERROR: Unknown scheduling algorithm. ABORTING!\n");
                     exit(EXIT_FAILURE);
-                    break;
             }
 
             if (w.pcb.index == SCHEDULER_END) {
@@ -154,7 +193,6 @@ int main(int argc, char const *argv[]) {
             seconds = (float)(clock_end - clock_start) / CLOCKS_PER_SEC;
             if (seconds >= w.timequantum) {
                 w.cputime++;
-                // scheduler_timer++;
                 break;
             }
         }

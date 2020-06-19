@@ -66,7 +66,7 @@ int maxpid(PCB *pcb);
  * 
  *  returns: index on the PCB table, or -2 if no space is available.
  */
-int processalloc(PCB *pcb, int ppid, char* name, size_t memlocal, size_t instsize);
+int processalloc(PCB *pcb, int ppid, char* name, size_t memlocal, size_t instsize, int priority);
 
 /* Function:  getPCBIndex
  * ----------------------
