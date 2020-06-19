@@ -31,16 +31,13 @@
 #include "pcbmgr.h"
 #include "processor.h"
 #include "plan.h"
+#include "control.h"
 #include "debug.h"
-#include "fcfs.h"
+#include "scheduling.h"
 
 #include "heap.h"
 
-// #include "data.h"
-// #include "types.h"
-
-#define DEFAULT_TIME_QUANTUM 0.500F         // 500 milissegundos
-#define PID_MANAGER 0                       // PID do processo gestor
+#include "types.h"
 
 /* Function:  create_new_process
  * -----------------------------
@@ -51,6 +48,6 @@
  * 
  *  return: 1 if success, error code <= 0 if otherwise.
  */
-int create_new_process(PCB *pcb, char *fname);
+int create_new_process(PCB *pcb, PLAN plan);
 
 #endif
