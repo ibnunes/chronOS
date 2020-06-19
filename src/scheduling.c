@@ -290,3 +290,8 @@ int rrobin(PCB *pcb, MEMORY *mem, int pcbindex) {
 
     return pcbindex;
 }
+
+
+void schedblock(PCB *pcb, int pcbindex) {
+    blockProcess(&(pcb->proc[pcbindex]));
+}

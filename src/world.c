@@ -15,8 +15,8 @@ void halt(int e, char const *msg) {
 
 void startworld(struct world *world) {
     // Informação da aplicação
-    strcpy(world->app.name, "chronOS");
-    strcpy(world->app.version, "1.3.0");
+    strcpy(world->app.name, APP_NAME);
+    strcpy(world->app.version, APP_VERSION);
 
     // Variáveis do ciclo principal de execução do chronOS
     world->pid         = PID_CHRONOS;
@@ -45,12 +45,21 @@ void startworld(struct world *world) {
 
     // Ficheiro de planeamento de execução
     strcpy(world->fileplan, FILE_PLAN);
+
+    world->control.controller = CONTROLLER_AUTO;
+    strcpy(world->control.file, FILE_CONTROL);
+    world->control.quantum_limit = DEFAULT_CONTROL_QUANTUM;
+    world->control.quantum_curr = 0;
+    world->control.currentoperation = CONTROL_EXECUTE;
+    world->control.fetch = 1;
 }
 
 
 void loadargs(struct world *world, int argc, char const *argv[]) {
-    char bin[PATH_MAX+1];
-    char zero[PATH_MAX+1];
+    char bin[PATH_MAX + 1];
+    char temp[PATH_MAX + 1];
+    char zero[PATH_MAX + 1];
+
     strcpy(zero, argv[0]);
     if (zero[0] == '.')
         memmove(&zero[0], &zero[0 + 1], strlen(zero) - 0);
@@ -58,13 +67,44 @@ void loadargs(struct world *world, int argc, char const *argv[]) {
         halt(0, "Could not retrieve current directory");
     strcat(bin, dirname(zero));
     strcat(bin, "/");
-    strcpy(world->pwd, bin);
-    strcat(bin, world->fileplan);
-    strcpy(world->fileplan, bin);
+
+    strcpy(temp, bin);
+    strcpy(world->pwd, temp);
+    strcat(temp, world->fileplan);
+    strcpy(world->fileplan, temp);
+
+    strcpy(temp, bin);
+    strcat(temp, world->control.file);
+    strcpy(world->control.file, temp);
 
     int i = 0;
     while (i + 1 < argc) {
         i++;
+
+        if (strcmp(argv[i], "--control") == 0 || strcmp(argv[i], "-c") == 0) {
+            i++;
+            if (i >= argc) halt(EINVAL, "Insuficient arguments for control");
+            if (strcmp(argv[i], "auto") == 0) {
+                world->control.controller = CONTROLLER_AUTO;
+                debug("Control set to automatic.\n");
+                write("Control set to automatic.\n");
+
+            } else if (strcmp(argv[i], "stdin") == 0) {
+                world->control.controller = CONTROLLER_STDIN;
+                debug("Control set to be read from stdin.\n");
+                write("Control set to be read from stdin.\n");
+
+            } else if (strcmp(argv[i], "file") == 0) {
+                world->control.controller = CONTROLLER_FILE;
+                debug("Control set to be read from file.\n");
+                write("Control set to be read from file.\n");
+
+            } else {
+                halt(EINVAL, "Unknown control source");
+            }
+            
+            continue;
+        }
 
         if (strcmp(argv[i], "--no-heap-request") == 0 || strcmp(argv[i], "-n") == 0) {
             world->heap.shouldrequest = HEAP_REQUEST_INACTIVE;
@@ -93,7 +133,6 @@ void loadargs(struct world *world, int argc, char const *argv[]) {
             world->pcb.algorithm = SCHEDULING_SJF;
             debug("Scheduling algorithm defined as SJF\n");
             write("Scheduling algorithm defined as SJF\n");
-            // halt(ECANCELED, "SJF not ready");
             continue;
         }
 
@@ -101,7 +140,13 @@ void loadargs(struct world *world, int argc, char const *argv[]) {
             world->pcb.algorithm = SCHEDULING_RROBIN;
             debug("Scheduling algorithm defined as round-robin\n");
             write("Scheduling algorithm defined as round-robin\n");
-            // halt(ECANCELED, "Round-robin not ready");
+            continue;
+        }
+
+        if (strcmp(argv[i], "--psa") == 0) {
+            world->pcb.algorithm = SCHEDULING_PSA;
+            debug("Scheduling algorithm defined as PSA\n");
+            write("Scheduling algorithm defined as PSA\n");
             continue;
         }
     }

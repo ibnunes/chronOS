@@ -31,6 +31,7 @@
 #include "pcbmgr.h"
 #include "processor.h"
 #include "plan.h"
+#include "control.h"
 #include "debug.h"
 #include "scheduling.h"
 
@@ -47,6 +48,6 @@
  * 
  *  return: 1 if success, error code <= 0 if otherwise.
  */
-int create_new_process(PCB *pcb, char *fname);
+int create_new_process(PCB *pcb, PLAN plan);
 
 #endif

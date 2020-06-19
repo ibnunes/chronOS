@@ -139,4 +139,8 @@ int checkPCBStatus(PCB *pcb);
  *  return: return: next PCB index, or SCHEDULER_END if ended.
  */
 int rrobin(PCB *pcb, MEMORY *mem, int pcbindex);
+
+
+void schedblock(PCB *pcb, int pcbindex);
+
 #endif

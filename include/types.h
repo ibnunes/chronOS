@@ -77,9 +77,12 @@ typedef struct {
 #define STATUS_BLOCKED 4            // Estado do processo: blocked
 #define STATUS_TERMINATED 5         // Estado do processo: terminated
 
-#define PRIORITY_NULL 0             // Prioridade: nula
-#define PRIORITY_MIN 1              // Prioridade: mínima
-#define PRIORITY_MAX 5              // Prioridade: máxima
+#define PRIORITY_NULL        0      // Prioridade: nula
+#define PRIORITY_LOW         1      // Prioridade: baixa
+#define PRIORITY_BELOWNORMAL 2      // Prioridade: abaixo de normal
+#define PRIORITY_NORMAL      3      // Prioridade: normal
+#define PRIORITY_ABOVENORMAL 4      // Prioridade: acima de normal
+#define PRIORITY_HIGH        5      // Prioridade: alta
 
 #define INSTRUCTION_CHANGE    'M'   // M n
 #define INSTRUCTION_ADD       'A'   // A n
@@ -171,6 +174,7 @@ typedef struct {
 typedef struct {
     char    program[MAX_PROGRAM];
     clock_t time;
+    int     priority;
 } PLAN;
 
 typedef struct {
@@ -182,10 +186,32 @@ typedef struct {
 
 
 /* ======================================== *
+ * control.h                                *
+ * ======================================== */
+
+#define DEFAULT_CONTROL_QUANTUM 5
+
+#define DEFAULT_CONTROL_Q_SIZE 8
+
+#define CONTROL_EXECUTE 'E'
+#define CONTROL_BLOCK   'I'
+#define CONTROL_LTSCHED 'D'
+#define CONTROL_REPORT  'R'
+#define CONTROL_QUIT    'T'
+
+typedef struct {
+    char*  operation;
+    size_t head;
+    size_t capacity;
+    size_t last;
+} control_q;
+
+
+/* ======================================== *
  * heap.h e heapmgr.h                       *
  * ======================================== */
 
-#define HEAP_CAPACITY  128      // 128 partições
+#define HEAP_CAPACITY  256      // 256 partições
 #define BLOCK_SIZE    2048      // 2KB por partição
 
 #define HEAP_ALLOC_MIN 3            // Mínimo de 3 partições alocadas
@@ -236,6 +262,10 @@ typedef struct heap {
 #define HEAP_REQUEST_INACTIVE 0
 #define HEAP_REQUEST_ACTIVE   1
 
+#define CONTROLLER_AUTO  0
+#define CONTROLLER_STDIN 1
+#define CONTROLLER_FILE  2
+
 struct world {
     struct {
         char name[8];
@@ -268,6 +298,15 @@ struct world {
         int algorithm;
         int rr_time;
     } pcb;
+
+    struct {
+        int controller;
+        char file[PATH_MAX + 1];
+        clock_t quantum_limit;
+        clock_t quantum_curr;
+        char currentoperation;
+        int fetch;
+    } control;
 
     char pwd[PATH_MAX + 1];
     char fileplan[PATH_MAX + 1];

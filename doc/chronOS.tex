@@ -72,7 +72,7 @@
 	Estão implementados:
 	
 	\begin{itemize}
-		\item Os algoritmos \ac{FCFS}, \ac{SJF} e \textit{round-robin} para o escalonamento;
+		\item Os algoritmos \ac{FCFS}, \ac{SJF}, \textit{round-robin} e \ac{PSA} para o escalonamento;
 		\item Um escalonador de longo prazo;
 		\item O algoritmo \textit{first-fit} para a gestão de memória estática;
 		\item Os algoritmod \textit{first-fit}, \textit{next-fit}, \textit{best-fit} e \textit{worst-fit} para a gestão de memória dinâmica.
@@ -123,9 +123,13 @@
 	
 	\begin{itemize}
 		\item \texttt{master}: \textit{branch} principal para onde é feito \textit{merge} de versões finais funcionais;
+		
 		\item \texttt{dev}: \textit{branch} de desevolvimento dedicado do elemento de grupo Jorge Pissarra;
+		
 		\item \texttt{dev-in}: \textit{branch} de desevolvimento dedicado do elemento de grupo Igor Nunes (regra geral é neste \textit{branch} que se encontram as \textbf{versões compiláveis sem erros com recurso ao \texttt{Makefile}});
+		
 		\item \texttt{dev-ds}: \textit{branch} de desevolvimento dedicado do elemento de grupo Diogo Simões;
+		
 		\item \texttt{dev-sched}: \textit{branch} temporário de desenvolvimento do elemento de grupo Diogo Simões para implementar algoritmos de escalonamento. O algoritmo \ac{SJF} por ele implementado foi adotado na versão final, apesar de nenhum \textit{merge} ter sido feito no repositório \git~\textit{per se}.
 	\end{itemize}
 
@@ -142,14 +146,16 @@
 	\begin{enumerate}
 		\item Alocar células de memória e a tabela \texttt{\ac{PCB}};
 		\item Alocar 4 memórias \textit{heap} (uma por algoritmo de gestão);
-		\item Ler o ficheiro \texttt{plan.txt} e guardar em memória o plano de execução numa \textit{queue};
+		\item Ler o ficheiro \texttt{plan.txt} e guardar em memória o plano de execução numa \textit{queue}, incluindo a prioridade de cada processo;
+		\item Ler o ficheiro \texttt{control.txt} e guardar em memória o plano de controlo da aplicação;
+		\item Ser controlado pelo ficheiro, manual ou automaticamente por opção;
 		\item Temporizar o sistema de 500 em 500 milissegundos;
 		\item Extrair de um ficheiro \texttt{*.prg} as suas instruções;
 		\item Alocar em memória as instruções referentes a um programa recorrendo ao \textbf{algoritmo \textit{first-fit}};
 		\item Ler um programa para memória e alocar os dados na tabela \ac{PCB} ao tempo exato indicado pelo plano de execução;
 		\item Executar as instruções em memória, incluindo o \textit{fork} (instrução \verb|C n|) e o \textit{clean} (instrução \verb|L filename|);
-		\item Gerir os processos com recurso a um dos seguintes algoritmos: \textbf{\ac{FCFS}}, \textbf{\ac{SJF}} ou \textbf{\textit{round-robin}};
-		\item Executar o escalonador de longo prazo;  % TODO
+		\item Gerir os processos com recurso a um dos seguintes algoritmos: \textbf{\ac{FCFS}}, \textbf{\ac{SJF}}, \textbf{\textit{round-robin}} ou \textbf{\ac{PSA}};
+		\item Executar o escalonador de longo prazo;
 		\item Alocar e dealocar memória \textit{heap} a pedido de cada processo;
 		\item Alocar memória \textit{heap} por solicitação pseudoaleatória do processo principal;
 		\item Imprimir um relatório do estado dos processos;
@@ -244,22 +250,31 @@
 	
 	\begin{verbatim}
 ./chronos
-   [<--fcfs | --sjf | <--rr | --robin | --round-robin>>]
+   [<--fcfs | --sjf | <--rr | --robin | --round-robin> | --psa>]
    [<<--no-heap-request | -n> | <--seed | -s> n>]
+   [<--control | -c> <auto | stdin | file>]
 	\end{verbatim}
 	
 	\begin{enumerate}
 		\item Definição do algoritmo de escalonamento:
 		\begin{itemize}
-			\item \verb|--fcfs|: algoritmo \ac{FCFS} (algoritmo definido por defeito);
+			\item \verb|--fcfs|: algoritmo \ac{FCFS} (algoritmo \textbf{definido por defeito});
 			\item \verb|--sjf|: algoritmo \ac{SJF};
-			\item \verb|--rr|, \verb|--robin| ou \verb|--round-robin|: algoritmo \textit{round-robin}. 
+			\item \verb|--rr|, \verb|--robin| ou \verb|--round-robin|: algoritmo \textit{round-robin};
+			\item \verb|--psa|: algoritmo \ac{PSA}.
 		\end{itemize}
 	
 		\item Definição da semente de solicitações pseudoaleatórias da memória \textit{heap}:
 		\begin{itemize}
 			\item \verb|--no-heap-request| ou \verb|-n|: desliga os requisitos pseudoaleatórios de memória \textit{heap} por parte do \chronOS;
-			\item \verb|--seed n| ou \verb|-s n|: define semente dada pelo número inteiro \verb|n|. Caso seja fornecido um número fraccionário é admitida a parte inteira. Em caso de não ser um número é definido 0 (zero). O valor por defeito é definido pelo tempo (descrito na secção \ref{ssec:heap:request}).
+			\item \verb|--seed n| ou \verb|-s n|: define semente dada pelo número inteiro \verb|n|. Caso seja fornecido um número fraccionário é admitida a parte inteira. Em caso de não ser um número é definido 0 (zero). O \textbf{valor por defeito} é definido pelo tempo (descrito na secção \ref{ssec:heap:request}).
+		\end{itemize}
+	
+		\item Definição do controlador da aplicação (\verb|--control| ou \verb|-c|):
+		\begin{itemize}
+			\item \verb|-c auto|: modo automático, onde o programa procura terminar todos os processos até ao fim se possível (este é o \textbf{modo por defeito});
+			\item \verb|-c stdin|: modo manual, onde o programa é controlado pelo utilizador;
+			\item \verb|-c file|: modo por ficheiro, onde o programa é controlado segundo as instruções indicadas pelo ficheiro \verb|control.txt|.
 		\end{itemize}
 	\end{enumerate}
 	
@@ -270,6 +285,7 @@
 ./chronos --seed 2020
 ./chronos --fcfs -s 15
 ./chronos --sjf -n
+./chronos --seed 42 --control file
 	\end{verbatim}
 	
 	
@@ -314,7 +330,7 @@
 	    \item Obter a informação de um processo na estrutura dado o seu \ac{PID}.
 	\end{itemize}
 	
-	Os algoritmos de escalonamento implementados na atual \textit{build} do program são: \ac{FCFS}, \ac{SJF} e \textit{round-robin}. Adiciona-se ainda o escalonador de longo prazo.
+	Os algoritmos de escalonamento implementados na atual \textit{build} do programa são: \ac{FCFS}, \ac{SJF}, \textit{round-robin} e \ac{PSA}. Adiciona-se ainda o escalonador de longo prazo.
 	
 	
 	\section{Algoritmo \ac{FCFS}}
@@ -343,12 +359,49 @@
 	Quando se alcança o fim da tabela \ac{PCB} o índice é reiniciado a zero. Contudo, em todas as chamadas à função \verb|rrobin| que alberga o algoritmo, a função \verb|checkPCBStatus| é invocada e esta verifica se todos os processos estão terminados ou bloqueados. Em caso positivo é devolvido à função principal o valor \verb|SCHEDULER_END|, o qual indica o fim do processo de escalonamento.
 	
 	
+	\section{Algoritmo \ac{PSA}}
+	\label{ssec:process:psa}
+	
+	Este algoritmo aplica uma estratégia semelhante ao \ac{SJF} a nível de implementação. Contudo, os processos são organizados por prioridade a fim de os mais prioritários serem executados em primeiro lugar.
+	
+	
 	\section{Escalonador de longo prazo}
 	\label{ssec:process:longterm}
 	
 	O escalonador de longo prazo é o responsável por desbloquear processos que estejam presos no estado \verb|STATUS_BLOCKED|. Os escalonadores apresentados até agora não têm a capacidade de desbloquear estes processos, sendo portanto responsabilidade deste escalonador promover o respetivo desbloqueio. Este é chamado pela função principal com alguma regularidade, manualmente por indicação do utilizador através do \verb|stdin|, ou segundo as instruções do ficheiro \verb|control.txt|.
 	
-	A função \verb|ltsched| é a responsável por este processo.
+	A função \verb|ltsched| é a responsável por este processo e é invocada por via de controlo manual ou por ficheiro da aplicação (secção \ref{ssec:process:control}).
+	
+	
+	\section{Controlo da aplicação}
+	\label{ssec:process:control}
+	
+	Existem 3 modos de controlar o \chronOS:
+	
+	\begin{enumerate}
+		\item \textbf{Automático}: A aplicação tenta terminar todos os processos antes de encerrar. Um relatório é impresso apenas no final da execução de todos os processos.
+		
+		\item \textbf{Manual}: O utilizador é questionado para controlar a aplicação inserindo as instruções. Contudo, é possível modificar este comportamento usando um redirecionamento do \verb|stdin| aquando da chamada do \chronOS.
+		
+		\item \textbf{Por ficheiro}: A aplicação procura o ficheiro \verb|control.txt|, carrega as instruções em memória numa \textit{queue} e executa as instruções em sequência.
+	\end{enumerate}
+
+	
+	\begin{note}
+		Existe uma limitação na versão \version.
+		
+		Na ausência de mais instruções para executar, e não estando a \textit{queue} de planificação vazia, só é feito um \textit{fetch} do próximo comando de controlo quando o próximo processo na fila é carregado em memória.
+	\end{note}
+	
+	As instruções são as seguintes:
+	
+	\begin{itemize}
+		\item \verb|E|: Executar por \textbf{5} unidades de tempo;
+		\item \verb|I|: Bloquear o processo atual;
+		\item \verb|D|: Executar o escalonador de longo prazo;
+		\item \verb|R|: Imprimir um relatório;
+		\item \verb|T|: Terminar forçosamente a execução do \chronOS.
+	\end{itemize}
 	
 	
 	\chapter{Gestão de memória estática}
@@ -661,7 +714,9 @@ int heaprequest(void) {
 		\item Código modular e facilmente escalável.
 		\item Forte documentação do código.
 		\item Criação de dois modos de compilação (\textit{debug} e \textit{release}).
-		\item Implementação dos algoritmos \ac{FCFS}, \ac{SJF} e \textit{round-robin}.
+		\item Controlo via ficheiro, manual ou automático.
+		\item Leitura de prioridades dos processos.
+		\item Implementação dos algoritmos \ac{FCFS}, \ac{SJF}, \textit{round-robin} e \ac{PSA}.
 		\item Forte gestão de memória estática com recurso ao algoritmo \textit{first-fit}.
 		\item Clara separação entre gestão de processos e gestão de memória.
 		\item Implementação de uma \textit{queue} própria para gestão do plano de execução.
@@ -677,9 +732,8 @@ int heaprequest(void) {
 	
 	\begin{enumerate}
 		\item Pouca variedade de algoritmos de escalonamento.
-		\item Não utilização do ficheiro \verb|control.txt| para controlo fino do \chronOS.
 		\item Pouco proveito dos argumentos passados pela \textit{shell} para controlo dos parâmetros do \chronOS.
-		\item Inexistência de leitura de prioridades de processos a partir do ficheiro \verb|plan.txt|.
+		\item Inexistência de um algoritmo de escalonamento que tire partido das prioridades de processos lidas a partir do ficheiro \verb|plan.txt|.
 	\end{enumerate}
 	
 	
@@ -687,9 +741,8 @@ int heaprequest(void) {
 	
 	\begin{enumerate}
 		\item Implementação de novos algoritmos de escalonamento, tal como \ac{EDF}.
-		\item Introdução de controlo manual ou automatizado, passo-a-passo, da execução do \chronOS~segundo uma sequência de instruções de controlo.
 		\item Maior controlo dos parâmetros internos do \chronOS~através de argumentos passados pela \textit{shell}.
-		\item Implementação de uma \textit{queue} de prioridades para escalonamento dinâmico.
+		\item Implementação de um algoritmo de escalonamento por prioridades para escalonamento dinâmico.
 	\end{enumerate}
 	
 	
@@ -705,7 +758,7 @@ int heaprequest(void) {
 	
 	\section{Conclusão}
 	
-	Os objetivos iniciais propostos foram cumpridos na sua quase totalidade com o projeto \chronOS. A gestão de processos e a gestão das memórias são operacionais e executam eficazmente as funções elementares.
+	Os objetivos iniciais propostos foram cumpridos na sua totalidade com o projeto \chronOS. A gestão de processos e a gestão das memórias são operacionais e executam eficazmente as funções elementares.
 	
 	% Apesar de uma pequena seleção de objetivos não ter sido plenamente alcançada, outros objetivos não inicialmente planeados foram alcançados em seu lugar.
 	A forte modulação do código revelou-se uma mais-valia na construção da aplicação \chronOS~e, em particular, na hora do respetivo \textit{debugging}. De igual forma, foi possível construir vários elementos fundamentais com códigos relativamente simples e compactos devido à criação de funções altamente especializadas e independentes.
@@ -730,6 +783,7 @@ int heaprequest(void) {
         \acro{gcc}{\emph{GNU C Compiler}}
         \acro{PID}{\emph{Process Identifier}}
         \acro{PCB}{\emph{Process Control Block}}
+        \acro{PSA}{\emph{Priority Scheduling Algorithm}}
         \acro{SJF}{\emph{Shortest Job First}}
     \end{acronym}
 	

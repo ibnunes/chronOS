@@ -47,7 +47,7 @@ void forkProcess(MEMORY *mem, process *p) {
     int address = memalloc(mem, inst, size);
     int pid = PID_NULL;
     if (address != MEMERR_ALLOC_NOAVAIL)
-        pid = processalloc(pcb, p->pid, inst->name, address, size);
+        pid = processalloc(pcb, p->pid, inst->name, address, size, p->priority);
     debug("FORKED %ld instructions from PID %d to address %d with new PID %d.\n", size, p->pid, address, pid);
     write("FORKED %ld instructions from PID %d to address %d with new PID %d.\n", size, p->pid, address, pid);
 }

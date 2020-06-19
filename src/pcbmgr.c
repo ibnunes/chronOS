@@ -51,7 +51,7 @@ int maxpid(PCB *pcb) {
     return max;
 }
 
-int processalloc(PCB *pcb, int ppid, char* name, size_t memlocal, size_t instsize) {
+int processalloc(PCB *pcb, int ppid, char* name, size_t memlocal, size_t instsize, int priority) {
     if (pcb->top >= pcb->size)
         return MEMPCB_ALLOC_NOAVAIL;        // Não há espaço!
 
@@ -66,8 +66,8 @@ int processalloc(PCB *pcb, int ppid, char* name, size_t memlocal, size_t instsiz
     p->pid       = maxpid(pcb) + 1;
     p->context   = (parent != NULL) ? parent->context : 0;
     p->counter   = memlocal;
-    p->priority  = (parent != NULL) ? parent->priority : PRIORITY_MIN;
-    p->timelimit = instsize; // (parent != NULL) ? parent->timelimit : MAX_TIMELIMIT;
+    p->priority  = (parent != NULL) ? parent->priority : priority;
+    p->timelimit = (parent != NULL) ? parent->timelimit : MAX_TIMELIMIT;
     p->state     = STATUS_NEW;
     p->instsize  = instsize;
     p->timeinit  = cputime;         // TO CHECK: will it work properly?
