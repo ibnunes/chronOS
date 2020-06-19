@@ -26,6 +26,17 @@
  *       - Add a limit of instructions to execute for the scheduling algorithms (Round Robin in this case);
  */
 
+int ltsched(PCB *pcb) { //long term scheduler
+    int res = 0;
+    for (size_t i = 0; i < pcb->top; i++)
+        if (pcb->proc[i].state == STATUS_BLOCKED) {
+            pcb->proc[i].state = switchState(pcb->proc[i].state, STATUS_READY);
+            ++res;
+        }
+    return res;
+}
+
+
 int fcfs(PCB *pcb, MEMORY *mem, int pcbindex) {
     /* Chegou ao fim da tabela PCB, não há mais processos em fila */
     debug("Working on PCB index %d.\n", pcbindex);

@@ -22,6 +22,16 @@
 
 #define SCHEDULING_COUNTER 5 //Number of instructions to be executed in a row before moving to next process
 
+/* Function:  ltsched
+ * ---------------
+ * Changes the state of every Blocked process to Ready.
+ * 
+ *  pcb: the PCB table with the processes.
+ * 
+ *  return: number of processes changed to Ready.
+ */
+int ltsched(PCB *pcb);
+
 /* Function:  fcfs
  * ---------------
  * Executes the processes in the PCB table using the FCFS algorithm.
@@ -34,8 +44,29 @@
  */
 int fcfs(PCB *pcb, MEMORY *mem, int pcbindex);
 
-
+/* Function:  sorted
+ * ---------------
+ * Verify if the array is actually sorted.
+ * 
+ *  p: array of process struct
+ *  size: size of the array p
+ * 
+ *  return: 1 if sorted else 0
+ */
 int sorted(process *p, size_t size);
+
+/* Function:  comparebt
+ * ---------------
+ * Compares the burst time of 2 processes. 
+ * 
+ *  v1: process number 1
+ *  v2: process number 2
+ * 
+ *  return: 
+ *      -1 when the bursttime of v1 < bursttime of v2, 
+ *       0 when the burstime of v1 and v2 is equal,
+ *       1 when the bursttime of v1 > bursttime of v2.
+ */
 int comparebt(const void *v1, const void *v2);
 
 /* Function: sjf
