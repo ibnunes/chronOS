@@ -70,52 +70,67 @@ int fcfs(PCB *pcb, MEMORY *mem, int pcbindex) {
     return pcbindex;
 }
 
-int findsj(PCB *pcb) {
-    int index = MAX_TIMELIMIT;
-    for (size_t i = 0; i < pcb->size; i++) {
-        if (pcb->proc[i].state != STATUS_READY)     // not sure if ready status is the right one for the processes to be in
-            continue;
-        if (pcb->proc[i].timelimit < index)
-            index = i;
+int sorted(process *p, size_t size) {
+    for (size_t i = 1; i < size; i++) {
+        if (p[i-1].timelimit > p[i].timelimit)
+            return 0;
     }
-    return index;
+    return 1;
+}
+
+int comparebt(const void *v1, const void *v2) { // compara o Burst time dos processos
+    const process *p1 = (process *)v1;
+    const process *p2 = (process *)v2;
+
+    if (p1->timelimit == p2->timelimit) return 0;
+    else if (p1->timelimit < p2->timelimit)
+        return -1;
+    else return 1;
 }
 
 int sjf(PCB *pcb, MEMORY *mem, int pcbindex) {
     debug("Working on PCB index %d.\n", pcbindex);
+    
+    // Reorganizar o PCB por Burst Time
+    if (!sorted(pcb->proc, pcb->size)) {
+        qsort(pcb->proc, pcb->size, sizeof(process), comparebt);
+        pcbindex = 0;
+    }
 
+    // Chegou ao fim da tabela PCB, não há mais processos em fila
     if ((size_t) pcbindex >= pcb->top)
         return SCHEDULER_END;
 
     process *p = &(pcb->proc[pcbindex]);
-    switch (p->state) {
+    switch (p->state)
+    {
         case STATUS_NEW:
             debug("Switching PID %d state to READY.\n", p->pid);
             p->state = switchState(p->state, STATUS_READY);
             break;
-        
+
         case STATUS_READY:
             debug("Switching PID %d state to RUNNING.\n", p->pid);
             p->state = switchState(p->state, STATUS_RUNNING);
             p->timeinit = cputime;
             break;
-        
+
         case STATUS_RUNNING:
             debug("Running PID %d, instruction at PC=%d...\n", p->pid, p->counter);
             p->timeused++;
             run(mem, p);
             break;
-        
+
         case STATUS_TERMINATED:
             debug("Process with PID %d is TERMINATED.\n", p->pid);
-            pcbindex = findsj(pcb);
+            pcbindex = sjf(pcb, mem, ++pcbindex);
             break;
 
         case STATUS_BLOCKED:
             debug("Process with PID %d is BLOCKED.\n", p->pid);
-            pcbindex = findsj(pcb);
+            pcbindex++;
             break;
-        
+
         default:
             fprintf(stderr, "ERROR: Unknown process state. ABORTING!\n");
             exit(-1);
@@ -124,6 +139,9 @@ int sjf(PCB *pcb, MEMORY *mem, int pcbindex) {
 
     return pcbindex;
 }
+
+
+
 
 int checkPCBStatus(PCB *pcb) {
     for (size_t i = 0; i < pcb->top; i++) {
