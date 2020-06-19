@@ -133,6 +133,10 @@ int main(int argc, char const *argv[]) {
                     w.pcb.index = rrobin(pcb, memory, w.pcb.index);
                     w.pcb.rr_time++;
                     break;
+
+                case SCHEDULING_PSA:
+                    w.pcb.index = psa(pcb, memory, w.pcb.index);
+                    break;
                 
                 default:
                     fprintf(stderr, "ERROR: Unknown scheduling algorithm. ABORTING!\n");
