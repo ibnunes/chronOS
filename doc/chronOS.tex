@@ -17,7 +17,20 @@
 \pgfplotsset{compat = newest}
 
 \newcommand{\chronOS}{\textsf{chronOS}}
+\newcommand{\version}{1.3.0}
 \newcommand{\git}{\textsf{git}}
+
+\newcounter{note}
+\newenvironment{note}[1][]
+	{
+		\medskip \refstepcounter{note} \par \medskip
+		\noindent\textcolor[RGB]{220,220,220}{\rule{\linewidth}{0.4pt}}
+		\noindent \textbf{Nota~\thenote. #1} \rmfamily
+	}
+	{
+		\\ \noindent\textcolor[RGB]{220,220,220}{\rule{\linewidth}{0.4pt}} \medskip
+	}
+
 
 %\title{
 %	Sistemas Operativos --- Projeto\\
@@ -37,7 +50,7 @@
 \portugues
 \makeindex
 
-\cabecalho{\chronOS~1.2.0}
+\cabecalho{\chronOS~\version}
 
 \begin{document}
 	\onehalfspacing
@@ -56,15 +69,28 @@
 	
 	\chronOS~é um programa de simulação de escalonamento de processos e gestão de memória.
 	
-	Encontra-se implementado o algoritmo FCFS para o escalonamento, assim como o algoritmo \textit{first-fit} para a gestão de memória estática.
+	Estão implementados:
 	
-	Um gestor de memória dinâmica (\textit{heap memory}) foi implementado recorrendo a listas ligadas. Quatro algoritmos foram utilizados para fazer a respetiva gestão. Para cada algoritmo foi criada uma memória dedicada para fins estatísticos e comparativos.
+	\begin{itemize}
+		\item Os algoritmos \ac{FCFS}, \ac{SJF} e \textit{round-robin} para o escalonamento;
+		\item Um escalonador de longo prazo;
+		\item O algoritmo \textit{first-fit} para a gestão de memória estática;
+		\item Os algoritmod \textit{first-fit}, \textit{next-fit}, \textit{best-fit} e \textit{worst-fit} para a gestão de memória dinâmica.
+	\end{itemize}
+	
+	O gestor de memória dinâmica (\textit{heap memory}) foi implementado recorrendo a listas ligadas. Para cada um dos 4 algoritmos implementados para a sua gestão foi criada uma memória dedicada para fins estatísticos e comparativos.
 	
 	Um plano de execução é lido no arranque do programa e o simulador de CPU, definido para \SI{2}{\hertz}, invoca o método que implementa o algoritmo de escalonamento para decidir a próxima ação, a qual pode ser um \textit{switch} no estado de um processo ou a execução de uma instrução.
 	
+	O programa \chronOS~tem a capacidade de fazer pedidos pseudoaleatórios de alocação de memória dinâmica a fim de melhor testar a respetiva gestão.
+	
+	Vários parâmetros do \chronOS~podem ser alterados com argumentos passados pela linha de comandos, como por exemplo a seleção do algoritmo de escalonamento e a semente do gerador pseudoaleatório de solicitações de alocação de memória dinâmica do programa.
+	
 	Sempre que possível é utilizada a memória \textit{heap} do computador para albergar os componentes do programa. Tal inclui o bloco de memória estática, a tabela PCB e as quatro memórias dinâmicas.
 	
-	No presente relatório é apresentada a versão 1.2.0.
+	O \chronOS~funciona segundo o princípio de uma \textit{state machine}. Uma estrutura global com diversas variáveis e \textit{flags} é utilizada para que o programa regule o seu fluxo de execução e outros parâmetros.
+	
+	No presente relatório é apresentada a versão \version.
 
 	
 	%\cleardoublepage
@@ -78,14 +104,14 @@
 	\chapter{Pesquisa e desenvolvimento}
 	\label{sec:dev}
 	
-	Conhecer o coração dos sistemas operativos modernos implica conhecer diversos métodos de gestão de memória e de processos. \chronOS~propõe-se enquanto projeto de simulação de escalonamento a fim de consolidar conhecimentos na área no âmbito da unidade curricular de Sistemas Operativos.
+	Conhecer o coração dos sistemas operativos modernos implica conhecer diversos métodos de gestão de memória e de processos. \chronOS~propõe-se enquanto projeto de simulação de escalonamento e gestão de memória a fim de consolidar conhecimentos na área no âmbito da unidade curricular de Sistemas Operativos.
 	
 	\section{Linguagem e pesquisa}
 	\label{ssec:dev:sota}
 	
-	Para este projeto foram consideradas as linguagens C, C++ e OCaml. Optou-se pela linguagem C devido à facilidade em se trabalhar a um mais baixo nível e à grande versatilidade que os apontadores permitem. C++ teria sido uma linguagem ideal para usar orientação a objetos, mas a pouca familiaridade com esta forçou-nos a optar pelo C.
+	Para este projeto foram consideradas as linguagens C, C++ e OCaml. Optou-se pela linguagem C devido à facilidade em se trabalhar a um mais baixo nível e à grande versatilidade que os apontadores permitem. C++ teria sido uma linguagem ideal para usar orientação a objetos, mas a pouca familiaridade com esta levou-nos a optar pelo C.
 	
-	Para reforçar a nossa aprendizagem, decidimos implementar tudo \textit{in-house}, \textbf{não} recorrendo a códigos já existentes ou projetos semelhantes na Internet e em repositórios \git~públicos.
+	Para reforçar a nossa aprendizagem, decidimos implementar tudo ``\textit{in-house}'', \textbf{não} recorrendo a códigos já existentes ou projetos semelhantes na Internet e em repositórios \git~públicos.
 	
 	
 	\section{Repositório no GitLab}
@@ -93,14 +119,19 @@
 	
 	O projeto encontra-se alojado num servidor GitLab privado no seguinte \textit{link}: \url{https://gitlab.pcdev.pt/inunes/chronos/}
 	
-	O repositório \git~em causa inclui vários \textit{branches} nos quais nos encontramos a trabalhar, a saber:
+	O repositório \git~em causa inclui vários \textit{branches} nos quais temos trabalhado, a saber:
 	
 	\begin{itemize}
 		\item \texttt{master}: \textit{branch} principal para onde é feito \textit{merge} de versões finais funcionais;
 		\item \texttt{dev}: \textit{branch} de desevolvimento dedicado do elemento de grupo Jorge Pissarra;
 		\item \texttt{dev-in}: \textit{branch} de desevolvimento dedicado do elemento de grupo Igor Nunes (regra geral é neste \textit{branch} que se encontram as \textbf{versões compiláveis sem erros com recurso ao \texttt{Makefile}});
 		\item \texttt{dev-ds}: \textit{branch} de desevolvimento dedicado do elemento de grupo Diogo Simões;
+		\item \texttt{dev-sched}: \textit{branch} temporário de desenvolvimento do elemento de grupo Diogo Simões para implementar algoritmos de escalonamento. O algoritmo \ac{SJF} por ele implementado foi adotado na versão final, apesar de nenhum \textit{merge} ter sido feito no repositório \git~\textit{per se}.
 	\end{itemize}
+
+	Para as versões finais foram criadas \textit{tags} numeradas com a versão correspondente do \chronOS.
+	
+	A licença adotada para o projeto é a \textit{GNU General Public License version 3}.
 	
 
 	\section{Resumo do projeto}
@@ -117,9 +148,10 @@
 		\item Alocar em memória as instruções referentes a um programa recorrendo ao \textbf{algoritmo \textit{first-fit}};
 		\item Ler um programa para memória e alocar os dados na tabela \ac{PCB} ao tempo exato indicado pelo plano de execução;
 		\item Executar as instruções em memória, incluindo o \textit{fork} (instrução \verb|C n|) e o \textit{clean} (instrução \verb|L filename|);
-		\item Gerir os processos com recurso ao \textbf{algoritmo \ac{FCFS}};
+		\item Gerir os processos com recurso a um dos seguintes algoritmos: \textbf{\ac{FCFS}}, \textbf{\ac{SJF}} ou \textbf{\textit{round-robin}};
+		\item Executar o escalonador de longo prazo;  % TODO
 		\item Alocar e dealocar memória \textit{heap} a pedido de cada processo;
-		\item Alocar memória \textit{heap} por solicitação aleatória do processo principal;
+		\item Alocar memória \textit{heap} por solicitação pseudoaleatória do processo principal;
 		\item Imprimir um relatório do estado dos processos;
 		\item Imprimir um relatório do estado da memória em modo \textit{debug};
 		\item Imprimir um relatório das memórias \textit{heap};
@@ -138,9 +170,11 @@
 	\begin{itemize}
 		\item \verb|doc|: pasta onde é escrita a documentação, incluindo este mesmo documento em \LaTeX;
 		\item \verb|include|: inclui todos os \textit{header files} (ficheiros \verb|*.h|) necessários ao programa;
-		\item \verb|src|: inclui todos os ficheiros \verb|*.c| com a implementação dos protótipos declarados nos \textit{header files}.
+		\item \verb|src|: inclui todos os ficheiros \verb|*.c| com a implementação dos protótipos declarados nos \textit{header files};
+		\item \verb|obj|: inclui os ficheiros binários \verb|*.o| gerados pelo processo de compilação;
+		\item \verb|bin|: pasta onde é gerado o ficheiro executável \verb|chronos|.
 	\end{itemize}
-	
+
 	Por sua vez, o \texttt{Makefile} está construído de forma a possibilitar 2 formas de compilação:
 	
 	\begin{itemize}
@@ -149,7 +183,7 @@
 		\item \textbf{\textit{Release}} (\verb|make release|): versão final sem mensagens de \textit{debug} durante a execução do \chronOS.
 	\end{itemize}
 
-	O \texttt{Makefile} inclui uma série de \textit{flags} adicionais face ao comum a fim de controlar de forma mais apertada o comportamento do \ac{GCC}, o qual é bastante permissivo por natureza. O modo \textit{debug} inclui \textit{sanitizer flags} que permitem detetar \textit{memory leaks} e detalhar informações acerca de falhas graves na execução relacionadas com acessos indevidos à memória (os clássicos \textit{segmentation faults}).
+	O \texttt{Makefile} inclui uma série de \textit{flags} adicionais face ao comum a fim de controlar de forma mais apertada o comportamento do \ac{gcc}, o qual é bastante permissivo por natureza. O modo \textit{debug} inclui \textit{sanitizer flags} que permitem detetar \textit{memory leaks} e detalhar informações acerca de falhas graves na execução relacionadas com acessos indevidos à memória (os clássicos \textit{segmentation faults}).
 	
 	
 	\chapter{Execução do \chronOS}
@@ -172,6 +206,12 @@
 
 	O plano de entrada de processos é lido a partir do ficheiro \texttt{plan.txt}, o qual deve estar obrigatoriamente presente. O plano é alocado em \textit{heap memory} numa \textit{queue} do tipo \verb|plan_q|, definida em \verb|plan.h|. É esperado que o ficheiro tenha os dados ordenados por ordem cronológica de entrada. O comportamento do \chronOS~ para um plano não ordenado não está definido.
 	
+	\begin{note}
+		O programa determina automaticamente qual a pasta onde o executável se encontra a fim de aí encontrar os ficheiros \verb|plan.txt| e os programas de extensão \verb|*.prg|.
+
+		Tal permite que o programa possa ser invocado a partir de qualquer diretório.
+	\end{note}
+	
 	\chronOS~executa com base num ciclo que simula uma \ac{CPU} com um \textit{clock} de \SI{2}{\hertz}. A cada ciclo de \textit{clock} é considerado que passou 1 unidade de tempo de \ac{CPU}, armazenada em \verb|cputime|, e que permite determinar os tempos aos quais os processos entram em execução, quanto tempo levam a ser executados e em que tempo são terminados.
 	
 	A cada ciclo de \textit{clock}, um algoritmo de escalonamento é executado, o qual irá definir a próxima ação a ser tomada. Os algoritmos de escalonamento têm o controlo \textit{de facto} da execução das instruções e dos processos, não sendo responsabilidade da função \verb|main| onde se encontra o simulador da \ac{CPU}.
@@ -190,22 +230,22 @@
 		\label{fig:memreport}
 	\end{figure}
 
-	Também é determinado por um método aleatório se o processo principal do \chronOS~deverá alocar memória dinâmica e, em caso positivo, quantos blocos deverão ser alocados, entre o mínimo e o máximo permitidos (i.e., entre 3 e 10). Este processo será explorado em mais detalhe na Secção \ref{sec:heap}, assim como os algoritmos de gestão de memória implementados.
+	Também é determinado por um método pseudoaleatório se o processo principal do \chronOS~deverá alocar memória dinâmica e, em caso positivo, quantos blocos deverão ser alocados, entre o mínimo e o máximo permitidos (i.e., entre 3 e 10). Este processo será explorado em mais detalhe no Capítulo \ref{sec:heap}, assim como os algoritmos de gestão de memória implementados.
 
 	Para terminar, todos os recursos são libertados e é impresso um relatório da tabela \ac{PCB} (Figura \ref{fig:pcbreport}) e um das memórias dinâmicas (Figura \ref{fig:heapreport}). Em modo de \textit{debug}, e exclusivamente para efeitos de \textit{debugging} no processo de desenvolvimento, é impresso um relatório adicional da memória estática (Figura \ref{fig:memreport}) e \textit{dumps} das 4 memórias dinâmicas (Figura \ref{fig:heapdump}).
 	
 	
-	\section{Argumentos passados pela linha de comandos}
+	\section{\textit{State machine}. Argumentos passados pela linha de comandos.}
 	\label{ssec:main:argv}
 	
-	\chronOS~admite passagem opcional de argumentos pela linha de comandos a fim de modificar a configuração padrão do programa, definida com a estrutura \mintinline{c}{struct world w} (definida em \verb|types.h|, declarada em \verb|data.h| e inicializada em \verb|world.c|).
+	\chronOS~admite passagem opcional de argumentos pela linha de comandos a fim de modificar a configuração padrão do programa, definida com a estrutura \mintinline{c}{struct world w} (definida em \verb|types.h|, declarada em \verb|data.h| e inicializada em \verb|world.c|). Esta estrutura permite que o \chronOS~funcione segundo o princípio de uma \textit{\textbf{state machine}}, albergando diversos valores e \textit{flags} que o programa irá utilizar para controlar o seu fluxo e alguns algoritmos de escalonamento (em particular o \textit{round-robin}, discutido na secção \ref{ssec:process:rrobin}).
 	
-	A sintaxe é a seguinte:
+	A sintaxe para chamada do programa é a seguinte:
 	
 	\begin{verbatim}
 ./chronos
    [<--fcfs | --sjf | <--rr | --robin | --round-robin>>]
-   [<--seed | -s> n]
+   [<<--no-heap-request | -n> | <--seed | -s> n>]
 	\end{verbatim}
 	
 	\begin{enumerate}
@@ -218,6 +258,7 @@
 	
 		\item Definição da semente de solicitações pseudoaleatórias da memória \textit{heap}:
 		\begin{itemize}
+			\item \verb|--no-heap-request| ou \verb|-n|: desliga os requisitos pseudoaleatórios de memória \textit{heap} por parte do \chronOS;
 			\item \verb|--seed n| ou \verb|-s n|: define semente dada pelo número inteiro \verb|n|. Caso seja fornecido um número fraccionário é admitida a parte inteira. Em caso de não ser um número é definido 0 (zero). O valor por defeito é definido pelo tempo (descrito na secção \ref{ssec:heap:request}).
 		\end{itemize}
 	\end{enumerate}
@@ -228,6 +269,7 @@
 ./chronos
 ./chronos --seed 2020
 ./chronos --fcfs -s 15
+./chronos --sjf -n
 	\end{verbatim}
 	
 	
@@ -272,7 +314,7 @@
 	    \item Obter a informação de um processo na estrutura dado o seu \ac{PID}.
 	\end{itemize}
 	
-	O único algoritmo de escalonamento implementado na atual \textit{build} do program é o \ac{FCFS}.
+	Os algoritmos de escalonamento implementados na atual \textit{build} do program são: \ac{FCFS}, \ac{SJF} e \textit{round-robin}. Adiciona-se ainda o escalonador de longo prazo.
 	
 	
 	\section{Algoritmo \ac{FCFS}}
@@ -281,6 +323,32 @@
 	O \textbf{algoritmo \ac{FCFS}} admite os novos processos (estado \texttt{STATUS\_NEW}) na fila de processos prontos (estado \texttt{STATUS\_READY}) e, uma vez no estado pronto, faz o seu \textit{dispatch} para a fila de processos em execução (estado \texttt{STATUS\_RUNNING}). Uma vez terminada a sua execução, é feito o \textit{release} e o processo fica na fila de processos terminados (estado \texttt{STATUS\_TERMINATED}).
 	
 	Tudo é feito segundo o princípio FIFO [\textit{First In, First Out}], i.e., uma \textit{queue}. Dada a forma como a estrutura \ac{PCB} está definida no nosso projeto, o método \verb|fcfs| necessita apenas de saber o índice atual da tabela \ac{PCB} a fim de saber as próximas ações a tomar segundo o modelo de 5 estados.
+	
+	
+	\section{Algoritmo \ac{SJF}}
+	\label{ssec::process:sjf}
+	
+	De forma semelhante ao \ac{FCFS}, o algoritmo \ac{SJF} promove o \textit{switch} de estados dos processos, sem capacidade de desbloquear os processos em estado \verb|STATUS_BLOCKED|.
+	
+	A estratégia adotada baseou-se no \textit{sorting} na tabela \ac{PCB} segundo o \textit{burst time} de cada processo (com recurso à função \verb|qsort()|). Tal simplificou a implementação da função que alberga o algoritmo, \verb|sjf|. Para ter em atenção a \textit{performance}, a tabela apenas é ordenada caso ela não esteja por ordem crescente em relação ao tamanho dos processos.
+	
+	Para fins de teste e \textit{debugging} do algoritmo, foi definido que o \textit{burst time} é igual ao número de instruções do processo.
+	
+	
+	\section{Algoritmo \textit{round-robin}}
+	\label{ssec:process:rrobin}
+	
+	Este algoritmo recorre à \textit{state machine}, apresentada na secção \ref{ssec:main:argv}), para o seu pleno funcionamento. A estrutura global \mintinline{c}{struct world w} referente à \textit{state machine} inclui o campo \verb|w.heap.rr_time| que armazena quantos \textit{ticks} de \textit{clock} do \chronOS~passaram a fim de se poder saber quando é feito o \textit{switch} do estado do processo atual para \verb|STATUS_READY|. Com este \textit{switch} é feito o \textit{reset} a esta variável e um novo processo é executado.
+	
+	Quando se alcança o fim da tabela \ac{PCB} o índice é reiniciado a zero. Contudo, em todas as chamadas à função \verb|rrobin| que alberga o algoritmo, a função \verb|checkPCBStatus| é invocada e esta verifica se todos os processos estão terminados ou bloqueados. Em caso positivo é devolvido à função principal o valor \verb|SCHEDULER_END|, o qual indica o fim do processo de escalonamento.
+	
+	
+	\section{Escalonador de longo prazo}
+	\label{ssec:process:longterm}
+	
+	O escalonador de longo prazo é o responsável por desbloquear processos que estejam presos no estado \verb|STATUS_BLOCKED|. Os escalonadores apresentados até agora não têm a capacidade de desbloquear estes processos, sendo portanto responsabilidade deste escalonador promover o respetivo desbloqueio. Este é chamado pela função principal com alguma regularidade, manualmente por indicação do utilizador através do \verb|stdin|, ou segundo as instruções do ficheiro \verb|control.txt|.
+	
+	A função \verb|ltsched| é a responsável por este processo.
 	
 	
 	\chapter{Gestão de memória estática}
@@ -544,9 +612,25 @@ int heaprequest(void) {
 	\chapter{Leitura e execução de um programa}
 	\label{sec:program}
 	
-	No \chronOS, um programa é um conjunto de \textbf{instruções} constituídas por 3 elementos: instrução, valor inteiro e nome de processo filho. A estrutura \verb|instruction| definida em \verb|types.h| define, portanto, uma instrução.
+	No \chronOS, um programa é um conjunto de \textbf{instruções} constituídas por 2 elementos: instrução, e valor inteiro ou nome de processo filho. A estrutura \verb|instruction| definida em \verb|types.h| define, portanto, uma instrução.
 	
-	O módulo \texttt{instructions} (definido com os respetivos \textit{header file} e ficheiro \verb|*.c|) contém as funções que executam as instruções propriamente ditas, conforme definidas em enunciado.
+	O módulo \texttt{instructions} (definido com os respetivos \textit{header file} e ficheiro \verb|*.c|) contém as funções que executam as instruções propriamente ditas, a saber:
+	
+	\begin{itemize}
+		\item \verb|M n|: mudar o valor da variável para $n$;
+		\item \verb|A n|: Adicionar $n$ à variável;
+		\item \verb|S n|: Subtrair $n$ à variável;
+		\item \verb|B|: Bloquear o processo;
+		\item \verb|T|: Terminar o processo;
+		\item \verb|C n|: Fazer \textit{fork} do processo: o processo pai executa $n$ linhas após a instrução, enquanto o processo filho executa a linha imediatamente a seguir.
+		\item \verb|L filename|: Limpar o programa e substituir pelo programa \verb|filename|.
+		\item \verb|K n|: Alocar $n$ partições de memória dinâmica ($3 \leq n \leq 10$);
+		\item \verb|F|: Dealocar memória dinâmica previamente alocada pelo processo.
+	\end{itemize}
+
+	\begin{note}
+		As 2 últimas instruções foram definidas pelo grupo e abordadas na secção \ref{ssec:heap:alloc}. As restantes são conforme o definido no enunciado do projeto.
+	\end{note}
 	
 	O método \verb|program_read_from_file| lê as instruções de um programa, guardado num ficheiro com a extensão \verb|*.prg|, e aloca em memória \textit{heap} um vetor de instruções, cujo apontador é retornado como resultado.
 	
@@ -577,7 +661,7 @@ int heaprequest(void) {
 		\item Código modular e facilmente escalável.
 		\item Forte documentação do código.
 		\item Criação de dois modos de compilação (\textit{debug} e \textit{release}).
-		\item Implementação sólida do algoritmo \ac{FCFS}.
+		\item Implementação dos algoritmos \ac{FCFS}, \ac{SJF} e \textit{round-robin}.
 		\item Forte gestão de memória estática com recurso ao algoritmo \textit{first-fit}.
 		\item Clara separação entre gestão de processos e gestão de memória.
 		\item Implementação de uma \textit{queue} própria para gestão do plano de execução.
@@ -592,9 +676,9 @@ int heaprequest(void) {
 	\subsection{Pontos fracos}
 	
 	\begin{enumerate}
-		\item Falta de variedade de algoritmos de escalonamento.
+		\item Pouca variedade de algoritmos de escalonamento.
 		\item Não utilização do ficheiro \verb|control.txt| para controlo fino do \chronOS.
-		\item Utilização insuficiente dos argumentos passados pela \textit{shell} para controlo dos parâmetros do \chronOS.
+		\item Pouco proveito dos argumentos passados pela \textit{shell} para controlo dos parâmetros do \chronOS.
 		\item Inexistência de leitura de prioridades de processos a partir do ficheiro \verb|plan.txt|.
 	\end{enumerate}
 	
@@ -602,7 +686,7 @@ int heaprequest(void) {
 	\subsection{Oportunidades}
 	
 	\begin{enumerate}
-		\item Implementação de novos algoritmos de escalonamento, tais como \ac{SJF}, \ac{EDF} e \textit{round-robin}.
+		\item Implementação de novos algoritmos de escalonamento, tal como \ac{EDF}.
 		\item Introdução de controlo manual ou automatizado, passo-a-passo, da execução do \chronOS~segundo uma sequência de instruções de controlo.
 		\item Maior controlo dos parâmetros internos do \chronOS~através de argumentos passados pela \textit{shell}.
 		\item Implementação de uma \textit{queue} de prioridades para escalonamento dinâmico.
@@ -613,7 +697,6 @@ int heaprequest(void) {
 	
 	\begin{enumerate}
 		\item Maior dificuldade de leitura do código devido à vasta documentação interna.
-		\item Escassez de algoritmos de gestão de processos não permite uma comparação efetiva entre eles.
 		\item Potencial ineficiência de utilização da memória estática devido às desvantagens do \textit{first-fit}.
 		\item Utilização de código próprio para \textit{queues} e listas ligadas pode acarretar \textit{bugs} inesperados por não ser um código público devidamente escrutinado e de eficácia comprovada.
 		\item Utilização de algoritmos próprios, não verificado por pares, acarreta desvantagens inerentes.
@@ -624,7 +707,8 @@ int heaprequest(void) {
 	
 	Os objetivos iniciais propostos foram cumpridos na sua quase totalidade com o projeto \chronOS. A gestão de processos e a gestão das memórias são operacionais e executam eficazmente as funções elementares.
 	
-	Apesar de uma pequena seleção de objetivos não ter sido plenamente alcançada, outros objetivos não inicialmente planeados foram alcançados em seu lugar. A forte modulação do código revelou-se uma mais-valia na construção da aplicação \chronOS~e, em particular, na hora do respetivo \textit{debugging}. De igual forma, foi possível construir vários elementos fundamentais com códigos relativamente simples e compactos devido à criação de funções altamente especializadas e independentes.
+	% Apesar de uma pequena seleção de objetivos não ter sido plenamente alcançada, outros objetivos não inicialmente planeados foram alcançados em seu lugar.
+	A forte modulação do código revelou-se uma mais-valia na construção da aplicação \chronOS~e, em particular, na hora do respetivo \textit{debugging}. De igual forma, foi possível construir vários elementos fundamentais com códigos relativamente simples e compactos devido à criação de funções altamente especializadas e independentes.
 	
 	A forte separação dos gestores de processos e de memória permitiram que não existissem erros e \textit{bugs} cruzados. Ou seja, um \textit{bug} no gestor de processos, por exemplo, não afeta a gestão das memórias.
 	
@@ -643,7 +727,7 @@ int heaprequest(void) {
     	\acro{CPU}{\emph{Central Processing Unit}}
     	\acro{EDF}{\emph{Earliest deadline first}}
         \acro{FCFS}{\emph{First Come, First Serve}}
-        \acro{GCC}{\emph{GNU C Compiler}}
+        \acro{gcc}{\emph{GNU C Compiler}}
         \acro{PID}{\emph{Process Identifier}}
         \acro{PCB}{\emph{Process Control Block}}
         \acro{SJF}{\emph{Shortest Job First}}
