@@ -29,9 +29,10 @@ void startworld(struct world *world) {
 
     // Memória heap
     time_t t;
-    world->heap.capacity    = HEAP_CAPACITY;
-    world->heap.blocksize   = BLOCK_SIZE;
-    world->heap.requestseed = (unsigned) time(&t);
+    world->heap.capacity      = HEAP_CAPACITY;
+    world->heap.blocksize     = BLOCK_SIZE;
+    world->heap.shouldrequest = HEAP_REQUEST_ACTIVE;
+    world->heap.requestseed   = (unsigned) time(&t);
 
     // Memória estática
     world->memory.capacity = MAX_MEM;
@@ -40,6 +41,7 @@ void startworld(struct world *world) {
     world->pcb.size      = MAX_PCB;
     world->pcb.index     = 0;
     world->pcb.algorithm = SCHEDULING_FCFS;
+    world->pcb.rr_time   = 0;
 
     // Ficheiro de planeamento de execução
     strcpy(world->fileplan, FILE_PLAN);
@@ -64,6 +66,13 @@ void loadargs(struct world *world, int argc, char const *argv[]) {
     while (i + 1 < argc) {
         i++;
 
+        if (strcmp(argv[i], "--no-heap-request") == 0 || strcmp(argv[i], "-n") == 0) {
+            world->heap.shouldrequest = HEAP_REQUEST_INACTIVE;
+            debug("Random heap request turned off.\n");
+            write("Random heap request turned off.\n");
+            continue;
+        }
+
         if (strcmp(argv[i], "--seed") == 0 || strcmp(argv[i], "-s") == 0) {
             i++;
             if (i >= argc) halt(EINVAL, "Insuficient arguments for seed");
@@ -84,7 +93,7 @@ void loadargs(struct world *world, int argc, char const *argv[]) {
             world->pcb.algorithm = SCHEDULING_SJF;
             debug("Scheduling algorithm defined as SJF\n");
             write("Scheduling algorithm defined as SJF\n");
-            halt(ECANCELED, "SJF not ready");
+            // halt(ECANCELED, "SJF not ready");
             continue;
         }
 
@@ -92,7 +101,7 @@ void loadargs(struct world *world, int argc, char const *argv[]) {
             world->pcb.algorithm = SCHEDULING_RROBIN;
             debug("Scheduling algorithm defined as round-robin\n");
             write("Scheduling algorithm defined as round-robin\n");
-            halt(ECANCELED, "Round-robin not ready");
+            // halt(ECANCELED, "Round-robin not ready");
             continue;
         }
     }

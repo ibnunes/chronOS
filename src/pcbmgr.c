@@ -67,7 +67,7 @@ int processalloc(PCB *pcb, int ppid, char* name, size_t memlocal, size_t instsiz
     p->context   = (parent != NULL) ? parent->context : 0;
     p->counter   = memlocal;
     p->priority  = (parent != NULL) ? parent->priority : PRIORITY_MIN;
-    p->timelimit = (parent != NULL) ? parent->timelimit : MAX_TIMELIMIT;
+    p->timelimit = instsize; // (parent != NULL) ? parent->timelimit : MAX_TIMELIMIT;
     p->state     = STATUS_NEW;
     p->instsize  = instsize;
     p->timeinit  = cputime;         // TO CHECK: will it work properly?

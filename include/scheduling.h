@@ -8,19 +8,19 @@
 //    Copyright (C) 2020 Universidade da Beira Interior (www.ubi.pt)
 //
 // RUNTIME LIBRARIES PACKAGE
-//    fcfs.h
+//    scheduling.h
 //
 // DESCRIPTION:
 // -----------
-// First Come First Serve algorithm.
+// Scheduling algorithms.
 //------------------------------------------------------------------------------
 
-#ifndef FCFS_H
-#define FCFS_H
+#ifndef SCHEDULING_H
+#define SCHEDULING_H
 
 #include "types.h"
 
-#define SCHEDUALING_COUNTER 5 //Number of instructions to be executed in a row before moving to next process
+#define SCHEDULING_COUNTER 5 //Number of instructions to be executed in a row before moving to next process
 
 /* Function:  fcfs
  * ---------------
@@ -34,15 +34,9 @@
  */
 int fcfs(PCB *pcb, MEMORY *mem, int pcbindex);
 
-/* Funtion: findsj
- * ---------------
- * Searches pcb table for process with shortest timelimit(burst time).
- * 
- *  pcb: the PCB table with the processes.
- * 
- *  return: PCB table index of process with shorstest timelimit.
- */
-int findsj(PCB *pcb);
+
+int sorted(process *p, size_t size);
+int comparebt(const void *v1, const void *v2);
 
 /* Function: sjf
  * ------------
@@ -76,5 +70,5 @@ int checkPCBStatus(PCB *pcb);
  * 
  *  return: return: next PCB index, or SCHEDULER_END if ended.
  */
-int rrobin(PCB *pcb, MEMORY *mem, int pcbindex, int schedualer_timer);
+int rrobin(PCB *pcb, MEMORY *mem, int pcbindex);
 #endif
