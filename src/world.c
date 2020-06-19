@@ -133,7 +133,6 @@ void loadargs(struct world *world, int argc, char const *argv[]) {
             world->pcb.algorithm = SCHEDULING_SJF;
             debug("Scheduling algorithm defined as SJF\n");
             write("Scheduling algorithm defined as SJF\n");
-            // halt(ECANCELED, "SJF not ready");
             continue;
         }
 
@@ -141,7 +140,13 @@ void loadargs(struct world *world, int argc, char const *argv[]) {
             world->pcb.algorithm = SCHEDULING_RROBIN;
             debug("Scheduling algorithm defined as round-robin\n");
             write("Scheduling algorithm defined as round-robin\n");
-            // halt(ECANCELED, "Round-robin not ready");
+            continue;
+        }
+
+        if (strcmp(argv[i], "--psa") == 0) {
+            world->pcb.algorithm = SCHEDULING_PSA;
+            debug("Scheduling algorithm defined as PSA\n");
+            write("Scheduling algorithm defined as PSA\n");
             continue;
         }
     }
