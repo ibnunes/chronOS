@@ -44,16 +44,41 @@ int ltsched(PCB *pcb);
  */
 int fcfs(PCB *pcb, MEMORY *mem, int pcbindex);
 
-/* Function:  sorted
+/* Function:  sortedbt
  * ---------------
- * Verify if the array is actually sorted.
+ * Verify if the array is actually sorted by burst time.
  * 
  *  p: array of process struct
  *  size: size of the array p
  * 
  *  return: 1 if sorted else 0
  */
-int sorted(process *p, size_t size);
+int sortedbt(process *p, size_t size);
+
+/* Function:  sortedpri
+ * ---------------
+ * Verify if the array is actually sorted by priority.
+ * 
+ *  p: array of process struct
+ *  size: size of the array p
+ * 
+ *  return: 1 if sorted else 0
+ */
+int sortedpri(process *p, size_t size);
+
+/* Function:  comparebt
+ * ---------------
+ * Compares the priority of 2 processes. 
+ * 
+ *  v1: process number 1
+ *  v2: process number 2
+ * 
+ *  return: 
+ *      -1 when the bursttime of v1 < bursttime of v2, 
+ *       0 when the burstime of v1 and v2 is equal,
+ *       1 when the bursttime of v1 > bursttime of v2.
+ */
+    int comparepri(const void *v1, const void *v2);
 
 /* Function:  comparebt
  * ---------------
@@ -68,6 +93,18 @@ int sorted(process *p, size_t size);
  *       1 when the bursttime of v1 > bursttime of v2.
  */
 int comparebt(const void *v1, const void *v2);
+
+/* Function: psa
+ * ------------
+ * Executes the process in the PCB table using the Priority Scheduling Algorithm.
+ * 
+ *  pcb: the PCB table with the processes;
+ *  mem: the memory array;
+ *  pcbindex: current PCB table index at which the manager is working.
+ * 
+ *  return: next PCB index, or SCHEDULER_END if ended.
+ */
+int psa(PCB *pcb, MEMORY *mem, int pcbindex);
 
 /* Function: sjf
  * ------------

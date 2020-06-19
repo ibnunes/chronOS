@@ -255,6 +255,7 @@ typedef struct heap {
 #define SCHEDULING_FCFS   1
 #define SCHEDULING_SJF    2
 #define SCHEDULING_RROBIN 4
+#define SCHEDULING_PSA    8
 
 #define SCHEDULING_COUNTER 5 //Number of instructions to be executed in a row before moving to next process
 
