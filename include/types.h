@@ -78,11 +78,11 @@ typedef struct {
 #define STATUS_TERMINATED 5         // Estado do processo: terminated
 
 #define PRIORITY_NULL        0      // Prioridade: nula
-#define PRIORITY_LOW         1      // Prioridade: baixa
-#define PRIORITY_BELOWNORMAL 2      // Prioridade: abaixo de normal
+#define PRIORITY_LOW         5      // Prioridade: baixa
+#define PRIORITY_BELOWNORMAL 4      // Prioridade: abaixo de normal
 #define PRIORITY_NORMAL      3      // Prioridade: normal
-#define PRIORITY_ABOVENORMAL 4      // Prioridade: acima de normal
-#define PRIORITY_HIGH        5      // Prioridade: alta
+#define PRIORITY_ABOVENORMAL 2      // Prioridade: acima de normal
+#define PRIORITY_HIGH        1      // Prioridade: alta
 
 #define INSTRUCTION_CHANGE    'M'   // M n
 #define INSTRUCTION_ADD       'A'   // A n
@@ -259,8 +259,10 @@ typedef struct heap {
 
 #define SCHEDULING_COUNTER 5 //Number of instructions to be executed in a row before moving to next process
 
-#define HEAP_REQUEST_INACTIVE 0
-#define HEAP_REQUEST_ACTIVE   1
+#define HEAP_REQUEST_INACTIVE  0
+#define HEAP_REQUEST_ACTIVE    1
+#define HEAP_REQUEST_EXCLUSIVE 2
+#define DEFAULT_MANY_HEAP_REQUEST 10000
 
 #define CONTROLLER_AUTO  0
 #define CONTROLLER_STDIN 1
@@ -285,6 +287,7 @@ struct world {
         int capacity;
         int blocksize;
         int shouldrequest;
+        unsigned manyrequest;
         unsigned requestseed;
     } heap;
 

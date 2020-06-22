@@ -5,7 +5,7 @@
 #include <limits.h>
 
 #define APP_NAME    "chronOS"
-#define APP_VERSION "1.3.0"
+#define APP_VERSION "1.3.1"
 
 void halt(int e, char const *msg);
 

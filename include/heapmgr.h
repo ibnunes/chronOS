@@ -18,4 +18,7 @@ void heaprequest_start(unsigned int seed);
 int heaprequest(void);
 int heaprequest_size(void);
 
+int heapfree_exclusive(const int pid, const int many);
+void heaprequest_exclusive(void);
+
 #endif

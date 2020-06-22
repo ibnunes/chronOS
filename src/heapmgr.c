@@ -1,6 +1,7 @@
 #include "heapmgr.h"
 #include "data.h"
 #include "debug.h"
+#include "tui.h"
 #include <limits.h>
 #include <stdlib.h>
 #include <math.h>
@@ -293,15 +294,85 @@ void heaprequest_start(unsigned int seed) {
 }
 
 #define M_PI acos(-1.0)
+#define ALLOC_THRESHOLD 2. * M_PI / 3.
 
 int heaprequest(void) {
     double x = (rand() % 6284) / 1000.;                     // Gera [0 .. 2×pi]
     int p = (int) ((sin(x - M_PI / 2.) + 1.) / 2. * 100.);  // Gera [0 .. 100]
     int r = rand() % 101;                                   // Gera [0 .. 100]
-    debug("x = %.3lf; p = %3d; r = %3d => [%s]\n", x, p, r, (p - r >= 0) ? "ACCEPTED" : "REJECTED");
-    return (p - r >= 0);
+    debug("x = %.3lf; p = %3d; r = %3d => [%7s]\n", x, p, r, (p - r >= 0) ? ((x <= ALLOC_THRESHOLD) ? "DEALLOC" : "ALLOC") : "IGNORE");
+    return (p - r >= 0) ? ((x <= ALLOC_THRESHOLD) ? -1 : 1) : 0;
 }
 
 int heaprequest_size(void) {
     return (rand() % (HEAP_ALLOC_MAX - HEAP_ALLOC_MIN + 1) + HEAP_ALLOC_MIN);
+}
+
+
+/* 
+ *  MODO ESPECIAL: apenas solicitações de alocação e dealocação
+ */
+
+int heapfree_exclusive(const int pid, const int many) {
+    int count = 0;
+
+    for (int i = 0; i < heap_first->capacity; i++) {
+        if (heap_first->pid[i] == pid) {
+            heap_first->pid[i] = PID_NULL;
+            count++;
+            if (count >= many) break;
+        }
+    }
+
+    count = 0;
+    for (int i = 0; i < heap_next->capacity; i++) {
+        if (heap_next->pid[i] == pid) {
+            heap_next->pid[i] = PID_NULL;
+            count++;
+            if (count >= many) break;
+        }
+    }
+
+    count = 0;
+    for (int i = 0; i < heap_best->capacity; i++) {
+        if (heap_best->pid[i] == pid) {
+            heap_best->pid[i] = PID_NULL;
+            count++;
+            if (count >= many) break;
+        }
+    }
+
+    count = 0;
+    for (int i = 0; i < heap_worst->capacity; i++) {
+        if (heap_worst->pid[i] == pid) {
+            heap_worst->pid[i] = PID_NULL;
+            count++;
+            if (count >= many) break;
+        }
+    }
+
+    return HEAP_FREE_SUCCESS;
+}
+
+void heaprequest_exclusive(void) {
+    debug("Requesting %d allocations and deallocations of heap memory...\n", w.heap.manyrequest);
+    write("Requesting %d allocations and deallocations of heap memory...\n", w.heap.manyrequest);
+    for (unsigned i = 0; i < w.heap.manyrequest; i++) {
+        switch (heaprequest()) {
+            case 0:
+                break;
+            case 1:
+                heapalloc(w.pid, heaprequest_size());
+                break;
+            default:
+                heapfree_exclusive(w.pid, heaprequest_size());
+        }
+    }
+    debug("Finished. Printing report.\n\n");
+    write("Finished. Printing report.\n\n");
+    heapreport(heap_first, heap_next, heap_best, heap_worst);
+    // heapdump(heap_first, "first-fit");
+    // heapdump(heap_next,  "next-fit");
+    // heapdump(heap_best,  "best-fit");
+    // heapdump(heap_worst, "worst-fit");
 }
