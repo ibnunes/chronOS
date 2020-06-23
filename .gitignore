@@ -32,7 +32,7 @@
 *.dSYM/
 
 # Folders and files from chronOS development
-bin/
+# bin/
 deps/
 obj/
 .vscode/
