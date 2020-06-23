@@ -69,16 +69,27 @@ int main(int argc, char const *argv[]) {
 
     loadargs(&w, argc, argv);
 
-    // Alocar células de memória 
-    debug("Allocating %d cells of memory\n", w.memory.capacity);
-    memory = memcreate(w.memory.capacity);
-
     // Alocar memória heap
     debug("Allocating %d KB of heap memory for 4 algorithms\n", w.heap.capacity * w.heap.blocksize / 1024);
     heap_first = makeheap(w.heap.capacity);
     heap_next  = makeheap(w.heap.capacity);
     heap_best  = makeheap(w.heap.capacity);
     heap_worst = makeheap(w.heap.capacity);
+
+    // MODO ESPECIAL: apenas solicitações de memória
+    if (w.heap.shouldrequest == HEAP_REQUEST_EXCLUSIVE) {
+        heaprequest_exclusive();
+        heapfree(w.pid);
+        destroyheap(heap_first);
+        destroyheap(heap_next);
+        destroyheap(heap_best);
+        destroyheap(heap_worst);
+        exit(EXIT_SUCCESS);
+    }
+
+    // Alocar células de memória 
+    debug("Allocating %d cells of memory\n", w.memory.capacity);
+    memory = memcreate(w.memory.capacity);
 
     // Inicializar tabela PCB
     debug("Allocating %d lines of PCB table\n", w.pcb.size);
@@ -113,7 +124,7 @@ int main(int argc, char const *argv[]) {
     while (w.flag.__running) {
         if (!plan_empty(plan)) {
             if (plan_peek(plan).time <= w.cputime) {
-                debug("cputime = %ld; plan_peek.time = %ld\n", cputime, plan_peek(plan).time);
+                debug("cputime = %ld; plan_peek.time = %ld\n", w.cputime, plan_peek(plan).time);
                 write("Creating new process from \"%s\" at CPU time %ld\n", plan_peek(plan).program, w.cputime);
                 create_new_process(pcb, plan_pop(plan));
                 w.flag.__mustexit = 0;
@@ -123,11 +134,21 @@ int main(int argc, char const *argv[]) {
         /* Gestão de processos */
         if (!w.flag.__mustexit) {
             if (w.heap.shouldrequest) {
-                if (heaprequest()) {
-                    int size = heaprequest_size();
-                    int ret = heapalloc(w.pid, size);
-                    debug("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
-                    write("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
+                switch (heaprequest()) {
+                    case 0:
+                        break;
+                    case 1: {
+                        int size = heaprequest_size();
+                        int ret = heapalloc(w.pid, size);
+                        debug("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
+                        write("Random request from chronOS of %d blocks of heap memory (return code = %d)\n", size, ret);
+                        break;
+                    }
+                    default:
+                        debug("Deallocating heap mempry from chronOS.\n");
+                        write("Deallocating heap mempry from chronOS.\n");
+                        heapfree(w.pid);
+                        break;
                 }
             }
 

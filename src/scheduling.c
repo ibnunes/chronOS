@@ -53,7 +53,7 @@ int fcfs(PCB *pcb, MEMORY *mem, int pcbindex) {
         case STATUS_READY:
             debug("Switching PID %d state to RUNNING.\n", p->pid);
             p->state = switchState(p->state, STATUS_RUNNING);
-            p->timeinit = cputime;
+            p->timeinit = w.cputime;
             break;
         
         case STATUS_RUNNING:
@@ -145,7 +145,7 @@ int psa(PCB *pcb, MEMORY *mem, int pcbindex) {
     case STATUS_READY:
         debug("Switching PID %d state to RUNNING.\n", p->pid);
         p->state = switchState(p->state, STATUS_RUNNING);
-        p->timeinit = cputime;
+        p->timeinit = w.cputime;
         break;
 
     case STATUS_RUNNING:
@@ -197,7 +197,7 @@ int sjf(PCB *pcb, MEMORY *mem, int pcbindex) {
         case STATUS_READY:
             debug("Switching PID %d state to RUNNING.\n", p->pid);
             p->state = switchState(p->state, STATUS_RUNNING);
-            p->timeinit = cputime;
+            p->timeinit = w.cputime;
             break;
 
         case STATUS_RUNNING:
@@ -252,7 +252,7 @@ int rrobin(PCB *pcb, MEMORY *mem, int pcbindex) {
         case STATUS_READY:
             debug("Switching PID %d state to RUNNING.\n", p->pid);
             p->state = switchState(p->state, STATUS_RUNNING);
-            p->timeinit = cputime;
+            p->timeinit = w.cputime;
             break;
         
         case STATUS_RUNNING:

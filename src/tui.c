@@ -42,7 +42,7 @@ const char *state2str(int state) {
 
 void pcbreport(PCB *pcb) {
     printf("======== Report =========\n\n");
-    printf("Current time: %ld\n\n", cputime);
+    printf("Current time: %ld\n\n", w.cputime);
 
     process *p;
     printf("+-------------------------------------------------------+-----+---------+--------------------+\n");
