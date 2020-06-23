@@ -38,7 +38,7 @@ void blockProcess(process *p) {
 void terminateProcess(process *p) {
     p->state = switchState(p->state, STATUS_TERMINATED);
     if (p->state == STATUS_TERMINATED)
-        p->timeend = cputime;
+        p->timeend = w.cputime;
 }
 
 void forkProcess(MEMORY *mem, process *p) {

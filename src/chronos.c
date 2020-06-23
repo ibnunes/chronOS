@@ -124,7 +124,7 @@ int main(int argc, char const *argv[]) {
     while (w.flag.__running) {
         if (!plan_empty(plan)) {
             if (plan_peek(plan).time <= w.cputime) {
-                debug("cputime = %ld; plan_peek.time = %ld\n", cputime, plan_peek(plan).time);
+                debug("cputime = %ld; plan_peek.time = %ld\n", w.cputime, plan_peek(plan).time);
                 write("Creating new process from \"%s\" at CPU time %ld\n", plan_peek(plan).program, w.cputime);
                 create_new_process(pcb, plan_pop(plan));
                 w.flag.__mustexit = 0;
