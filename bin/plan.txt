@@ -1,2 +1,2 @@
 semfork.prg     0       4
-semfork.prg     5       2
+semfork2.prg    5       2
