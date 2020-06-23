@@ -33,6 +33,7 @@ void startworld(struct world *world) {
     world->heap.blocksize     = BLOCK_SIZE;
     world->heap.shouldrequest = HEAP_REQUEST_ACTIVE;
     world->heap.requestseed   = (unsigned) time(&t);
+    world->heap.manyrequest   = DEFAULT_MANY_HEAP_REQUEST;
 
     // Memória estática
     world->memory.capacity = MAX_MEM;
@@ -110,6 +111,18 @@ void loadargs(struct world *world, int argc, char const *argv[]) {
             world->heap.shouldrequest = HEAP_REQUEST_INACTIVE;
             debug("Random heap request turned off.\n");
             write("Random heap request turned off.\n");
+            continue;
+        }
+
+        if (strcmp(argv[i], "--heap-request") == 0 || strcmp(argv[i], "-h") == 0) {
+            world->heap.shouldrequest = HEAP_REQUEST_EXCLUSIVE;
+            i++;
+            if (i < argc)
+                world->heap.manyrequest = atoi(argv[i]);
+            if (world->heap.manyrequest <= 0)
+                world->heap.manyrequest = DEFAULT_MANY_HEAP_REQUEST;
+            debug("Exclusive %d random heap requests.\n", world->heap.manyrequest);
+            write("Exclusive %d random heap requests.\n", world->heap.manyrequest);
             continue;
         }
 
